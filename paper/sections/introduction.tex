@@ -1,4 +1,35 @@
 \section{Introduction}
 \label{sec:intro}
 
-% TO BE DRAFTED IN TURN 2
+Safety-critical machine learning systems are increasingly deployed under distribution shift: a model trained in one setting is used in another, and its performance may degrade without warning. The standard defence is to use the model's own uncertainty estimates to flag unreliable predictions, deferring low-confidence outputs to a human expert. This approach assumes that model uncertainty is well-calibrated under shift---that the model ``knows what it doesn't know.'' When this assumption fails, the system has no mechanism for self-diagnosis: it produces confident but incorrect outputs, and no internal signal triggers human review. This paper investigates a concrete instance of this failure in a safety-critical domain and proposes an alternative: using structured external context about the deployment environment to drive deferral decisions when model self-assessment is uninformative.
+
+We study this problem through seismic phase picking, the task of identifying earthquake wave arrivals in continuous seismograms. Seismology offers three features that make it a compelling case study for deferral under distribution shift. First, PhaseNet \citep{zhu2019phasenet} is a widely-deployed deep learning model with well-characterised in-distribution performance, and the shift from California (where it was trained) to Central Asia is a realistic deployment scenario rather than a synthetic benchmark. Second, seismology has a natural notion of \emph{environmental regimes}---quiet background seismicity, active aftershock sequences following large earthquakes, and gradual decay back to quiet---that affect model operating conditions in structured, predictable ways, providing a concrete external signal to work with. Third, the human-in-the-loop structure already exists operationally: seismological agencies employ analysts who routinely review automated picks, making deferral frameworks directly applicable rather than hypothetical.
+
+This problem also has an equity dimension that we expand upon in the Broader Impact section. Well-instrumented regions like California benefit from reliable automated picks validated against dense monitoring networks. Data-sparse regions like Central Asia receive the same confident outputs, but with no mechanism to detect that performance has degraded. The regions that most need automation---those with fewer trained analysts and less monitoring infrastructure---are precisely where automated tools are least reliable. This is not purely a technical problem; it is a socio-technical one with consequences for who receives timely and accurate earthquake information.
+
+\paragraph{Scope: replication and innovation.} We make the boundary between replication and novel contribution explicit. Our \emph{replication and empirical characterisation} reproduces PhaseNet's in-distribution performance on California data, then systematically evaluates it on Kazakhstan data using an identical protocol. We assess whether PhaseNet's native confidence scores---the standard basis for deferral---provide any useful signal under distribution shift, applying calibration analysis (Expected Calibration Error) and discrimination analysis (AUROC) as standard uncertainty quantification tools. This extends PhaseNet's published evaluation to a new deployment context and directly tests whether standard UQ methods detect the failure.
+
+Our \emph{innovation} is a regime-aware Bayesian deferral framework that replaces model self-assessment with external environmental context. The framework combines a Hidden Markov Model (HMM) for tracking seismic regimes with Beta-Bernoulli reliability estimation, producing a combined deferral score that integrates environmental uncertainty with pick-level confidence. This is novel in that existing deferral methods assume either that model uncertainty is informative or that a learned rejector can be trained on labelled deployment-domain data; neither holds in our setting.
+
+Our contributions are:
+\begin{enumerate}
+    \item An empirical demonstration that PhaseNet's confidence scores are uninformative under distribution shift: P-wave AUROC for correct/incorrect discrimination is virtually identical between California and Kazakhstan (0.619 vs.\ 0.616) despite a 50-percentage-point drop in detection rate---confirming that standard UQ tools fail to detect this degradation (\cref{sec:shift,sec:confidence}).
+    \item A regime-aware monitoring framework using an HMM to externally track the seismic environment, providing a structured reliability signal that model confidence cannot (\cref{sec:regime_model}).
+    \item A Bayesian deferral mechanism that combines regime uncertainty with pick-level confidence, achieving targeted deferral during environmentally uncertain periods---concentrating 90.9\% of deferrals during seismically active periods versus 36.4\% for confidence-only---with honest evaluation showing that confidence-only deferral achieves higher raw system accuracy at matched deferral rates (\cref{sec:deferral_comparison}).
+\end{enumerate}
+
+% TODO: Figure 1 — The confidence paradox (three panels)
+% Generate from notebook Steps 3 + 4:
+% (a) Bar chart: P-wave detection rate California (85.5%) vs Kazakhstan (35.1%)
+% (b) Overlaid confidence histograms: California and Kazakhstan P-wave confidence, showing near-identical distributions
+% (c) Overlaid ROC curves: California AUROC 0.619 vs Kazakhstan 0.616, showing virtually identical discrimination
+\begin{figure*}[t]
+    \centering
+    % \includegraphics[width=\textwidth]{figures/fig1_confidence_paradox.pdf}
+    \fbox{\parbox{0.95\textwidth}{\centering\vspace{2cm}\textbf{Figure 1: TODO --- Generate from notebook}\\[0.5em]
+    Three panels: (a) detection rate bar chart, (b) confidence histograms, (c) ROC curves\vspace{2cm}}}
+    \caption{The confidence paradox. (a)~PhaseNet's P-wave detection rate collapses from 85.5\% to 35.1\% under distribution shift from California to Kazakhstan. (b)~Despite this performance collapse, confidence distributions remain nearly identical between regions. (c)~AUROC for discriminating correct from incorrect picks is virtually unchanged (0.619 vs.\ 0.616). The model is failing, and its confidence scores provide no warning.}
+    \label{fig:confidence_paradox}
+\end{figure*}
+
+The remainder of this paper is organised as follows. \Cref{sec:background} reviews the relevant background on deep learning for seismology, calibration under distribution shift, and selective prediction. \Cref{sec:method} presents the regime-aware deferral framework, including the HMM regime model, Beta-Bernoulli reliability tracking, and the combined deferral score. \Cref{sec:setup} describes the experimental setup, covering both the California baseline and Kazakhstan deployment data. \Cref{sec:results} presents results in two parts: the replication and empirical characterisation of the distribution shift (\cref{sec:shift,sec:confidence}), followed by evaluation of the proposed framework (\cref{sec:regime_behaviour,sec:deferral_comparison}). \Cref{sec:discussion} discusses limitations and broader implications for safety-critical ML.
