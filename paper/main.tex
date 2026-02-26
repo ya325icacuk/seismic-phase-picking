@@ -1,0 +1,92 @@
+%%%%%%%% REGIME-AWARE BAYESIAN DEFERRAL — MASTER FILE %%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+% Recommended packages
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+% Attempt to make hyperref and algorithmic work together better
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% For blind review submission:
+\usepackage{icml2026}
+
+% Math packages
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+
+% Cross-referencing
+\usepackage[capitalize,noabbrev]{cleveref}
+
+% Theorem environments
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% Short running title
+\icmltitlerunning{Regime-Aware Bayesian Deferral for Seismic Phase Picking}
+
+\begin{document}
+
+\twocolumn[
+  \icmltitle{Regime-Aware Bayesian Deferral for Seismic Phase Picking \\
+    Under Distribution Shift}
+
+  \icmlsetsymbol{equal}{*}
+
+  \begin{icmlauthorlist}
+    \icmlauthor{Yasmin Akhmedova}{equal,ic}
+    \icmlauthor{Seraphina Korompis}{equal,ic}
+  \end{icmlauthorlist}
+
+  \icmlaffiliation{ic}{Department of Electrical and Electronic Engineering, Imperial College London, London, United Kingdom}
+
+  \icmlcorrespondingauthor{Yasmin Akhmedova}{ya224@ic.ac.uk}
+
+  \icmlkeywords{distribution shift, deferral, uncertainty quantification, seismology, safety-critical ML, Hidden Markov Models}
+
+  \vskip 0.3in
+]
+
+\printAffiliationsAndNotice{\icmlEqualContribution}
+
+%% ========== ABSTRACT ==========
+\input{sections/abstract}
+
+%% ========== MAIN BODY ==========
+\input{sections/introduction}
+\input{sections/background}
+\input{sections/method}
+\input{sections/experiments}
+\input{sections/results}
+\input{sections/discussion}
+
+%% ========== IMPACT + ACKNOWLEDGEMENTS (outside page limit) ==========
+\input{sections/impact}
+
+%% ========== REFERENCES ==========
+\bibliography{paper}
+\bibliographystyle{icml2026}
+
+%% ========== APPENDICES ==========
+\newpage
+\appendix
+\onecolumn
+\input{sections/appendices}
+
+\end{document}
