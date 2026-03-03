@@ -1,4 +1,31 @@
 \section{Discussion and Limitations}
 \label{sec:discussion}
 
-% TO BE DRAFTED IN TURN 5
+\subsection{Limitations}
+\label{sec:limitations}
+
+\paragraph{Small regime-stratified samples.} The Active and Decaying performance analysis relies on a single station (PDGK) with 11--13 picks per regime. We frame regime-stratified results as suggestive, not statistically conclusive. A longer study period or a region with more frequent large earthquakes would strengthen this evidence.
+
+\paragraph{Single target region.} We demonstrate the framework on one distribution shift (California $\to$ Kazakhstan). The architecture generalises, but the HMM parameters and deferral threshold would need recalibration for each new deployment region.
+
+\paragraph{Catalog dependence.} Regime triggers require a functioning earthquake catalog. In the most data-sparse regions, even the catalog may be incomplete, potentially missing events that should trigger Active---creating a floor on how well the framework can perform in truly unmonitored areas.
+
+\paragraph{Weekly resolution.} The HMM operates at weekly granularity, which may be too coarse to capture rapid regime transitions in the first hours after a mainshock. Sub-weekly resolution would require denser seismicity observations.
+
+\paragraph{Accuracy vs.\ targeting trade-off.} The combined score achieves lower raw system accuracy than confidence-only at matched deferral rates. Practitioners who prioritise accuracy over temporal targeting may prefer confidence-only deferral.
+
+\paragraph{Recall vs.\ precision failure modes.} As identified in this study, PhaseNet's dominant failure mode under distribution shift is missed detections (recall failure) rather than incorrect picks (precision failure). The Beta-Bernoulli model tracks precision---whether picks that PhaseNet \emph{makes} are correct---but cannot directly detect picks that PhaseNet \emph{fails to make}, since missed detections have no timestamp to align with regime posteriors. This is a fundamental limitation of any pick-level deferral system when applied to recall-dominated failure modes.
+
+\subsection{Do the Experiments Support the Claims?}
+\label{sec:self_eval}
+
+We cannot claim the regime signal \emph{causes} better deferral---the comparison is observational, not ablated in a controlled experiment. What we show is that the two methods defer systematically different picks, and that the combined score's pattern aligns with operationally relevant regime structure.
+
+The baselines are appropriate: confidence-only deferral is the standard approach a practitioner would use, and it is a strong baseline that wins on raw accuracy. We do not compare against more sophisticated methods (e.g., learned rejectors, ensemble disagreement) because these require either labelled deployment data or architectural modifications to PhaseNet, neither of which is available in our setting.
+
+System accuracy captures overall correctness; regime-stratified deferral rates capture temporal targeting. We report both rather than selecting the metric that favours our method.
+
+\subsection{Broader Implications for Safety-Critical ML}
+\label{sec:implications}
+
+This work illustrates a general principle: when a model cannot self-diagnose failure under distribution shift, \emph{external context about the deployment environment} can provide the reliability signal that internal uncertainty cannot. The specific context here is seismic regime, but the architecture applies wherever deployment conditions are structured and observable, these conditions affect model reliability systematically, and the model's own uncertainty fails to reflect this---for example, medical imaging across hospitals with different equipment profiles, autonomous vehicles across geographies with different road conditions, or environmental monitoring systems deployed across ecosystems.

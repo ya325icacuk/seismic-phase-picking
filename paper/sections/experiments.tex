@@ -1,4 +1,51 @@
 \section{Experimental Setup}
-\label{sec:experiments}
+\label{sec:setup}
 
-% TO BE DRAFTED IN TURN 4
+\subsection{Data}
+\label{sec:data}
+
+\paragraph{California (in-distribution).} We use the Northern California Seismic Network (NCSN) via NCEDC as an in-distribution baseline. We select M3.5--5.0 events for 2020--2023 and download three-component broadband waveforms from the 8 closest BK network stations within 2$^\circ$ of each event. Ground truth picks are taken from the NCEDC catalog (62 P-wave and 2 S-wave arrivals across 72 waveforms). This replicates PhaseNet's published evaluation protocol on its training distribution.
+
+\paragraph{Kazakhstan (out-of-distribution).} We deploy PhaseNet to the KZ network via IRIS FDSN. Starting from 29 three-component broadband (BH*) stations, we apply a filtering pipeline: remove experimental and temporary deployments, verify waveform availability at four test times, confirm instrument stability (no mid-study sensor changes), and require ISC pick coverage. This yields 11 stations with six broadband sensor types (STS-6, STS-2, CMG-3TB, KS-54000, CMG-3ESP, Trillium 120), all sampling at 40\,Hz, with geographic coverage across Kazakhstan. The study window is 2020--2023, matching the ISC Reviewed Bulletin's coverage. Ground truth is taken from the ISC Reviewed Bulletin \citep{isc2023}, providing 4{,}674 human-analyst-verified picks across the 11 stations. PhaseNet produces 190 picks evaluated against 202 P-wave and 74 S-wave ISC arrivals.
+
+\paragraph{Regime data.} We query the ISC earthquake catalog for Central Asia (41--55$^\circ$N, 55--85$^\circ$E), obtaining 6{,}763 M$\geq$3.0 events for weekly count observations and 12 M$\geq$4.5 events as potential regime triggers. Only 4 of these fall within 200\,km of any station, meaning 7 of 11 stations experience no regime transitions during the study period. Full data pipeline details are provided in \cref{app:data}.
+
+% TODO: Table 1 — Dataset summary
+% Columns: Region, Network, Stations, Waveforms, Ground truth picks (P/S), Period, GT source
+\begin{table}[t]
+    \centering
+    \caption{Dataset summary.}
+    \label{tab:data}
+    \small
+    \begin{tabular}{@{}lcc@{}}
+        \toprule
+        & California & Kazakhstan \\
+        \midrule
+        Network & BK (NCSN) & KZ (FDSN) \\
+        Stations & 8 per event & 11 \\
+        Waveforms & 72 & $\sim$190 \\
+        P-wave GT picks & 62 & 202 \\
+        S-wave GT picks & 2 & 74 \\
+        Period & 2020--2023 & 2020--2023 \\
+        GT source & NCEDC & ISC Reviewed \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Evaluation Protocol}
+\label{sec:eval_protocol}
+
+PhaseNet is run with original weights (trained on Northern California) using SeisBench \citep{woollam2022seisbench}. Waveforms are 120\,s windows starting 10\,s before the event origin time, preprocessed with detrending, tapering, bandpass filtering (1--45\,Hz), and normalisation. Picks are extracted with detection thresholds of 0.3 for both P and S phases.
+
+A PhaseNet pick is considered correct if it falls within 0.5\,s of a catalog arrival of the same phase type. This tolerance is consistent with the original PhaseNet evaluation \citep{zhu2019phasenet}. We report detection rate (recall), precision, pick residuals (mean and standard deviation), Expected Calibration Error (ECE), and AUROC for correct/incorrect discrimination. Both calibration and discrimination metrics are computed for P-wave picks separately to avoid confounding by S-wave ground truth differences between regions (California has only 2 S-wave ground truth picks).
+
+\subsection{Baselines and Comparisons}
+\label{sec:baselines}
+
+We compare three approaches at matched deferral rates:
+\begin{itemize}
+    \item \textbf{No deferral:} accept all PhaseNet picks, establishing the lower bound (0.432 system accuracy in Kazakhstan).
+    \item \textbf{Confidence-only deferral:} defer picks with the lowest PhaseNet confidence scores---the standard approach using model self-assessment.
+    \item \textbf{Combined score (proposed):} defer picks with the lowest regime-aware deferral scores (\cref{eq:deferral_score}), incorporating environmental context.
+\end{itemize}
+All three are compared at a fixed 25\% deferral rate (48 of 190 picks) to isolate the effect of the regime signal.

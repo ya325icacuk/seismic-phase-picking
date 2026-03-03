@@ -1,4 +1,128 @@
 \section{Results}
 \label{sec:results}
 
-% TO BE DRAFTED IN TURN 4
+\subsection{Replication: PhaseNet Performance Under Distribution Shift}
+\label{sec:shift}
+
+% TODO: Table 2 — California vs Kazakhstan performance
+\begin{table}[t]
+    \centering
+    \caption{PhaseNet performance under distribution shift. All calibration and discrimination metrics are P-wave only.}
+    \label{tab:shift}
+    \small
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        Metric & California & Kazakhstan & Change \\
+        \midrule
+        P-wave recall & 85.5\% (53/62) & 35.1\% (71/202) & $-$50.4\,pp \\
+        S-wave recall & 100\% (2/2) & 14.9\% (11/74) & --- \\
+        P false pick rate & 35.4\% (29/82) & 34.9\% (38/109) & $-$0.5\,pp \\
+        P residual mean & +0.033\,s & +0.180\,s & +0.147\,s \\
+        P residual std & 0.093\,s & 0.170\,s & +0.077\,s \\
+        Mean conf.\ (matched) & 0.732 & 0.747 & +0.015 \\
+        P-wave ECE & 0.088 & 0.150 & +0.062 \\
+        P-wave AUROC & 0.619 & 0.616 & $-$0.003 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\Cref{tab:shift} summarises PhaseNet's performance across both regions. The California results confirm that PhaseNet performs as published: 85.5\% P-wave detection with residuals consistent with the 0.1\,s benchmark from \citet{zhu2019phasenet}. The Kazakhstan results reveal a 50.4-percentage-point collapse in P-wave detection rate---PhaseNet misses nearly two-thirds of arrivals that human analysts identified.
+
+Critically, the false pick rate is virtually identical between regions (35.4\% vs.\ 34.9\%), indicating that PhaseNet's dominant failure mode under distribution shift is \emph{missed detections} rather than incorrect picks. Timing accuracy also degrades: the mean P-wave residual shifts from +0.033\,s to +0.180\,s, and the standard deviation nearly doubles. Despite this performance collapse, mean confidence for matched picks is nearly unchanged (0.732 vs.\ 0.747).
+
+\subsection{Confidence Scores Are Uninformative Under Shift}
+\label{sec:confidence}
+
+% TODO: Figure 3 — Confidence distribution overlap
+% Overlaid histograms of California and Kazakhstan P-wave confidence
+\begin{figure}[t]
+    \centering
+    % \includegraphics[width=\columnwidth]{figures/fig3_confidence_overlap.pdf}
+    \fbox{\parbox{0.9\columnwidth}{\centering\vspace{1.5cm}\textbf{Figure 3: TODO}\\[0.3em]
+    Confidence histograms overlay\vspace{1.5cm}}}
+    \caption{P-wave confidence distributions for California (blue) and Kazakhstan (red). Despite the 50-percentage-point detection rate collapse, the distributions are nearly indistinguishable.}
+    \label{fig:confidence_overlap}
+\end{figure}
+
+P-wave ECE increases from 0.088 in California to 0.150 in Kazakhstan (\cref{tab:shift}). At the 0.7 confidence level, California picks are correct approximately 70\% of the time; Kazakhstan picks only approximately 50\%. PhaseNet is substantially overconfident under distribution shift. However, ECE alone might suggest that recalibration could resolve the problem.
+
+P-wave AUROC tells a more damaging story: 0.619 in California versus 0.616 in Kazakhstan---virtually identical. Confidence cannot separate correct from incorrect picks any better out-of-distribution than in-distribution. Recalibration would not help because the \emph{ranking} is uninformative. A confidence-based deferral system operating in Kazakhstan would have no signal that anything had changed (\cref{fig:confidence_overlap}).
+
+\subsection{Regime Model Behaviour}
+\label{sec:regime_behaviour}
+
+% TODO: Figure 4 — Regime posteriors for PDGK + one untriggered station
+\begin{figure}[t]
+    \centering
+    % \includegraphics[width=\columnwidth]{figures/fig4_regime_posteriors.pdf}
+    \fbox{\parbox{0.9\columnwidth}{\centering\vspace{1.5cm}\textbf{Figure 4: TODO}\\[0.3em]
+    Stacked area: PDGK (triggered) + untriggered station\vspace{1.5cm}}}
+    \caption{Regime posteriors over 2020--2023 for PDGK (top, triggered by M5.1 and M5.0 events) and an untriggered station (bottom). PDGK shows clear Active $\to$ Decaying $\to$ Quiet transitions; the untriggered station maintains $\pi_t(Q) \approx 1.0$ throughout. Full set of all 11 stations in \cref{app:posteriors}.}
+    \label{fig:regime_posteriors}
+\end{figure}
+
+The HMM correctly detects all five M$\geq$4.5 triggers with $\pi_t(A) = 1.0$. Recovery to $\pi_t(Q) > 0.9$ takes 7 weeks at KNDC and PDGK following the M5.1 event, 3 weeks at PDGK for the M5.0, and 12 weeks at OTUK. The 7 untriggered stations maintain $\pi_t(Q) = 1.0$ throughout---zero false activations (\cref{fig:regime_posteriors}). A sensitivity analysis confirms 100\% Active detection across 7 parameter configurations, with recovery times varying between 3 and 19 weeks (\cref{app:hmm}).
+
+Active detection and untriggered stability are guaranteed by design (hard injection with $\epsilon \approx 0$), not learned from data. The HMM's genuine contribution is estimating the \emph{decay timeline}---how many weeks of heightened oversight each station needs after a large event. This is the component tested by the sensitivity analysis.
+
+\paragraph{Regime-stratified performance.} Time-aligning the 190 Kazakhstan picks to regime posteriors shows 81.6\% fall in predominantly Quiet weeks, 5.8\% in Active, 7.9\% in Decaying, and 4.7\% in mixed-regime transitions. Only PDGK has ground truth picks during Active (13 picks) and Decaying (11 picks) periods. At this station, precision varies across regimes (Active: 64\%, Quiet: 40\%, Decaying: 33\%), suggesting performance depends on environmental state. However, these sample sizes are small and the pattern should be interpreted as suggestive rather than statistically conclusive. The primary value of the regime model is not in predicting per-regime performance, but in providing the uncertainty signal ($\sigma_r$) that drives deferral---regimes with few observations have high $\sigma_r$ by construction.
+
+\subsection{Deferral Comparison}
+\label{sec:deferral_comparison}
+
+At a fixed 25\% deferral rate (48 of 190 picks deferred):
+
+% TODO: Table 3 — Deferral method comparison
+\begin{table}[t]
+    \centering
+    \caption{Deferral comparison at 25\% deferral rate (48 picks).}
+    \label{tab:deferral}
+    \small
+    \begin{tabular}{@{}lc@{}}
+        \toprule
+        Method & System accuracy \\
+        \midrule
+        No deferral & 0.432 \\
+        Confidence-only & 0.686 \\
+        Combined score (proposed) & 0.639 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% TODO: Table 4 — Regime targeting comparison
+\begin{table}[t]
+    \centering
+    \caption{Regime targeting at 25\% deferral rate: percentage of picks deferred within each regime.}
+    \label{tab:targeting}
+    \small
+    \begin{tabular}{@{}lcc@{}}
+        \toprule
+        Method & \% Active deferred & \% Quiet deferred \\
+        \midrule
+        Confidence-only & 36.4\% & 23.2\% \\
+        Combined score & 90.9\% & 17.4\% \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\Cref{tab:deferral} shows that confidence-only deferral achieves higher system accuracy (0.686 vs.\ 0.639) at matched deferral rates. This is expected: confidence-only directly optimises ``which individual picks are most likely wrong?'' and selects the lowest-confidence picks for human review.
+
+The combined score's advantage lies in \emph{regime targeting} (\cref{tab:targeting}). It concentrates 90.9\% of deferrals during Active periods versus 36.4\% for confidence-only. This difference arises because PhaseNet's confidence carries almost no regime signal---mean confidence ranges only from 0.616 to 0.637 across all three regimes---so confidence-only deferral spreads deferrals near-uniformly across time.
+
+The two methods answer different questions. Confidence-only asks: \emph{which picks are most likely wrong?}---better for maximising accuracy at a fixed deferral budget. The combined score asks: \emph{when is the model operating in an environment where we have insufficient evidence about its reliability?}---better for directing human attention to periods of greatest environmental uncertainty. For safety-critical deployment, we argue the second question is more operationally relevant: a monitoring agency needs to know \emph{when} the system requires oversight, not just which individual picks to double-check. We do not claim the combined score is universally better---the choice depends on operational priorities.
+
+% TODO: Figure 5 — Threshold sensitivity curves
+% System accuracy vs deferral rate for both methods, 20-30% band shaded
+\begin{figure}[t]
+    \centering
+    % \includegraphics[width=\columnwidth]{figures/fig5_threshold_sensitivity.pdf}
+    \fbox{\parbox{0.9\columnwidth}{\centering\vspace{1.5cm}\textbf{Figure 5: TODO}\\[0.3em]
+    System accuracy vs deferral rate, both methods\vspace{1.5cm}}}
+    \caption{System accuracy as a function of deferral rate. Both methods improve substantially over the no-deferral baseline (0.432). Confidence-only maintains a slight accuracy advantage across most operating points. The shaded band indicates the 20--30\% expert capacity range.}
+    \label{fig:threshold}
+\end{figure}
+
+\subsection{Human-in-the-Loop Evaluation}
+\label{sec:hitl}
+
+Under capacity constraints (where the analyst can only review a fraction of deferred picks), the combined score's regime targeting means the analyst reviews Active and Decaying picks first---the periods of greatest environmental disturbance. Both methods saturate once capacity reaches approximately 25\% (all 48 deferred picks reviewed). At saturation, confidence-only achieves 0.686 and the combined score achieves 0.639. Full capacity curves and regime-stratified workload analysis are provided in \cref{app:deferral}.

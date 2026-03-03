@@ -1,7 +1,17 @@
 \section*{Broader Impact}
 
-% TO BE DRAFTED IN TURN 5
+This section addresses the socio-technological impact of automated seismic monitoring under distribution shift.
+
+\paragraph{The socio-technical system.} Automated earthquake monitoring operates within national and regional seismological agencies. Automated picks feed into earthquake catalogs, which inform hazard assessments, building codes, emergency planning, and public warnings. The technology sits within a decision chain where errors propagate from individual picks to population-level safety outcomes.
+
+\paragraph{Stakeholders.} The primary users are seismological agencies and their analysts, who decide whether to trust automated picks or review them manually. The affected communities are populations in earthquake-prone data-sparse regions who depend on timely and accurate earthquake information but have no direct role in how monitoring systems are configured. There is a power asymmetry: well-resourced agencies (USGS, JMA) have the infrastructure to validate automated tools, while under-resourced agencies in developing countries may adopt them without the capacity to evaluate their reliability.
+
+\paragraph{Potential harms.} Deploying PhaseNet globally without a deferral mechanism produces confident but unreliable picks in data-sparse regions with no warning---potentially leading to missed earthquakes, incorrect catalogs, and flawed hazard assessments. Over-reliance on the deferral framework itself could create false security: it targets one specific failure mode (environmental regime change) and will not catch all sources of model degradation (e.g., instrument malfunction, novel geological settings). The framework's catalog dependence means the most data-sparse regions---where the catalog may also be incomplete---are where the deferral system itself is least effective.
+
+\paragraph{Potential benefits.} The framework makes automation honest about its limitations, explicitly flagging when the system needs human help rather than producing uniformly confident outputs. The regime-aware score concentrates analyst time during periods of environmental disturbance, transforming the question from ``can we afford human review?'' to ``when should we prioritise it?'' The architecture is not specific to seismology and provides a template for equitable deployment of ML in safety-critical settings where domain conditions are structured and observable.
+
+\paragraph{Historical context.} Earthquake monitoring has historically been concentrated in wealthy, seismically active nations. The push to deploy ML-based tools globally reflects a genuine desire to extend monitoring capabilities, but risks replicating existing inequalities if tools are deployed without appropriate safeguards. The deferral framework represents one such safeguard---imperfect, but directionally correct.
 
 \section*{Acknowledgements}
 
-% TO BE DRAFTED IN TURN 5
+% TODO: Add acknowledgements (module, supervisor, data sources)
