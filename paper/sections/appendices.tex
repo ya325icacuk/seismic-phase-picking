@@ -43,13 +43,13 @@ The Beta-Bernoulli model is initialised with $\text{Beta}(2, 2)$ priors for all 
     \caption{Beta-Bernoulli posterior parameters after processing all 190 Kazakhstan picks.}
     \label{tab:beta_final}
     \small
-    \begin{tabular}{@{}lcccc@{}}
+    \begin{tabular}{@{}lccc@{}}
         \toprule
-        Regime & $E[\theta_r]$ & $\sigma_r$ & Eff.\ samples & Interpretation \\
+        Regime & $E[\theta_r]$ & $\sigma_r$ & Eff.\ samples \\
         \midrule
-        Quiet & 0.425 & 0.038 & 164.6 & Converged \\
-        Active & 0.600 & 0.123 & 11.0 & High uncertainty \\
-        Decaying & 0.400 & 0.111 & 14.4 & High uncertainty \\
+        Quiet & 0.425 & 0.038 & 164.6 \\
+        Active & 0.600 & 0.123 & 11.0 \\
+        Decaying & 0.400 & 0.111 & 14.4 \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -105,7 +105,7 @@ At the 25\% operating point, confidence-only defers the 48 picks with lowest Pha
     \end{tabular}
 \end{table}
 
-Both methods saturate at 25\% analyst capacity, at which point all 48 deferred picks have been reviewed. Below saturation, the combined score directs 20.8\% of analyst capacity to Active picks and 18.8\% to Decaying, compared with 8.3\% and 10.4\% for confidence-only.
+Both methods saturate at 25\% analyst capacity, at which point all 48 deferred picks have been reviewed. Below saturation, the two methods allocate analyst time differently: the combined score sends 39.6\% of reviewed picks to Active or Decaying periods (10 Active + 9 Decaying out of 48), while confidence-only sends only 18.7\% (4 Active + 5 Decaying out of 48). The remaining capacity is consumed by Quiet-period picks in both cases.
 
 \subsection{Analyst Accuracy Sensitivity}
 
@@ -128,4 +128,4 @@ Both methods saturate at 25\% analyst capacity, at which point all 48 deferred p
     \end{tabular}
 \end{table}
 
-Confidence-only deferral exceeds the no-deferral baseline when analyst accuracy exceeds 8.3\%; the combined score exceeds it when analyst accuracy exceeds 20.8\%. The higher breakeven for the combined score reflects the fact that it defers some high-confidence picks during uncertain regimes---picks that may already be correct---meaning the analyst must be reasonably accurate to improve on the automated decision.
+Confidence-only deferral exceeds the no-deferral baseline when analyst accuracy exceeds 8.3\%. The combined score requires analyst accuracy above 20.8\%. The higher breakeven for the combined score reflects the fact that it defers some high-confidence picks during uncertain regimes---picks that may already be correct---meaning the analyst must be reasonably accurate to improve on the automated decision.
