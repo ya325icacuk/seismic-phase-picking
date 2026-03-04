@@ -72,7 +72,7 @@ Active detection and untriggered stability are guaranteed by design (hard inject
 
 At a fixed 25\% deferral rate (48 of 190 picks deferred):
 
-% TODO: Table 3 — Deferral method comparison
+% YASMIN: Updated system accuracy from Notebook - 3 March (was 0.686/0.639, now 0.651/0.619)
 \begin{table}[t]
     \centering
     \caption{Deferral comparison at 25\% deferral rate (48 picks).}
@@ -83,29 +83,30 @@ At a fixed 25\% deferral rate (48 of 190 picks deferred):
         Method & System accuracy \\
         \midrule
         No deferral & 0.432 \\
-        Confidence-only & 0.686 \\
-        Combined score (proposed) & 0.639 \\
+        Confidence-only & 0.651 \\
+        Combined score (proposed) & 0.619 \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-% TODO: Table 4 — Regime targeting comparison
+% YASMIN: Added Decaying column from Notebook - 3 March
 \begin{table}[t]
     \centering
     \caption{Regime targeting at 25\% deferral rate: percentage of picks deferred within each regime.}
     \label{tab:targeting}
     \small
-    \begin{tabular}{@{}lcc@{}}
+    \begin{tabular}{@{}lccc@{}}
         \toprule
-        Method & \% Active deferred & \% Quiet deferred \\
+        Method & \% Active def. & \% Decaying def. & \% Quiet def. \\
         \midrule
-        Confidence-only & 36.4\% & 23.2\% \\
-        Combined score & 90.9\% & 17.4\% \\
+        Confidence-only & 36.4\% & 33.3\% & 23.2\% \\
+        Combined score & 90.9\% & 60.0\% & 17.4\% \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-\Cref{tab:deferral} shows that confidence-only deferral achieves higher system accuracy (0.686 vs.\ 0.639) at matched deferral rates. This is expected: confidence-only directly optimises ``which individual picks are most likely wrong?'' and selects the lowest-confidence picks for human review.
+% YASMIN: Updated inline numbers to match notebook
+\Cref{tab:deferral} shows that confidence-only deferral achieves higher system accuracy (0.651 vs.\ 0.619) at matched deferral rates. This is expected: confidence-only directly optimises ``which individual picks are most likely wrong?'' and selects the lowest-confidence picks for human review.
 
 The combined score's advantage lies in \emph{regime targeting} (\cref{tab:targeting}). It concentrates 90.9\% of deferrals during Active periods versus 36.4\% for confidence-only. This difference arises because PhaseNet's confidence carries almost no regime signal---mean confidence ranges only from 0.616 to 0.637 across all three regimes---so confidence-only deferral spreads deferrals near-uniformly across time.
 
@@ -122,7 +123,11 @@ The two methods answer different questions. Confidence-only asks: \emph{which pi
     \label{fig:threshold}
 \end{figure}
 
+% YASMIN: Expanded HITL section with updated numbers + Step 7c analyst sensitivity
 \subsection{Human-in-the-Loop Evaluation}
 \label{sec:hitl}
 
-Under capacity constraints (where the analyst can only review a fraction of deferred picks), the combined score's regime targeting means the analyst reviews Active and Decaying picks first---the periods of greatest environmental disturbance. Both methods saturate once capacity reaches approximately 25\% (all 48 deferred picks reviewed). At saturation, confidence-only achieves 0.686 and the combined score achieves 0.639. Full capacity curves and regime-stratified workload analysis are provided in \cref{app:deferral}.
+Under capacity constraints (where the analyst can only review a fraction of deferred picks), the combined score's regime targeting means the analyst reviews Active and Decaying picks first---the periods of greatest environmental disturbance. Both methods saturate once capacity reaches approximately 25\% (all 48 deferred picks reviewed). At saturation, confidence-only achieves 0.651 and the combined score achieves 0.619. The combined score directs 20.8\% of analyst capacity to Active picks and 18.8\% to Decaying, compared with 8.3\% and 10.4\% for confidence-only.
+
+% YASMIN: New paragraph from Step 7c (analyst accuracy sensitivity analysis)
+\paragraph{Sensitivity to analyst accuracy.} The system accuracy numbers above assume 95\% analyst accuracy on deferred picks. Since this assumption is not empirically verified, we sweep analyst accuracy from 70\% to 99\%. Both deferral methods exceed the no-deferral baseline (0.432) at all plausible analyst accuracies: confidence-only requires only $>$8.3\% analyst accuracy; the combined score requires $>$20.8\%. At a more conservative 85\% analyst accuracy, system accuracy drops to 0.625 (confidence-only) and 0.594 (combined). The advantage of deferral is robust to this assumption, though the absolute improvement scales with analyst quality. Full capacity curves and analyst sensitivity details are provided in \cref{app:deferral}.

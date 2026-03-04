@@ -27,13 +27,105 @@ The full HMM parameter specification, forward algorithm details, and sensitivity
 
 The complete set of regime posterior plots for all 11 stations will be provided here.
 
+% YASMIN: Populated from Notebook - 3 March, Steps 6-7
 \section{Deferral Framework Details}
 \label{app:deferral}
 
-% TODO: Populate from notebook Steps 6-7
-% D.1 Beta-Bernoulli evolution plots
-% D.2 Full threshold sensitivity sweeps
-% D.3 Regime-stratified deferral rates at multiple operating points
-% D.4 Human-in-the-loop capacity curves
+\subsection{Beta-Bernoulli Convergence}
 
-The full deferral analysis details, including Beta-Bernoulli convergence plots, threshold sensitivity curves, and human-in-the-loop capacity analysis will be provided here.
+% TODO: Figure — Beta-Bernoulli posterior evolution plots from Step 6b
+% Show alpha, beta, theta, sigma evolution over 190 picks for each regime
+
+The Beta-Bernoulli model is initialised with $\text{Beta}(2, 2)$ priors for all three regimes and updated sequentially over the 190 Kazakhstan picks using soft regime assignment. \Cref{tab:beta_final} reports the final posterior parameters.
+
+\begin{table}[h]
+    \centering
+    \caption{Beta-Bernoulli posterior parameters after processing all 190 Kazakhstan picks.}
+    \label{tab:beta_final}
+    \small
+    \begin{tabular}{@{}lcccc@{}}
+        \toprule
+        Regime & $E[\theta_r]$ & $\sigma_r$ & Eff.\ samples & Interpretation \\
+        \midrule
+        Quiet & 0.425 & 0.038 & 164.6 & Converged \\
+        Active & 0.600 & 0.123 & 11.0 & High uncertainty \\
+        Decaying & 0.400 & 0.111 & 14.4 & High uncertainty \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The Quiet regime accumulates the vast majority of observations (164.6 effective samples), yielding a narrow posterior ($\sigma_Q = 0.038$). Active and Decaying regimes remain data-sparse (11.0 and 14.4 effective samples respectively), with posterior standard deviations approximately $3\times$ larger. This asymmetry drives the deferral score: $\sigma_t$ increases during Active and Decaying periods, suppressing confidence and triggering deferral.
+
+\subsection{Threshold Sensitivity}
+
+% TODO: Figure — Full threshold sweep from Step 6c
+% System accuracy vs deferral rate (0-50\%) for both methods
+
+At the 25\% operating point, confidence-only defers the 48 picks with lowest PhaseNet confidence, achieving 0.651 system accuracy. The combined score defers the 48 picks with the lowest regime-aware scores, achieving 0.619. Confidence-only maintains a slight accuracy advantage across most deferral rates because it directly targets the picks most likely to be incorrect, whereas the combined score prioritises regime-uncertain picks regardless of individual confidence.
+
+\subsection{Regime-Stratified Deferral Rates}
+
+\begin{table}[h]
+    \centering
+    \caption{Regime-stratified deferral rates at 25\% overall deferral.}
+    \label{tab:regime_deferral_detail}
+    \small
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        Regime & Picks & Conf-only deferred & Combined deferred \\
+        \midrule
+        Quiet ($\pi_Q > 0.9$) & 155 & 36 (23.2\%) & 27 (17.4\%) \\
+        Active ($\pi_A > 0.5$) & 11 & 4 (36.4\%) & 10 (90.9\%) \\
+        Decaying ($\pi_D > 0.5$) & 15 & 5 (33.3\%) & 9 (60.0\%) \\
+        Mixed & 9 & 3 (33.3\%) & 2 (22.2\%) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Human-in-the-Loop Capacity Curves}
+
+% TODO: Figure — Capacity curves from Step 7a
+% System accuracy vs analyst capacity (0-50\%) for both methods
+
+\begin{table}[h]
+    \centering
+    \caption{System accuracy at different analyst capacity levels (48 picks deferred).}
+    \label{tab:capacity}
+    \small
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        Capacity & Conf-only & Combined & Utilisation \\
+        \midrule
+        10\% & 0.527 & 0.485 & 100\% \\
+        15\% & 0.572 & 0.519 & 100\% \\
+        20\% & 0.606 & 0.569 & 100\% \\
+        25\% & 0.651 & 0.619 & 100\% \\
+        30\% & 0.651 & 0.619 & 84.2\% \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Both methods saturate at 25\% analyst capacity, at which point all 48 deferred picks have been reviewed. Below saturation, the combined score directs 20.8\% of analyst capacity to Active picks and 18.8\% to Decaying, compared with 8.3\% and 10.4\% for confidence-only.
+
+\subsection{Analyst Accuracy Sensitivity}
+
+% TODO: Figure — Analyst sensitivity sweep from Step 7c
+% System accuracy vs analyst accuracy (70-99\%) for both methods + baseline
+
+\begin{table}[h]
+    \centering
+    \caption{System accuracy as a function of assumed analyst accuracy.}
+    \label{tab:analyst_sensitivity}
+    \small
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        Analyst accuracy & No deferral & Conf-only & Combined \\
+        \midrule
+        75\% & 0.432 & 0.600 & 0.568 \\
+        85\% & 0.432 & 0.625 & 0.594 \\
+        95\% & 0.432 & 0.651 & 0.619 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Confidence-only deferral exceeds the no-deferral baseline when analyst accuracy exceeds 8.3\%; the combined score exceeds it when analyst accuracy exceeds 20.8\%. The higher breakeven for the combined score reflects the fact that it defers some high-confidence picks during uncertain regimes---picks that may already be correct---meaning the analyst must be reasonably accurate to improve on the automated decision.
