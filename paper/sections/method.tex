@@ -43,7 +43,7 @@ PhaseNet produces a pick $x$ with confidence $c \in [0, 1]$ at station $s$ durin
 \subsection{Seismic Regime Model}
 \label{sec:regime_model}
 
-The seismic environment around a monitoring station is not constant. After a large earthquake, aftershock sequences produce elevated seismicity and noise on instruments, and this disturbance decays over weeks following patterns described by Omori's law \citep{omori1894aftershocks,utsu1995centenary}. The HMM estimates where in this cycle each station currently sits---not detecting earthquakes, but tracking their aftermath.
+The seismic environment around a monitoring station is not constant. After a large earthquake, aftershock sequences produce elevated seismicity and noise on instruments, and this disturbance decays over weeks following patterns described by Omori's law \citep{omori1894aftershocks,utsu1995centenary}. The HMM estimates where in this cycle each station currently sits, not detecting earthquakes, but tracking their aftermath.
 
 We define three hidden states: Quiet ($Q$), Active ($A$), and Decaying ($D$). At each week $t$, the HMM observes the count of M3+ earthquakes within 200\,km of a given station. These counts are modelled as Poisson-distributed with station-specific emission rates: $\lambda_Q$ for the Quiet regime (estimated from weeks without nearby large earthquakes), $\lambda_A = k_A \cdot \lambda_Q$ for the Active regime ($k_A = 8$), and $\lambda_D = k_D \cdot \lambda_Q$ for the Decaying regime ($k_D = 1.5$), reflecting the mildly elevated seismicity during aftershock decay.
 
@@ -52,11 +52,11 @@ The transition matrix encodes seismological domain knowledge:
     \mathbf{T} = \begin{pmatrix}
         1 - \epsilon & \epsilon & 0 \\
         0 & 1 - a_D & a_D \\
-        d_Q & 0 & 1 - d_Q
+        d_Q & d_A & 1 - d_Q - d_A
     \end{pmatrix}
     \label{eq:transition}
 \end{equation}
-where $\epsilon \approx 0$ (Active is entered only via forced injection), $a_D = 0.35$ is the Active-to-Decaying transition rate, and $d_Q = 0.18$ is the Decaying-to-Quiet recovery rate parameterised from Omori's law. Regime entry is handled by \emph{hard Active injection}: when a M4.5+ catalog event occurs within 200\,km of a station, $\pi_t(A)$ is set to $1.0$, overriding the forward recursion. This design choice guarantees zero missed activations at the cost of requiring a functioning earthquake catalog.
+where $\epsilon \approx 0$ (Active is entered only via forced injection), $a_D = 0.35$ is the Active-to-Decaying transition rate, $d_Q = 0.18$ is the Decaying-to-Quiet recovery rate parameterised from Omori's law, and $d_A = 0.07$ is the Decaying-to-Active reactivation probability, allowing the model to represent renewed aftershock activity during the decay phase. Regime entry is handled by \emph{hard Active injection}: when a M4.5+ catalog event occurs within 200\,km of a station, $\pi_t(A)$ is set to $1.0$, overriding the forward recursion. This design choice guarantees zero missed activations at the cost of requiring a functioning earthquake catalog.
 
 The forward algorithm \citep{rabiner1989hmm} computes regime posteriors $\pi_t(r) = P(\text{regime} = r \mid \text{observations up to week } t)$ for each station independently at weekly resolution over the 2020--2023 study period.
 
@@ -69,7 +69,7 @@ For each regime $r \in \{Q, A, D\}$, we maintain a Beta-distributed estimate of 
 \end{equation}
 This is conjugate Bayesian updating: the Beta prior is conjugate to the Bernoulli likelihood of each pick being correct or incorrect. All three regimes are initialised with $\text{Beta}(2, 2)$ priors, expressing minimal prior belief.
 
-When a pick occurs during a week with regime posterior $\boldsymbol{\pi}_t$, each regime's Beta parameters are updated using soft assignment weighted by $\pi_t(r)$. For a correct pick:
+When a pick occurs during a week with regime posterior $\boldsymbol{\pi}_t$, each regime's Beta parameters are updated using soft assignment weighted by $\pi_t(r)$. Picks are processed in chronological order, and each pick is scored using the current Beta parameters before the update from that pick's outcome is applied. For a correct pick:
 \begin{equation}
     \alpha_r \leftarrow \alpha_r + \pi_t(r), \qquad \beta_r \leftarrow \beta_r \quad \forall\, r \in \{Q, A, D\}
 \end{equation}
@@ -84,6 +84,13 @@ The posterior standard deviation $\sigma_r = \text{std}(\text{Beta}(\alpha_r, \b
     \label{eq:sigma_t}
 \end{equation}
 
+\subsection{Design Rationale}
+\label{sec:design_rationale}
+
+The deferral framework combines three signals, each contributing information the others lack. The HMM (\cref{sec:regime_model}) answers ``what is happening in the seismic environment right now?'' but knows nothing about PhaseNet. The Beta-Bernoulli model (\cref{sec:beta_bernoulli}) answers ``how reliable is PhaseNet in that environment?'' by tracking the fraction of correct picks in each regime. PhaseNet's confidence provides a relative ranking among picks within the same regime, though it is uninformative about regime or absolute reliability (evaluated in \cref{sec:confidence,sec:deferral_comparison}).
+
+A natural alternative would be to defer picks from regimes where the reliability estimate $E[\theta_r]$ is lowest, targeting regimes with measured poor performance. However, for safety-critical deferral, the posterior standard deviation $\sigma_r$ is a more appropriate signal than the posterior mean. $\sigma_r$ is mathematically guaranteed to decrease as the effective sample size $(\alpha_r + \beta_r)$ grows, making it a direct measure of evidential support. Two regimes can have nearly identical reliability estimates yet very different levels of certainty about those estimates, one built on abundant data, the other on a handful of observations. $\sigma_r$ captures exactly this distinction: it is high when data is sparse and low when data is abundant, regardless of the point estimate. The system therefore defers picks from regimes where we do not have enough data to trust our reliability estimate, not from regimes where we have measured poor performance. This is a conservative design choice suited to safety-critical settings: absence of evidence about reliability is treated as grounds for human review.
+
 \subsection{Combined Deferral Score}
 \label{sec:combined_score}
 
@@ -97,6 +104,8 @@ The regime-level uncertainty $\sigma_r$ distinguishes between regimes but not be
 where $\sigma_t = \sum_r \pi_t(r) \cdot \sigma_r$ is the regime-weighted posterior uncertainty at week $t$, and $\gamma = 5$ is the regime suppression sensitivity, set so that data-sparse regimes have their scores meaningfully suppressed while data-rich regimes retain most of their confidence signal. The pick is deferred if $s(x) < \tau$, where $\tau$ is set to achieve a target deferral rate.
 
 A pick can score low for two reasons: PhaseNet itself is uncertain about the arrival, or the pick was made during a regime where we have too few observations to trust the reliability estimate. In either case, the pick is routed to a human analyst. The regime signal overrides confidence precisely when confidence is least trustworthy.
+
+Algorithm~\ref{alg:deferral} summarises the complete deferral procedure.
 
 % TODO: Algorithm 1 — Regime-Aware Bayesian Deferral pseudocode
 % Inputs: waveform, catalog data, HMM parameters, Beta priors, γ, τ
