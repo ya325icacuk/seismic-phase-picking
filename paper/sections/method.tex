@@ -87,14 +87,16 @@ The posterior standard deviation $\sigma_r = \text{std}(\text{Beta}(\alpha_r, \b
 \subsection{Combined Deferral Score}
 \label{sec:combined_score}
 
-The deferral score combines PhaseNet's confidence with regime uncertainty:
+We now combine pick-level confidence with regime-level uncertainty into a single deferral score.
+
+The regime-level uncertainty $\sigma_r$ distinguishes between regimes but not between individual picks within the same regime, since all picks in a given regime week share the same $\sigma_t$. PhaseNet's confidence re-enters here as a relative ranking within a regime, not as an absolute reliability indicator (we evaluate this in \cref{sec:confidence}). The combined score multiplies pick-level confidence with the regime penalty:
 \begin{equation}
     s(x) = c \cdot \max\!\big(0,\; 1 - \gamma \cdot \sigma_t\big)
     \label{eq:deferral_score}
 \end{equation}
-where $\gamma = 5$ controls how aggressively regime uncertainty suppresses confidence. The pick is deferred if $s(x) < \tau$, where $\tau$ is set to achieve a target deferral rate.
+where $\sigma_t = \sum_r \pi_t(r) \cdot \sigma_r$ is the regime-weighted posterior uncertainty at week $t$, and $\gamma = 5$ is the regime suppression sensitivity, set so that data-sparse regimes have their scores meaningfully suppressed while data-rich regimes retain most of their confidence signal. The pick is deferred if $s(x) < \tau$, where $\tau$ is set to achieve a target deferral rate.
 
-This design has an intuitive interpretation: during Quiet periods (low $\sigma_t$, many observations), the score approximately equals raw confidence, and deferral reduces to standard confidence-based rejection. During Active or Decaying periods (high $\sigma_t$, few observations), confidence is suppressed regardless of its value, triggering deferral even for high-confidence picks. The regime signal overrides confidence precisely when confidence is least trustworthy.
+A pick can score low for two reasons: PhaseNet itself is uncertain about the arrival, or the pick was made during a regime where we have too few observations to trust the reliability estimate. In either case, the pick is routed to a human analyst. The regime signal overrides confidence precisely when confidence is least trustworthy.
 
 % TODO: Algorithm 1 — Regime-Aware Bayesian Deferral pseudocode
 % Inputs: waveform, catalog data, HMM parameters, Beta priors, γ, τ
