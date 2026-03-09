@@ -1,7 +1,7 @@
 \section{Method}
 \label{sec:method}
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
@@ -99,7 +99,7 @@
 }
 \caption{System pipeline. A seismic waveform is processed by PhaseNet to produce a wave arrival pick with confidence score~$c$. Independently, an HMM characterises the seismic environment into regimes using the earthquake catalogue, and a Beta-Bernoulli model estimates PhaseNet's reliability in each regime. The regime-weighted posterior uncertainty~$\sigma_t$ is combined with~$c$ into a deferral score~$s$; picks scoring below the threshold are deferred to a human analyst.}
 \label{fig:pipeline}
-\end{figure}
+\end{figure*}
 
 \Cref{fig:pipeline} shows the full system architecture. \Cref{tab:notation} summarises the notation used throughout.
 
