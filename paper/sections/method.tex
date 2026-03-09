@@ -72,9 +72,11 @@
     {\textbf{Combined Score}\\[2pt]
      $s = c \cdot \max\!\bigl(0,\; 1 {-} \gamma \sigma_t\bigr)$};
 % Blue: pick -> right-angle into combined score top
-\draw[bluearrow] (pick.east) -- (pick.east -| cs.north) node[pos=0.6, right, font=\scriptsize\itshape, text=blue!40!black] {$c$} -- (cs.north);
+\draw[bluearrow] (pick.east) -- (pick.east -| cs.north) -- (cs.north)
+    node[midway, right, font=\small\itshape, text=blue!40!black] {$c$};
 % Orange: sigma -> right-angle into combined score bottom
-\draw[orangearrow] (sigma.east) -- (sigma.east -| cs.south) node[pos=0.6, right, font=\scriptsize\itshape, text=orange!40!black] {$1 {-} \gamma \cdot \sigma_t$} -- (cs.south);
+\draw[orangearrow] (sigma.east) -- (sigma.east -| cs.south) -- (cs.south)
+    node[midway, right, font=\small\itshape, text=orange!40!black] {$1 {-} \gamma \cdot \sigma_t$};
 % ===================== DECISION =====================
 \node[decision] (dec) at (18.5, 1) {$s <$ deferral\\threshold?};
 \draw[blackarrow] (cs) -- (dec);
