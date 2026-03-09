@@ -71,10 +71,10 @@
 \node[scorebox] (cs) at (14.5, 1)
     {\textbf{Combined Score}\\[2pt]
      $s = c \cdot \max\!\bigl(0,\; 1 {-} \gamma \sigma_t\bigr)$};
-% Blue: pick -> straight diagonal to combined score
-\draw[bluearrow] (pick.south east) -- node[pos=0.4, above right, font=\scriptsize\itshape, text=blue!40!black] {$c$} ([yshift=3pt]cs.north west);
-% Orange: sigma -> straight diagonal to combined score
-\draw[orangearrow] (sigma.north east) -- node[pos=0.4, below right, font=\scriptsize\itshape, text=orange!40!black] {$1 {-} \gamma \cdot \sigma_t$} ([yshift=-3pt]cs.south west);
+% Blue: pick -> right-angle into combined score top
+\draw[bluearrow] (pick.east) -- (pick.east -| cs.north) node[pos=0.6, right, font=\scriptsize\itshape, text=blue!40!black] {$c$} -- (cs.north);
+% Orange: sigma -> right-angle into combined score bottom
+\draw[orangearrow] (sigma.east) -- (sigma.east -| cs.south) node[pos=0.6, right, font=\scriptsize\itshape, text=orange!40!black] {$1 {-} \gamma \cdot \sigma_t$} -- (cs.south);
 % ===================== DECISION =====================
 \node[decision] (dec) at (18.5, 1) {$s <$ deferral\\threshold?};
 \draw[blackarrow] (cs) -- (dec);
