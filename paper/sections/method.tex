@@ -67,11 +67,11 @@
 \draw[redarrow] (bb) -- (sigma);
 % ===================== CONVERGENCE =====================
 % Combined score
-\node[scorebox] (cs) at (13.5, 1)
+\node[scorebox] (cs) at (14.5, 1)
     {\textbf{Combined Score}\\[2pt]
      $s = c \cdot \max\!\bigl(0,\; 1 {-} \gamma \sigma_t\bigr)$};
 % Gamma parameter
-\node[parambox, minimum width=2cm] (gamma) at (13.5, 3)
+\node[parambox, minimum width=2cm] (gamma) at (14.5, 3)
     {Scaling factor $\gamma$};
 \draw[grayarrow] (gamma) -- (cs);
 % Blue: pick -> straight diagonal to combined score
