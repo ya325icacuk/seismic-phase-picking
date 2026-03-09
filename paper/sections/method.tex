@@ -36,11 +36,11 @@
 ]
 % ===================== STREAM LABELS =====================
 \node[font=\footnotesize\bfseries, text=blue!70!black, anchor=west]
-    at (0, 4.2) {\textsc{Seismic Wave Detection Model}};
+    at (-1, 4.2) {\textsc{Seismic Wave Detection Model}};
 \node[font=\footnotesize\bfseries, text=red!70!black, anchor=west]
-    at (0, 0.2) {\textsc{Seismic Environment}};
+    at (-1, 0.2) {\textsc{Seismic Environment}};
 % ===================== TOP STREAM (blue) =====================
-\node[blueinput, minimum width=2.2cm] (seis) at (0, 3) {Seismogram};
+\node[blueinput, minimum width=2.2cm] (seis) at (-1, 3) {Seismogram};
 \node[bluemodel, minimum width=3cm] (pn) at (4, 3)
     {\textbf{PhaseNet}\\[-2pt]
      {\scriptsize\textit{original weights (Northern California)}}};
@@ -50,7 +50,7 @@
 \draw[bluearrow] (seis) -- (pn);
 \draw[bluearrow] (pn) -- (pick);
 % ===================== BOTTOM STREAM (red) =====================
-\node[redinput, minimum width=2.2cm] (cat) at (0, -1)
+\node[redinput, minimum width=2.2cm] (cat) at (-1, -1)
     {Earthquake\\[-2pt] Catalogue};
 \node[redmodel, minimum width=2.6cm] (hmm) at (3.8, -1)
     {\textbf{HMM}\\[-2pt]
