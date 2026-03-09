@@ -74,10 +74,8 @@
 \node[parambox, minimum width=2cm] (gamma) at (13.5, 3)
     {Scaling factor $\gamma$};
 \draw[grayarrow] (gamma) -- (cs);
-% Blue: pick -> down and right -> into combined score top-left
-\draw[bluearrow]
-    (pick.east) -- ++(0.8, 0) coordinate (bturn)
-    -- (bturn |- cs.west) -- ([yshift=3pt]cs.west);
+% Blue: pick -> straight diagonal to combined score
+\draw[bluearrow] (pick.south east) -- ([yshift=3pt]cs.north west);
 % Red: sigma -> up and right -> into combined score bottom-left
 \draw[redarrow]
     (sigma.east) -- ++(0.3, 0) coordinate (rturn)
