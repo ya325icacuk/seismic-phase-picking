@@ -71,10 +71,6 @@
 \node[scorebox] (cs) at (14.5, 1)
     {\textbf{Combined Score}\\[2pt]
      $s = c \cdot \max\!\bigl(0,\; 1 {-} \gamma \sigma_t\bigr)$};
-% Gamma parameter
-\node[parambox, minimum width=2cm] (gamma) at (14.5, 3)
-    {Scaling factor $\gamma$};
-\draw[grayarrow] (gamma) -- (cs);
 % Blue: pick -> straight diagonal to combined score
 \draw[bluearrow] (pick.south east) -- node[pos=0.4, above right, font=\scriptsize\itshape, text=blue!70!black] {$c$} ([yshift=3pt]cs.north west);
 % Orange: sigma -> straight diagonal to combined score
@@ -92,7 +88,7 @@
 \draw[-{Stealth[length=5pt]}, green!50!black, line width=0.7pt] (dec) -- (accept);
 \end{tikzpicture}%
 }
-\caption{System pipeline. A seismic waveform is processed by PhaseNet to produce a wave arrival pick with confidence score~$c$. Independently, an HMM characterises the seismic environment into regimes using the earthquake catalogue, and a Beta-Bernoulli model estimates PhaseNet's reliability in each regime. The regime-weighted posterior uncertainty~$\sigma_t$ is combined with~$c$ into a deferral score~$s$; picks scoring below the threshold are deferred to a human analyst.}
+\caption{System pipeline. A seismic waveform is processed by PhaseNet to produce a wave arrival pick with confidence score~$c$. Independently, an HMM characterises the seismic environment into regimes using the earthquake catalogue, and a Beta-Bernoulli model estimates PhaseNet's reliability in each regime. The regime-weighted posterior uncertainty~$\sigma_t$ is combined with~$c$ into a deferral score~$s$, where $\gamma$ controls the sensitivity of the regime penalty. Picks scoring below the threshold are deferred to a human analyst.}
 \label{fig:pipeline}
 \end{figure*}
 
