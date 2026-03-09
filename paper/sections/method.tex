@@ -3,7 +3,7 @@
 
 \begin{figure*}[t]
 \centering
-\resizebox{0.85\textwidth}{!}{%
+\resizebox{0.92\textwidth}{!}{%
 \begin{tikzpicture}[
     % Blue stream styles
     blueinput/.style={draw=blue!70!black, fill=blue!5, rounded corners=4pt,
@@ -19,7 +19,8 @@
         line width=0.8pt},
     % Merge styles
     scorebox/.style={draw=orange!80!black, fill=yellow!15, rounded corners=3pt,
-        minimum height=1.2cm, font=\small, align=center, line width=0.8pt},
+        minimum height=1.4cm, minimum width=4.2cm, font=\small, align=center,
+        line width=0.8pt},
     parambox/.style={draw=gray!60, fill=gray!8, rounded corners=3pt,
         font=\small, align=center},
     decision/.style={diamond, draw=black!70, fill=gray!5,
@@ -40,10 +41,10 @@
     at (-1.3, 0.2) {\textsc{Seismic Environment}};
 % ===================== TOP STREAM (blue) =====================
 \node[blueinput, minimum width=2.2cm] (seis) at (0, 3) {Seismogram};
-\node[bluemodel, minimum width=3cm] (pn) at (3.8, 3)
+\node[bluemodel, minimum width=3cm] (pn) at (4, 3)
     {\textbf{PhaseNet}\\[-2pt]
      {\scriptsize\textit{original weights (Northern California)}}};
-\node[blueinput, minimum width=2.8cm] (pick) at (7.8, 3)
+\node[blueinput, minimum width=2.8cm] (pick) at (8.2, 3)
     {Wave arrival pick\\[-2pt] with confidence $c$};
 % Top stream arrows
 \draw[bluearrow] (seis) -- (pn);
@@ -51,49 +52,49 @@
 % ===================== BOTTOM STREAM (red) =====================
 \node[redinput, minimum width=2.2cm] (cat) at (0, -1)
     {Earthquake\\[-2pt] Catalogue};
-\node[redmodel, minimum width=2.6cm] (hmm) at (3.3, -1)
+\node[redmodel, minimum width=2.6cm] (hmm) at (3.8, -1)
     {\textbf{HMM}\\[-2pt]
-     {\scriptsize Quiet / Active / Decaying regimes}};
-\node[redmodel, minimum width=2.6cm] (bb) at (6.6, -1)
+     {\scriptsize Quiet / Active / Decaying}};
+\node[redmodel, minimum width=2.8cm] (bb) at (7.6, -1)
     {\textbf{Beta-Bernoulli}\\[-2pt]
-     {\scriptsize PhaseNet reliability per regime}};
-\node[redinput, minimum width=2.8cm] (sigma) at (10.2, -1)
-    {Uncertainty in\\[-2pt] PhaseNet estimate, $\sigma_t$};
+     {\scriptsize Reliability per regime}};
+\node[redinput, minimum width=2.6cm] (sigma) at (11.2, -1)
+    {Regime uncertainty\\[-2pt] $\sigma_t$};
 % Bottom stream arrows
 \draw[redarrow] (cat) -- (hmm);
-\draw[redarrow] (hmm) -- node[above, font=\scriptsize, text=red!70!black]
-    {regime posterior, $\pi_t(r)$} (bb);
+\draw[redarrow] (hmm) -- node[above, font=\scriptsize, text=red!70!black, yshift=1pt]
+    {$\pi_t(r)$} (bb);
 \draw[redarrow] (bb) -- (sigma);
 % ===================== CONVERGENCE =====================
 % Combined score
-\node[scorebox, minimum width=2.6cm] (cs) at (12.5, 1)
-    {\textbf{Combined Score}\\[-2pt]
-     {\scriptsize $s = c \cdot \max\!\big(0,\; 1 - \gamma \cdot \sigma_t\big)$}};
+\node[scorebox] (cs) at (13.5, 1)
+    {\textbf{Combined Score}\\[2pt]
+     $s = c \cdot \max\!\bigl(0,\; 1 {-} \gamma \sigma_t\bigr)$};
 % Gamma parameter
-\node[parambox, minimum width=2cm] (gamma) at (12.5, 3)
-    {Scaling factor, $\gamma$};
+\node[parambox, minimum width=2cm] (gamma) at (13.5, 3)
+    {Scaling factor $\gamma$};
 \draw[grayarrow] (gamma) -- (cs);
 % Blue: pick -> down and right -> into combined score top-left
 \draw[bluearrow]
-    (pick.east) -- ++(0.6, 0) coordinate (bturn)
+    (pick.east) -- ++(0.8, 0) coordinate (bturn)
     -- (bturn |- cs.west) -- ([yshift=3pt]cs.west)
-    node[pos=0.35, right, font=\small\itshape, text=blue!70!black] {$c$};
+    node[pos=0.4, right, font=\small\itshape, text=blue!70!black] {$c$};
 % Red: sigma -> up and right -> into combined score bottom-left
 \draw[redarrow]
     (sigma.east) -- ++(0.3, 0) coordinate (rturn)
     -- (rturn |- cs.west) -- ([yshift=-3pt]cs.west)
-    node[pos=0.35, right, font=\scriptsize\itshape, text=red!70!black]
-    {$1 - \gamma \cdot \sigma_t$};
+    node[pos=0.4, right, font=\scriptsize\itshape, text=red!70!black]
+    {$\sigma_t$};
 % ===================== DECISION =====================
-\node[decision] (dec) at (15.5, 1) {$s <$ deferral\\threshold?};
+\node[decision] (dec) at (17, 1) {$s < \tau$\,?};
 \draw[blackarrow] (cs) -- (dec);
 % Defer (up)
 \node[outcome, draw=red!70!black, fill=red!10, text=red!70!black]
-    (defer) at (15.5, 3.2) {Defer};
+    (defer) at (17, 3.2) {Defer};
 \draw[redarrow] (dec) -- (defer);
 % Accept (down)
 \node[outcome, draw=green!50!black, fill=green!8, text=green!50!black]
-    (accept) at (15.5, -1) {Accept};
+    (accept) at (17, -1) {Accept};
 \draw[-{Stealth[length=5pt]}, green!50!black, line width=0.7pt] (dec) -- (accept);
 \end{tikzpicture}%
 }
