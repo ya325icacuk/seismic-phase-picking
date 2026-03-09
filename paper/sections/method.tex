@@ -79,13 +79,9 @@
 \node[decision] (dec) at (18.5, 1) {$s <$ deferral\\threshold?};
 \draw[blackarrow] (cs) -- (dec);
 % Defer (up)
-\node[outcome, draw=red!70!black, fill=red!10, text=red!70!black]
-    (defer) at (18.5, 3.2) {Defer};
-\draw[redarrow] (dec) -- (defer);
+\draw[blackarrow] (dec.north) -- ++(0, 0.8) node[right, font=\small\bfseries] {Defer};
 % Accept (down)
-\node[outcome, draw=green!50!black, fill=green!8, text=green!50!black]
-    (accept) at (18.5, -1) {Accept};
-\draw[-{Stealth[length=5pt]}, green!50!black, line width=0.7pt] (dec) -- (accept);
+\draw[blackarrow] (dec.south) -- ++(0, -0.8) node[right, font=\small\bfseries] {Accept};
 \end{tikzpicture}%
 }
 \caption{System pipeline. A seismic waveform is processed by PhaseNet to produce a wave arrival pick with confidence score~$c$. Independently, an HMM characterises the seismic environment into regimes using the earthquake catalogue, and a Beta-Bernoulli model estimates PhaseNet's reliability in each regime. The regime-weighted posterior uncertainty~$\sigma_t$ is combined with~$c$ into a deferral score~$s$, where $\gamma$ controls the sensitivity of the regime penalty. Picks scoring below the threshold are deferred to a human analyst.}
