@@ -12,6 +12,8 @@
 
 \paragraph{Simulated analyst.} The human-in-the-loop evaluation uses a synthetic analyst with fixed accuracy (95\%) and deterministic prioritisation. The sensitivity analysis (\cref{sec:hitl}) shows both methods exceed the no-deferral baseline across all plausible analyst accuracies, but a real deployment would involve variable analyst attention, fatigue, and disagreement between analysts. The simulation provides a controlled comparison between deferral methods but does not capture the operational complexity of real-time analyst review.
 
+\paragraph{Retrospective ground truth.} The Beta-Bernoulli model updates on every pick's correctness, which is available in our retrospective evaluation because all 190 picks can be matched against the ISC catalogue. In a real-time deployment, correctness would only be known for deferred picks that the analyst has reviewed. Accepted picks provide no feedback, creating a potential selection bias: the model would learn primarily from picks it was already uncertain about. Extending the update mechanism to handle partial feedback is a direction for future work.
+
 \paragraph{Catalog dependence.} Regime triggers require a functioning earthquake catalog. In the most data-sparse regions, even the catalog may be incomplete, potentially missing events that should trigger Active. This creates a floor on how well the framework can perform in truly unmonitored areas, and is the primary constraint on transferability to other regions (see Broader Impact).
 
 \paragraph{Weekly resolution.} The HMM operates at weekly granularity, which may be too coarse to capture rapid regime transitions in the first hours after a mainshock. Sub-weekly resolution would require denser seismicity observations.
