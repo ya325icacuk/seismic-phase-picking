@@ -49,12 +49,12 @@
     {Earthquake\\[-2pt] Catalogue};
 \node[redmodel, minimum width=2.6cm] (hmm) at (2.8, -1)
     {\textbf{HMM}\\[-2pt]
-     {\scriptsize Quiet / Active / Decaying}};
+     {\scriptsize Quiet / Active / Decaying regimes}};
 \node[redmodel, minimum width=2.8cm] (bb) at (7.6, -1)
     {\textbf{Beta-Bernoulli}\\[-2pt]
-     {\scriptsize Reliability per regime}};
-\node[redinput, minimum width=2.6cm] (sigma) at (11.2, -1)
-    {Regime uncertainty\\[-2pt] $\sigma_t$};
+     {\scriptsize PhaseNet reliability per regime}};
+\node[redinput, minimum width=2.8cm] (sigma) at (11.2, -1)
+    {Uncertainty in\\[-2pt] PhaseNet estimate, $\sigma_t$};
 % Bottom stream arrows
 \draw[redarrow] (cat) -- (hmm);
 \draw[redarrow] (hmm) -- node[above, font=\tiny, text=red!70!black, yshift=2pt, align=center]
@@ -75,9 +75,9 @@
     {Scaling factor $\gamma$};
 \draw[grayarrow] (gamma) -- (cs);
 % Blue: pick -> straight diagonal to combined score
-\draw[bluearrow] (pick.south east) -- ([yshift=3pt]cs.north west);
+\draw[bluearrow] (pick.south east) -- node[pos=0.4, above right, font=\scriptsize\itshape, text=blue!70!black] {$c$} ([yshift=3pt]cs.north west);
 % Red: sigma -> straight diagonal to combined score
-\draw[redarrow] (sigma.north east) -- ([yshift=-3pt]cs.south west);
+\draw[redarrow] (sigma.north east) -- node[pos=0.4, below right, font=\scriptsize\itshape, text=red!70!black] {$1 {-} \gamma \cdot \sigma_t$} ([yshift=-3pt]cs.south west);
 % ===================== DECISION =====================
 \node[decision] (dec) at (18.5, 1) {$s <$ deferral\\threshold?};
 \draw[blackarrow] (cs) -- (dec);
