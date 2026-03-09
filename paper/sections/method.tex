@@ -90,7 +90,7 @@
 \draw[blackarrow] (dec) -- (accept);
 \end{tikzpicture}%
 }
-\caption{System pipeline. A seismic waveform is processed by PhaseNet to produce a wave arrival pick with confidence score~$c$. Independently, an HMM characterises the seismic environment into regimes using the earthquake catalogue, and a Beta-Bernoulli model estimates PhaseNet's reliability in each regime. The regime-weighted posterior uncertainty~$\sigma_t$ is combined with~$c$ into a deferral score~$s$, where $\gamma$ controls the sensitivity of the regime penalty. Picks scoring below the threshold are deferred to a human analyst.}
+\caption{Deferral architecture. PhaseNet produces a pick with detection confidence $c$ (top). Independently, an HMM classifies the seismic environment into regimes and a Beta-Bernoulli model estimates PhaseNet's reliability in each (bottom). The combined score weights PhaseNet's confidence against regime uncertainty, where $\gamma$ controls the strength of suppression, routing picks from regimes with few observations to a human analyst.}
 \label{fig:pipeline}
 \end{figure*}
 
