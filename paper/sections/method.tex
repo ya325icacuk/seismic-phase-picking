@@ -1,16 +1,105 @@
 \section{Method}
 \label{sec:method}
 
-% TODO: Figure 2 — pipeline diagram
-% raw waveform → PhaseNet → pick + confidence → HMM regime lookup → Beta-Bernoulli σ_r → combined deferral score → accept/defer
-\begin{figure*}[t]
-    \centering
-    % \includegraphics[width=\textwidth]{figures/fig2_pipeline.pdf}
-    \fbox{\parbox{0.95\textwidth}{\centering\vspace{2cm}\textbf{Figure 2: TODO --- Pipeline diagram}\\[0.5em]
-    Waveform $\to$ PhaseNet $\to$ pick + confidence $\to$ HMM regime lookup $\to$ Beta-Bernoulli $\sigma_r$ $\to$ combined score $\to$ accept/defer\vspace{2cm}}}
-    \caption{System pipeline. A seismic waveform is processed by PhaseNet to produce a pick with confidence score $c$. The pick is mapped to its station's HMM regime posterior $\boldsymbol{\pi}_t$ using the weekly earthquake catalog. The Beta-Bernoulli model provides per-regime reliability uncertainty $\sigma_r$. These combine into the deferral score, which determines whether to accept the pick or defer to a human analyst.}
-    \label{fig:pipeline}
-\end{figure*}
+\begin{figure}[t]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    % Blue stream styles
+    blueinput/.style={draw=blue!70!black, fill=blue!5, rounded corners=4pt,
+        minimum height=1cm, text=blue!70!black, font=\small, align=center},
+    bluemodel/.style={draw=blue!70!black, fill=blue!20, rounded corners=4pt,
+        minimum height=1.2cm, text=blue!70!black, font=\small, align=center,
+        line width=0.8pt},
+    % Red stream styles
+    redinput/.style={draw=red!70!black, fill=red!5, rounded corners=4pt,
+        minimum height=1cm, text=red!70!black, font=\small, align=center},
+    redmodel/.style={draw=red!70!black, fill=red!20, rounded corners=4pt,
+        minimum height=1.2cm, text=red!70!black, font=\small, align=center,
+        line width=0.8pt},
+    % Merge styles
+    scorebox/.style={draw=orange!80!black, fill=yellow!15, rounded corners=3pt,
+        minimum height=1.2cm, font=\small, align=center, line width=0.8pt},
+    parambox/.style={draw=gray!60, fill=gray!8, rounded corners=3pt,
+        font=\small, align=center},
+    decision/.style={diamond, draw=black!70, fill=gray!5,
+        minimum width=2.4cm, minimum height=2cm, font=\footnotesize,
+        align=center, inner sep=1pt},
+    outcome/.style={rounded corners=4pt, minimum height=0.65cm,
+        minimum width=1.4cm, font=\small\bfseries, align=center},
+    % Arrow styles
+    bluearrow/.style={-{Stealth[length=5pt]}, blue!70!black, line width=0.7pt},
+    redarrow/.style={-{Stealth[length=5pt]}, red!70!black, line width=0.7pt},
+    blackarrow/.style={-{Stealth[length=5pt]}, black!70, line width=0.7pt},
+    grayarrow/.style={-{Stealth[length=5pt]}, gray!50!black, line width=0.7pt},
+]
+% ===================== STREAM LABELS =====================
+\node[font=\footnotesize\bfseries, text=blue!70!black, anchor=west]
+    at (-1.3, 4.2) {\textsc{Seismic Wave Detection Model}};
+\node[font=\footnotesize\bfseries, text=red!70!black, anchor=west]
+    at (-1.3, 0.2) {\textsc{Seismic Environment}};
+% ===================== TOP STREAM (blue) =====================
+\node[blueinput, minimum width=2.2cm] (seis) at (0, 3) {Seismogram};
+\node[bluemodel, minimum width=3cm] (pn) at (3.8, 3)
+    {\textbf{PhaseNet}\\[-2pt]
+     {\scriptsize\textit{original weights (Northern California)}}};
+\node[blueinput, minimum width=2.8cm] (pick) at (7.8, 3)
+    {Wave arrival pick\\[-2pt] with confidence $c$};
+% Top stream arrows
+\draw[bluearrow] (seis) -- (pn);
+\draw[bluearrow] (pn) -- (pick);
+% ===================== BOTTOM STREAM (red) =====================
+\node[redinput, minimum width=2.2cm] (cat) at (0, -1)
+    {Earthquake\\[-2pt] Catalogue};
+\node[redmodel, minimum width=2.6cm] (hmm) at (3.3, -1)
+    {\textbf{HMM}\\[-2pt]
+     {\scriptsize Quiet / Active / Decaying regimes}};
+\node[redmodel, minimum width=2.6cm] (bb) at (6.6, -1)
+    {\textbf{Beta-Bernoulli}\\[-2pt]
+     {\scriptsize PhaseNet reliability per regime}};
+\node[redinput, minimum width=2.8cm] (sigma) at (10.2, -1)
+    {Uncertainty in\\[-2pt] PhaseNet estimate, $\sigma_t$};
+% Bottom stream arrows
+\draw[redarrow] (cat) -- (hmm);
+\draw[redarrow] (hmm) -- node[above, font=\scriptsize, text=red!70!black]
+    {regime posterior, $\pi_t(r)$} (bb);
+\draw[redarrow] (bb) -- (sigma);
+% ===================== CONVERGENCE =====================
+% Combined score
+\node[scorebox, minimum width=2.6cm] (cs) at (12.5, 1)
+    {\textbf{Combined Score}\\[-2pt]
+     {\scriptsize $s = c \cdot \max\!\big(0,\; 1 - \gamma \cdot \sigma_t\big)$}};
+% Gamma parameter
+\node[parambox, minimum width=2cm] (gamma) at (12.5, 3)
+    {Scaling factor, $\gamma$};
+\draw[grayarrow] (gamma) -- (cs);
+% Blue: pick -> down and right -> into combined score top-left
+\draw[bluearrow]
+    (pick.east) -- ++(0.6, 0) coordinate (bturn)
+    -- (bturn |- cs.west) -- ([yshift=3pt]cs.west)
+    node[pos=0.35, right, font=\small\itshape, text=blue!70!black] {$c$};
+% Red: sigma -> up and right -> into combined score bottom-left
+\draw[redarrow]
+    (sigma.east) -- ++(0.3, 0) coordinate (rturn)
+    -- (rturn |- cs.west) -- ([yshift=-3pt]cs.west)
+    node[pos=0.35, right, font=\scriptsize\itshape, text=red!70!black]
+    {$1 - \gamma \cdot \sigma_t$};
+% ===================== DECISION =====================
+\node[decision] (dec) at (15.5, 1) {$s <$ deferral\\threshold?};
+\draw[blackarrow] (cs) -- (dec);
+% Defer (up)
+\node[outcome, draw=red!70!black, fill=red!10, text=red!70!black]
+    (defer) at (15.5, 3.2) {Defer};
+\draw[redarrow] (dec) -- (defer);
+% Accept (down)
+\node[outcome, draw=green!50!black, fill=green!8, text=green!50!black]
+    (accept) at (15.5, -1) {Accept};
+\draw[-{Stealth[length=5pt]}, green!50!black, line width=0.7pt] (dec) -- (accept);
+\end{tikzpicture}%
+}
+\caption{System pipeline. A seismic waveform is processed by PhaseNet to produce a wave arrival pick with confidence score~$c$. Independently, an HMM characterises the seismic environment into regimes using the earthquake catalogue, and a Beta-Bernoulli model estimates PhaseNet's reliability in each regime. The regime-weighted posterior uncertainty~$\sigma_t$ is combined with~$c$ into a deferral score~$s$; picks scoring below the threshold are deferred to a human analyst.}
+\label{fig:pipeline}
+\end{figure}
 
 \Cref{fig:pipeline} shows the full system architecture. \Cref{tab:notation} summarises the notation used throughout.
 
