@@ -6,16 +6,16 @@
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
     % Blue stream styles
-    blueinput/.style={draw=blue!70!black, fill=blue!5, rounded corners=4pt,
-        minimum height=1cm, text=blue!70!black, font=\small, align=center},
-    bluemodel/.style={draw=blue!70!black, fill=blue!20, rounded corners=4pt,
-        minimum height=1.2cm, text=blue!70!black, font=\small, align=center,
+    blueinput/.style={draw=blue!50!black, fill=blue!4, rounded corners=4pt,
+        minimum height=1cm, text=blue!50!black, font=\small, align=center},
+    bluemodel/.style={draw=blue!50!black, fill=blue!12, rounded corners=4pt,
+        minimum height=1.2cm, text=blue!50!black, font=\small, align=center,
         line width=0.8pt},
     % Orange stream styles (bottom stream)
-    redinput/.style={draw=orange!70!black, fill=orange!8, rounded corners=4pt,
-        minimum height=1cm, text=orange!70!black, font=\small, align=center},
-    redmodel/.style={draw=orange!70!black, fill=orange!20, rounded corners=4pt,
-        minimum height=1.2cm, text=orange!70!black, font=\small, align=center,
+    redinput/.style={draw=orange!50!black, fill=orange!6, rounded corners=4pt,
+        minimum height=1cm, text=orange!50!black, font=\small, align=center},
+    redmodel/.style={draw=orange!50!black, fill=orange!14, rounded corners=4pt,
+        minimum height=1.2cm, text=orange!50!black, font=\small, align=center,
         line width=0.8pt},
     % Merge styles
     scorebox/.style={draw=orange!80!black, fill=yellow!15, rounded corners=3pt,
@@ -29,8 +29,8 @@
     outcome/.style={rounded corners=4pt, minimum height=0.65cm,
         minimum width=1.4cm, font=\small\bfseries, align=center},
     % Arrow styles
-    bluearrow/.style={-{Stealth[length=5pt]}, blue!70!black, line width=0.7pt},
-    orangearrow/.style={-{Stealth[length=5pt]}, orange!70!black, line width=0.7pt},
+    bluearrow/.style={-{Stealth[length=5pt]}, blue!50!black, line width=0.7pt},
+    orangearrow/.style={-{Stealth[length=5pt]}, orange!50!black, line width=0.7pt},
     redarrow/.style={-{Stealth[length=5pt]}, red!70!black, line width=0.7pt},
     blackarrow/.style={-{Stealth[length=5pt]}, black!70, line width=0.7pt},
     grayarrow/.style={-{Stealth[length=5pt]}, gray!50!black, line width=0.7pt},
@@ -58,13 +58,13 @@
     {Uncertainty in\\[-2pt] PhaseNet estimate, $\sigma_t$};
 % Bottom stream arrows
 \draw[orangearrow] (cat) -- (hmm);
-\draw[orangearrow] (hmm) -- node[above, font=\tiny, text=orange!70!black, yshift=2pt, align=center, scale=0.85]
+\draw[orangearrow] (hmm) -- node[above, font=\tiny, text=orange!50!black, yshift=2pt, align=center, scale=0.85]
     {$\pi_t(r)$\\[-1pt]regime posterior} (bb);
 \draw[orangearrow] (bb) -- (sigma);
 % ===================== STREAM LABELS =====================
-\node[font=\footnotesize\bfseries, text=blue!70!black, anchor=west]
+\node[font=\footnotesize\bfseries, text=blue!50!black, anchor=west]
     at (seis.west |- {(0,4.2)}) {\textsc{Seismic Wave Detection Model}};
-\node[font=\footnotesize\bfseries, text=orange!70!black, anchor=west]
+\node[font=\footnotesize\bfseries, text=orange!50!black, anchor=west]
     at (cat.west |- {(0,0.2)}) {\textsc{Seismic Environment}};
 % ===================== CONVERGENCE =====================
 % Combined score
@@ -72,9 +72,9 @@
     {\textbf{Combined Score}\\[2pt]
      $s = c \cdot \max\!\bigl(0,\; 1 {-} \gamma \sigma_t\bigr)$};
 % Blue: pick -> straight diagonal to combined score
-\draw[bluearrow] (pick.south east) -- node[pos=0.4, above right, font=\scriptsize\itshape, text=blue!70!black] {$c$} ([yshift=3pt]cs.north west);
+\draw[bluearrow] (pick.south east) -- node[pos=0.4, above right, font=\scriptsize\itshape, text=blue!50!black] {$c$} ([yshift=3pt]cs.north west);
 % Orange: sigma -> straight diagonal to combined score
-\draw[orangearrow] (sigma.north east) -- node[pos=0.4, below right, font=\scriptsize\itshape, text=orange!70!black] {$1 {-} \gamma \cdot \sigma_t$} ([yshift=-3pt]cs.south west);
+\draw[orangearrow] (sigma.north east) -- node[pos=0.4, below right, font=\scriptsize\itshape, text=orange!50!black] {$1 {-} \gamma \cdot \sigma_t$} ([yshift=-3pt]cs.south west);
 % ===================== DECISION =====================
 \node[decision] (dec) at (18.5, 1) {$s <$ deferral\\threshold?};
 \draw[blackarrow] (cs) -- (dec);
