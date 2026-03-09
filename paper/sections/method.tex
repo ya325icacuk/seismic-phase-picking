@@ -76,10 +76,8 @@
 \draw[grayarrow] (gamma) -- (cs);
 % Blue: pick -> straight diagonal to combined score
 \draw[bluearrow] (pick.south east) -- ([yshift=3pt]cs.north west);
-% Red: sigma -> up and right -> into combined score bottom-left
-\draw[redarrow]
-    (sigma.east) -- ++(0.3, 0) coordinate (rturn)
-    -- (rturn |- cs.west) -- ([yshift=-3pt]cs.west);
+% Red: sigma -> straight diagonal to combined score
+\draw[redarrow] (sigma.north east) -- ([yshift=-3pt]cs.south west);
 % ===================== DECISION =====================
 \node[decision] (dec) at (17, 1) {$s < \tau$\,?};
 \draw[blackarrow] (cs) -- (dec);
