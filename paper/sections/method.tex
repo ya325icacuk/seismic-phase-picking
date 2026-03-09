@@ -77,14 +77,11 @@
 % Blue: pick -> down and right -> into combined score top-left
 \draw[bluearrow]
     (pick.east) -- ++(0.8, 0) coordinate (bturn)
-    -- (bturn |- cs.west) -- ([yshift=3pt]cs.west)
-    node[pos=0.4, right, font=\small\itshape, text=blue!70!black] {$c$};
+    -- (bturn |- cs.west) -- ([yshift=3pt]cs.west);
 % Red: sigma -> up and right -> into combined score bottom-left
 \draw[redarrow]
     (sigma.east) -- ++(0.3, 0) coordinate (rturn)
-    -- (rturn |- cs.west) -- ([yshift=-3pt]cs.west)
-    node[pos=0.4, right, font=\scriptsize\itshape, text=red!70!black]
-    {$\sigma_t$};
+    -- (rturn |- cs.west) -- ([yshift=-3pt]cs.west);
 % ===================== DECISION =====================
 \node[decision] (dec) at (17, 1) {$s < \tau$\,?};
 \draw[blackarrow] (cs) -- (dec);
