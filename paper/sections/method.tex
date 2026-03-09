@@ -127,7 +127,7 @@ PhaseNet produces a pick $x$ with confidence $c \in [0, 1]$ at station $s$ durin
 
 The seismic environment around a monitoring station is not constant. After a large earthquake, aftershock sequences produce elevated seismicity and noise on instruments, and this disturbance decays over weeks following patterns described by Omori's law \citep{omori1894aftershocks,utsu1995centenary}. The HMM estimates where in this cycle each station currently sits, not detecting earthquakes, but tracking their aftermath.
 
-We define three hidden states: Quiet ($Q$), Active ($A$), and Decaying ($D$). At each week $t$, the HMM observes the count of M3+ earthquakes within 200\,km of a given station. These counts are modelled as Poisson-distributed with station-specific emission rates: $\lambda_Q$ for the Quiet regime (estimated from weeks without nearby large earthquakes), $\lambda_A = k_A \cdot \lambda_Q$ for the Active regime ($k_A = 8$), and $\lambda_D = k_D \cdot \lambda_Q$ for the Decaying regime ($k_D = 1.5$), reflecting the mildly elevated seismicity during aftershock decay.
+We define three hidden states: Quiet ($Q$), Active ($A$), and Decaying ($D$). At each week $t$, the HMM observes the count of M3+ earthquakes within 200\,km of a given station. These counts are modelled as Poisson-distributed with station-specific emission rates: $\lambda_Q$ for the Quiet regime (estimated from weeks without nearby large earthquakes), $\lambda_A = k_A \cdot \lambda_Q$ for the Active regime ($k_A = 8$), and $\lambda_D = k_D \cdot \lambda_Q$ for the Decaying regime ($k_D = 1.5$), reflecting the mildly elevated seismicity during aftershock decay. Station-specific $\lambda_Q$ values are estimated from non-aftershock weeks, with implementation details (aftershock exclusion windows and a floor value for low-seismicity stations) provided in Appendix~B.
 
 The transition matrix encodes seismological domain knowledge:
 \begin{equation}
@@ -151,7 +151,7 @@ For each regime $r \in \{Q, A, D\}$, we maintain a Beta-distributed estimate of 
 \end{equation}
 This is conjugate Bayesian updating: the Beta prior is conjugate to the Bernoulli likelihood of each pick being correct or incorrect. All three regimes are initialised with $\text{Beta}(2, 2)$ priors, expressing minimal prior belief.
 
-When a pick occurs during a week with regime posterior $\boldsymbol{\pi}_t$, each regime's Beta parameters are updated using soft assignment weighted by $\pi_t(r)$. Picks are processed in chronological order, and each pick is scored using the current Beta parameters before the update from that pick's outcome is applied. For a correct pick:
+When a pick occurs during a week with regime posterior $\boldsymbol{\pi}_t$, the HMM provides a probability distribution over regimes rather than a hard classification. Each pick's outcome is therefore distributed across all three regimes proportionally to $\pi_t(r)$, so that a regime the HMM considers highly likely receives most of the update while a regime with near-zero posterior receives almost none. Picks are processed in chronological order, and each pick is scored using the current Beta parameters before the update from that pick's outcome is applied. For a correct pick:
 \begin{equation}
     \alpha_r \leftarrow \alpha_r + \pi_t(r), \qquad \beta_r \leftarrow \beta_r \quad \forall\, r \in \{Q, A, D\}
 \end{equation}

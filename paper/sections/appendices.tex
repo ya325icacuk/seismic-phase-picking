@@ -19,6 +19,8 @@ Details of the data collection and preprocessing pipeline will be provided here,
 
 The full HMM parameter specification, forward algorithm details, and sensitivity analysis results will be provided here.
 
+\paragraph{Emission parameter estimation.} Each station's quiet-period emission rate $\lambda_Q$ is estimated as the mean weekly M3+ count, excluding the 4 weeks following each M4.5+ trigger event to avoid contamination by aftershock activity. For stations where the resulting mean is near zero, a floor of $\lambda_Q = 0.05$ is applied. This is necessary because a Poisson distribution with rate exactly zero assigns zero probability to any nonzero count, which would cause the forward algorithm to assign zero likelihood to weeks with observed events and break posterior inference.
+
 \section{Regime Posterior Visualisations}
 \label{app:posteriors}
 
