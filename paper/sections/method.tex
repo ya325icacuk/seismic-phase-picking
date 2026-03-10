@@ -53,7 +53,8 @@
      {\scriptsize Quiet / Active / Decaying regimes}};
 \node[redmodel, minimum width=2.8cm] (bb) at (7.6, -1)
     {\textbf{Beta-Bernoulli}\\[-2pt]
-     {\scriptsize PhaseNet reliability per regime}};
+     {\scriptsize Probability that a PhaseNet}\\[-2pt]
+     {\scriptsize pick is correct, per regime}};
 \node[redinput, minimum width=2.8cm] (sigma) at (11.2, -1)
     {Uncertainty in\\[-2pt] PhaseNet estimate, $\sigma_t$};
 % Bottom stream arrows
@@ -110,7 +111,7 @@ We now present the regime-aware deferral framework. \Cref{fig:pipeline} shows th
         $\pi_t(r)$ & Regime posterior at week $t$ \\
         $\theta_r$ & Probability that a PhaseNet pick is correct in regime $r$ \\
         $\sigma_r$ & Posterior std of $\theta_r$ \\
-        $\sigma_t$ & How certain we are about PhaseNet's reliability at week $t$ \\
+        $\sigma_t$ & How uncertain we are about PhaseNet's reliability at week $t$ \\
         $\lambda_Q, \lambda_A, \lambda_D$ & Expected earthquake rates per regime \\
         $\gamma$ & Controls how strongly regime uncertainty suppresses PhaseNet confidence score \\
         $\tau$ & Deferral threshold \\
