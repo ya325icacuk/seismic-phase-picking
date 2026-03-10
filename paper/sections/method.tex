@@ -94,7 +94,7 @@
 \label{fig:pipeline}
 \end{figure*}
 
-\Cref{fig:pipeline} shows the full system architecture. \Cref{tab:notation} summarises the notation used throughout.
+We now present the regime-aware deferral framework. \Cref{fig:pipeline} shows the full deferral architecture. \Cref{tab:notation} summarises the notation used throughout.
 
 \begin{table}[t]
     \centering
@@ -106,13 +106,15 @@
         Symbol & Meaning \\
         \midrule
         $c$ & PhaseNet confidence score for a pick \\
-        $\pi_t(r)$ & HMM posterior: $P(\text{regime} {=} r \mid \text{obs.\ up to } t)$ \\
-        $\theta_r$ & Reliability ($P(\text{pick correct})$) in regime $r$ \\
+        $d(x)$ & Deferral function: accept or defer a pick \\
+        $\pi_t(r)$ & Regime posterior: $P(\text{regime} {=} r \mid \text{obs.\ up to } t)$ \\
+        $\theta_r$ & Reliability parameter: probability that a pick is correct in regime $r$ \\
         $\sigma_r$ & Posterior std of $\theta_r$: uncertainty about reliability \\
-        $\sigma_t$ & Regime-weighted uncertainty at week $t$ \\
+        $\sigma_t$ & Regime-weighted uncertainty in reliability estimate at week $t$ \\
         $\lambda_Q, \lambda_A, \lambda_D$ & Poisson rates for Quiet, Active, Decaying regimes \\
         $\gamma$ & Regime suppression sensitivity ($= 5$) \\
         $\tau$ & Deferral threshold \\
+        $s(x)$ & Combined deferral score \\
         \bottomrule
     \end{tabular}
 \end{table}
