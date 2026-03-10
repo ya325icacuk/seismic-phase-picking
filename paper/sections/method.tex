@@ -106,7 +106,7 @@ We now present the regime-aware deferral framework. \Cref{fig:pipeline} shows th
         Symbol & Meaning \\
         \midrule
         $c$ & PhaseNet detection confidence for a pick \\
-        $d(x)$ & Deferral decision (accept or defer) \\
+        $d(p)$ & Deferral decision (accept or defer) \\
         $\pi_t(r)$ & Regime posterior at week $t$ \\
         $\theta_r$ & Probability that a PhaseNet pick is correct in regime $r$ \\
         $\sigma_r$ & Posterior std of $\theta_r$ \\
@@ -114,7 +114,7 @@ We now present the regime-aware deferral framework. \Cref{fig:pipeline} shows th
         $\lambda_Q, \lambda_A, \lambda_D$ & Expected earthquake rates per regime \\
         $\gamma$ & Controls how strongly regime uncertainty suppresses PhaseNet confidence score \\
         $\tau$ & Deferral threshold \\
-        $s(x)$ & Combined deferral score \\
+        $s(p)$ & Combined deferral score \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -122,7 +122,7 @@ We now present the regime-aware deferral framework. \Cref{fig:pipeline} shows th
 \subsection{Problem Formulation}
 \label{sec:problem}
 
-PhaseNet produces a pick $x$ with confidence $c \in [0, 1]$ at station $s$ during week $t$. A deferral function $d(x) \in \{\text{accept}, \text{defer}\}$ must decide whether to trust the automated pick or send it for human review. The challenge is that $c$ is uninformative under distribution shift (demonstrated empirically in \cref{sec:confidence}), so $d$ cannot depend on $c$ alone. We require an additional signal from outside the model.
+PhaseNet produces a pick $p$ with confidence $c \in [0, 1]$ at station $s$ during week $t$. A deferral function $d(p) \in \{\text{accept}, \text{defer}\}$ must decide whether to trust the automated pick or send it for human review. The challenge is that $c$ is uninformative under distribution shift (demonstrated empirically in \cref{sec:confidence}), so $d$ cannot depend on $c$ alone. We require an additional signal from outside the model.
 
 \subsection{Seismic Regime Model}
 \label{sec:regime_model}
@@ -182,29 +182,29 @@ We now combine pick-level confidence with regime-level uncertainty into a single
 
 The regime-level uncertainty $\sigma_r$ distinguishes between regimes but not between individual picks within the same regime, since all picks in a given regime week share the same $\sigma_t$. PhaseNet's confidence re-enters here as a relative ranking within a regime, not as an absolute reliability indicator (we evaluate this in \cref{sec:confidence}). The combined score multiplies pick-level confidence with the regime penalty:
 \begin{equation}
-    s(x) = c \cdot \max\!\big(0,\; 1 - \gamma \cdot \sigma_t\big)
+    s(p) = c \cdot \max\!\big(0,\; 1 - \gamma \cdot \sigma_t\big)
     \label{eq:deferral_score}
 \end{equation}
-where $\sigma_t = \sum_r \pi_t(r) \cdot \sigma_r$ is the regime-weighted posterior uncertainty at week $t$, and $\gamma = 5$ is the regime suppression sensitivity. At this value, a regime with $\sigma_r \approx 0.10$ (the Active and Decaying range, corresponding to roughly 10 effective observations) receives a 50\% confidence suppression, while the Quiet regime ($\sigma_r \approx 0.04$) retains approximately 80\% of its confidence signal. When $\gamma \cdot \sigma_t \geq 1$, the regime penalty clamps to zero and the combined score is exactly zero regardless of PhaseNet's confidence, guaranteeing deferral for all picks made during highly uncertain regimes. The pick is deferred if $s(x) < \tau$, where $\tau$ is set to achieve a target deferral rate.
+where $\sigma_t = \sum_r \pi_t(r) \cdot \sigma_r$ is the regime-weighted posterior uncertainty at week $t$, and $\gamma = 5$ is the regime suppression sensitivity. At this value, a regime with $\sigma_r \approx 0.10$ (the Active and Decaying range, corresponding to roughly 10 effective observations) receives a 50\% confidence suppression, while the Quiet regime ($\sigma_r \approx 0.04$) retains approximately 80\% of its confidence signal. When $\gamma \cdot \sigma_t \geq 1$, the regime penalty clamps to zero and the combined score is exactly zero regardless of PhaseNet's confidence, guaranteeing deferral for all picks made during highly uncertain regimes. The pick is deferred if $s(p) < \tau$, where $\tau$ is set to achieve a target deferral rate.
 
 
 % TODO: Algorithm 1 — Regime-Aware Bayesian Deferral pseudocode
 % Inputs: waveform, catalog data, HMM parameters, Beta priors, γ, τ
 % Steps: (1) run PhaseNet → pick + confidence, (2) look up regime posterior π_t,
-%        (3) compute σ_t from Beta posteriors, (4) compute score s(x), (5) defer if s(x) < τ
+%        (3) compute σ_t from Beta posteriors, (4) compute score s(p), (5) defer if s(p) < τ
 \begin{algorithm}[t]
     \caption{Regime-Aware Bayesian Deferral}
     \label{alg:deferral}
     \begin{algorithmic}[1]
         \REQUIRE Waveform $w$, HMM posteriors $\{\boldsymbol{\pi}_t\}$, Beta parameters $\{(\alpha_r, \beta_r)\}$, sensitivity $\gamma$, threshold $\tau$
         \ENSURE Decision $d \in \{\text{accept}, \text{defer}\}$
-        \STATE Run PhaseNet on $w$ $\to$ pick $x$ with confidence $c$
+        \STATE Run PhaseNet on $w$ $\to$ pick $p$ with confidence $c$
         \STATE Map pick to week $t$ at station $s$
         \STATE Look up regime posterior $\boldsymbol{\pi}_t = [\pi_t(Q), \pi_t(A), \pi_t(D)]$
         \STATE Compute $\sigma_r = \text{std}(\text{Beta}(\alpha_r, \beta_r))$ for each regime $r$
         \STATE Compute $\sigma_t = \sum_r \pi_t(r) \cdot \sigma_r$
-        \STATE Compute deferral score: $s(x) = c \cdot \max(0, 1 - \gamma \cdot \sigma_t)$
-        \IF{$s(x) < \tau$}
+        \STATE Compute deferral score: $s(p) = c \cdot \max(0, 1 - \gamma \cdot \sigma_t)$
+        \IF{$s(p) < \tau$}
             \STATE $d \leftarrow \text{defer}$
         \ELSE
             \STATE $d \leftarrow \text{accept}$
