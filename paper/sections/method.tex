@@ -113,6 +113,9 @@
         $\lambda_Q, \lambda_A, \lambda_D$ & Poisson rates for Quiet, Active, Decaying regimes \\
         $\gamma$ & Regime suppression sensitivity ($= 5$) \\
         $\tau$ & Deferral threshold \\
+        $\epsilon$ & Quiet-to-Active transition rate ($\approx 0$; Active entered via forced injection) \\
+        $a_D$ & Active-to-Decaying transition rate ($= 0.35$) \\
+        $d_Q$ & Decaying-to-Quiet recovery rate ($= 0.18$) \\
         $d_A$ & Decaying-to-Active reactivation probability ($= 0.07$) \\
         \bottomrule
     \end{tabular}
@@ -126,9 +129,9 @@ PhaseNet produces a pick $x$ with confidence $c \in [0, 1]$ at station $s$ durin
 \subsection{Seismic Regime Model}
 \label{sec:regime_model}
 
-The seismic environment around a monitoring station is not constant. After a large earthquake, aftershock sequences produce elevated seismicity and noise on instruments, and this disturbance decays over weeks following patterns described by Omori's law \citep{omori1894aftershocks,utsu1995centenary}. The HMM estimates where in this cycle each station currently sits, not detecting earthquakes, but tracking their aftermath.
+The HMM estimates where in the seismic cycle (Section~2.3) each station currently sits, not detecting earthquakes, but tracking the aftermath of large events.
 
-We define three hidden states: Quiet ($Q$), Active ($A$), and Decaying ($D$). At each week $t$, the HMM observes the count of M3+ earthquakes within 200\,km of a given station. These counts are modelled as Poisson-distributed with station-specific emission rates: $\lambda_Q$ for the Quiet regime (estimated from weeks without nearby large earthquakes), $\lambda_A = k_A \cdot \lambda_Q$ for the Active regime ($k_A = 8$, within the established 5--10$\times$ aftershock rate range; Utsu et al., 1995), and $\lambda_D = k_D \cdot \lambda_Q$ for the Decaying regime ($k_D = 1.5$, set to produce recovery times of 4--8 weeks consistent with Omori's law for M4.5--5.0 events). Station-specific $\lambda_Q$ values are estimated from non-aftershock weeks, with implementation details (aftershock exclusion windows and a floor value for low-seismicity stations) provided in Appendix~B.
+We define three hidden states: Quiet ($Q$), Active ($A$), and Decaying ($D$). At each week $t$, the HMM observes the count of M3+ earthquakes within 200\,km of a given station. These counts are modelled as Poisson-distributed with station-specific emission rates: $\lambda_Q$ for the Quiet regime (estimated from weeks without nearby large earthquakes), $\lambda_A = k_A \cdot \lambda_Q$ for the Active regime ($k_A = 8$, within the established 5--10$\times$ aftershock rate range; \citealt{reasenberg1989earthquake}), and $\lambda_D = k_D \cdot \lambda_Q$ for the Decaying regime ($k_D = 1.5$, set to produce recovery times of 4--8 weeks consistent with Omori's law for M4.5--5.0 events). Station-specific $\lambda_Q$ values are estimated from non-aftershock weeks, with implementation details (aftershock exclusion windows and a floor value for low-seismicity stations) provided in Appendix~B.
 
 The transition matrix encodes seismological domain knowledge:
 \begin{equation}
@@ -186,9 +189,6 @@ The regime-level uncertainty $\sigma_r$ distinguishes between regimes but not be
 \end{equation}
 where $\sigma_t = \sum_r \pi_t(r) \cdot \sigma_r$ is the regime-weighted posterior uncertainty at week $t$, and $\gamma = 5$ is the regime suppression sensitivity. At this value, a regime with $\sigma_r \approx 0.10$ (the Active and Decaying range, corresponding to roughly 10 effective observations) receives a 50\% confidence suppression, while the Quiet regime ($\sigma_r \approx 0.04$) retains approximately 80\% of its confidence signal. When $\gamma \cdot \sigma_t \geq 1$, the regime penalty clamps to zero and the combined score is exactly zero regardless of PhaseNet's confidence, guaranteeing deferral for all picks made during highly uncertain regimes. The pick is deferred if $s(x) < \tau$, where $\tau$ is set to achieve a target deferral rate.
 
-A pick can score low for two reasons: PhaseNet itself is uncertain about the arrival, or the pick was made during a regime where we have too few observations to trust the reliability estimate. In either case, the pick is routed to a human analyst. The regime signal overrides confidence precisely when confidence is least trustworthy.
-
-Algorithm~\ref{alg:deferral} summarises the complete deferral procedure.
 
 % TODO: Algorithm 1 — Regime-Aware Bayesian Deferral pseudocode
 % Inputs: waveform, catalog data, HMM parameters, Beta priors, γ, τ
