@@ -151,9 +151,9 @@ With the regime posteriors from Section~3.2 in hand, we now estimate PhaseNet's 
 \begin{equation}
     \theta_r \sim \text{Beta}(\alpha_r, \beta_r).
 \end{equation}
-This is conjugate Bayesian updating: the Beta prior is conjugate to the Bernoulli likelihood of each pick being correct or incorrect. All three regimes are initialised with $\text{Beta}(2, 2)$ priors, expressing minimal prior belief.
+This is conjugate Bayesian updating. All three regimes are initialised with $\text{Beta}(2, 2)$ priors, a weak prior centered at 0.5 with an effective sample size of 4, so that even sparse regimes can shift the estimate.
 
-When a pick occurs during a week with regime posterior $\boldsymbol{\pi}_t$, the HMM provides a probability distribution over regimes rather than a hard classification. Each pick's outcome is therefore distributed across all three regimes proportionally to $\pi_t(r)$, so that a regime the HMM considers highly likely receives most of the update while a regime with near-zero posterior receives almost none. Picks are processed in chronological order, and each pick is scored using the current Beta parameters before the update from that pick's outcome is applied. For a correct pick:
+Each pick's outcome is distributed across all three regimes proportionally to $\pi_t(r)$. Picks are processed in chronological order. Each pick is scored using the current Beta parameters before the update from that pick's outcome is applied. For a correct pick:
 \begin{equation}
     \alpha_r \leftarrow \alpha_r + \pi_t(r), \qquad \beta_r \leftarrow \beta_r \quad \forall\, r \in \{Q, A, D\}
 \end{equation}
@@ -162,11 +162,12 @@ and for an incorrect pick:
     \alpha_r \leftarrow \alpha_r, \qquad \beta_r \leftarrow \beta_r + \pi_t(r) \quad \forall\, r \in \{Q, A, D\}.
 \end{equation}
 
-The posterior standard deviation $\sigma_r = \text{std}(\text{Beta}(\alpha_r, \beta_r))$ captures how much evidence we have about reliability in each regime: high $\sigma_r$ means few observations (uncertain), low $\sigma_r$ means the estimate has converged. The regime-weighted uncertainty at week $t$ is:
+The posterior standard deviation $\sigma_r = \text{std}(\text{Beta}(\alpha_r, \beta_r))$ captures how much evidence we have about reliability in each regime: high $\sigma_r$ means few observations (uncertain), low $\sigma_r$ means we have enough data to trust the estimate. The regime-weighted uncertainty at week $t$ is:
 \begin{equation}
     \sigma_t = \sum_{r} \pi_t(r) \cdot \sigma_r.
     \label{eq:sigma_t}
 \end{equation}
+This quantity drives the deferral score defined in Section~3.5.
 
 \subsection{Design Rationale}
 \label{sec:design_rationale}
