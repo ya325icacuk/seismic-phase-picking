@@ -184,7 +184,7 @@ Having established $\sigma_r$ as the regime-level deferral signal, we now combin
     s(p) = c \cdot \max\!\big(0,\; 1 - \gamma \cdot \sigma_t\big)
     \label{eq:deferral_score}
 \end{equation}
-With $\gamma = 5$, a regime with $\sigma_r \approx 0.10$ (the Active and Decaying range, corresponding to roughly 10 effective observations) receives a 50\% confidence suppression, while the Quiet regime ($\sigma_r \approx 0.04$) retains approximately 80\% of its confidence signal. When $\gamma \cdot \sigma_t \geq 1$, the regime penalty clamps to zero and the combined score is exactly zero regardless of PhaseNet's confidence, guaranteeing deferral for all picks during highly uncertain regimes. The pick is deferred if $s(p) < \tau$, where $\tau$ is set to achieve a target deferral rate.
+The sensitivity parameter $\gamma$ controls how aggressively regime uncertainty suppresses PhaseNet's confidence. When $\sigma_t$ is small (data-rich regimes with narrow posteriors), the score preserves most of the confidence signal. When $\sigma_t$ is large (data-sparse regimes), the score is suppressed toward zero. When $\gamma \cdot \sigma_t \geq 1$, the score is exactly zero regardless of PhaseNet's confidence, guaranteeing deferral for all picks in highly uncertain regimes. Given the score, the pick is deferred if $s(p) < \tau$, where $\tau$ is set to achieve a target deferral rate.
 
 
 % TODO: Algorithm 1 — Regime-Aware Bayesian Deferral pseudocode
