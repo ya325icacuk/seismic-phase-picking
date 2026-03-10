@@ -142,7 +142,7 @@ The transition matrix encodes seismological domain knowledge:
 \end{equation}
 where $\epsilon \approx 0$ (Active is assigned directly from the earthquake catalog when a M4.5+ event occurs within 200\,km of a station, not inferred from data). $a_D = 0.35$ is the Active-to-Decaying transition rate, giving an expected Active duration of approximately 3 weeks, consistent with the aftershock phase for M4.5--5.0 events. $d_Q = 0.18$ is the Decaying-to-Quiet recovery rate. $d_A = 0.07$ is the Decaying-to-Active reactivation probability. Together, $d_Q$ and $d_A$ give an expected Decaying duration of approximately 4 weeks, consistent with Omori's law decay timescales \citep{utsu1995centenary}.
 
-All stations are initialised in the Quiet state ($\pi_0 = [1, 0, 0]$). The forward algorithm \citep{rabiner1989hmm} then computes regime posteriors $\pi_t(r) = P(\text{regime} = r \mid \text{observations up to week } t)$ for each station independently at weekly resolution.
+All stations begin with a Quiet prior ($\pi_0 = [1, 0, 0]$). The forward algorithm \citep{rabiner1989hmm} updates this into regime posteriors $\pi_t(r) = P(\text{regime} = r \mid \text{observations up to week } t)$ for each station independently at weekly resolution.
 
 \subsection{Beta-Bernoulli Reliability Tracking}
 \label{sec:beta_bernoulli}
