@@ -101,18 +101,18 @@ We now present the regime-aware deferral framework. \Cref{fig:pipeline} shows th
     \caption{Notation summary.}
     \label{tab:notation}
     \small
-    \begin{tabular}{@{}ll@{}}
+    \begin{tabular}{@{}lp{5.2cm}@{}}
         \toprule
         Symbol & Meaning \\
         \midrule
-        $c$ & PhaseNet confidence score \\
+        $c$ & PhaseNet detection confidence for a pick \\
         $d(x)$ & Deferral decision (accept or defer) \\
         $\pi_t(r)$ & Regime posterior at week $t$ \\
-        $\theta_r$ & PhaseNet reliability in regime $r$ \\
+        $\theta_r$ & Probability that a PhaseNet pick is correct in regime $r$ \\
         $\sigma_r$ & Posterior std of $\theta_r$ \\
-        $\sigma_t$ & Regime-weighted uncertainty at week $t$ \\
-        $\lambda_Q, \lambda_A, \lambda_D$ & Poisson emission rates per regime \\
-        $\gamma$ & Regime suppression sensitivity ($= 5$) \\
+        $\sigma_t$ & How certain we are about PhaseNet's reliability at week $t$ \\
+        $\lambda_Q, \lambda_A, \lambda_D$ & Expected earthquake rates per regime \\
+        $\gamma$ & Controls how strongly regime uncertainty suppresses PhaseNet confidence score \\
         $\tau$ & Deferral threshold \\
         $s(x)$ & Combined deferral score \\
         \bottomrule
