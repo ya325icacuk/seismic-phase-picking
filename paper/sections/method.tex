@@ -162,7 +162,7 @@ and for an incorrect pick:
     \alpha_r \leftarrow \alpha_r, \qquad \beta_r \leftarrow \beta_r + \pi_t(r) \quad \forall\, r \in \{Q, A, D\}.
 \end{equation}
 
-As the Beta parameters accumulate observations, we need a measure of how much we can trust each regime's reliability estimate. The posterior standard deviation $\sigma_r = \text{std}(\text{Beta}(\alpha_r, \beta_r))$ captures how much evidence we have about our estimate of PhaseNet's reliability in each regime: high $\sigma_r$ indicates fewer observations, low $\sigma_r$ indicates more. The regime-weighted uncertainty at week $t$ is:
+As the Beta parameters accumulate observations, we need a measure of how much we can trust each regime's reliability estimate. The posterior standard deviation $\sigma_r = \text{std}(\text{Beta}(\alpha_r, \beta_r))$ captures how much evidence we have about our estimate of PhaseNet's reliability in each regime: high $\sigma_r$ indicates fewer observations, low $\sigma_r$ indicates more. For a given pick at week $t$, the per-regime uncertainties combine into:
 \begin{equation}
     \sigma_t = \sum_{r} \pi_t(r) \cdot \sigma_r.
     \label{eq:sigma_t}
