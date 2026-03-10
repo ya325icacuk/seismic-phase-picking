@@ -179,12 +179,12 @@ The Beta-Bernoulli model produces two quantities per regime: a reliability estim
 \subsection{Combined Deferral Score}
 \label{sec:combined_score}
 
-Having established $\sigma_r$ as the regime-level deferral signal, we now combine it with PhaseNet's confidence into a single score. Since all picks in a given regime week share the same $\sigma_t$, confidence provides the within-regime ranking. The combined score multiplies pick-level confidence with the regime penalty:
+Having established $\sigma_r$ as the regime-level deferral signal, we now combine all three signals into a single score:
 \begin{equation}
     s(p) = c \cdot \max\!\big(0,\; 1 - \gamma \cdot \sigma_t\big)
     \label{eq:deferral_score}
 \end{equation}
-where $\sigma_t$ is the regime-weighted uncertainty (\cref{eq:sigma_t}) and $\gamma = 5$ is the regime suppression sensitivity. At this value, a regime with $\sigma_r \approx 0.10$ (the Active and Decaying range, corresponding to roughly 10 effective observations) receives a 50\% confidence suppression, while the Quiet regime ($\sigma_r \approx 0.04$) retains approximately 80\% of its confidence signal. When $\gamma \cdot \sigma_t \geq 1$, the regime penalty clamps to zero and the combined score is exactly zero regardless of PhaseNet's confidence, guaranteeing deferral for all picks during highly uncertain regimes. The pick is deferred if $s(p) < \tau$, where $\tau$ is set to achieve a target deferral rate.
+With $\gamma = 5$, a regime with $\sigma_r \approx 0.10$ (the Active and Decaying range, corresponding to roughly 10 effective observations) receives a 50\% confidence suppression, while the Quiet regime ($\sigma_r \approx 0.04$) retains approximately 80\% of its confidence signal. When $\gamma \cdot \sigma_t \geq 1$, the regime penalty clamps to zero and the combined score is exactly zero regardless of PhaseNet's confidence, guaranteeing deferral for all picks during highly uncertain regimes. The pick is deferred if $s(p) < \tau$, where $\tau$ is set to achieve a target deferral rate.
 
 
 % TODO: Algorithm 1 — Regime-Aware Bayesian Deferral pseudocode
