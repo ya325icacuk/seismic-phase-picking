@@ -101,17 +101,17 @@ We now present the regime-aware deferral framework. \Cref{fig:pipeline} shows th
     \caption{Notation summary.}
     \label{tab:notation}
     \small
-    \begin{tabular}{@{}lp{5.2cm}@{}}
+    \begin{tabular}{@{}ll@{}}
         \toprule
         Symbol & Meaning \\
         \midrule
-        $c$ & PhaseNet confidence score for a pick \\
-        $d(x)$ & Deferral function: accept or defer a pick \\
-        $\pi_t(r)$ & Regime posterior: $P(\text{regime} {=} r \mid \text{obs.\ up to } t)$ \\
-        $\theta_r$ & Reliability parameter: probability that a pick is correct in regime $r$ \\
-        $\sigma_r$ & Posterior std of $\theta_r$: uncertainty about reliability \\
-        $\sigma_t$ & Regime-weighted uncertainty in reliability estimate at week $t$ \\
-        $\lambda_Q, \lambda_A, \lambda_D$ & Poisson rates for Quiet, Active, Decaying regimes \\
+        $c$ & PhaseNet confidence score \\
+        $d(x)$ & Deferral decision (accept or defer) \\
+        $\pi_t(r)$ & Regime posterior at week $t$ \\
+        $\theta_r$ & PhaseNet reliability in regime $r$ \\
+        $\sigma_r$ & Posterior std of $\theta_r$ \\
+        $\sigma_t$ & Regime-weighted uncertainty at week $t$ \\
+        $\lambda_Q, \lambda_A, \lambda_D$ & Poisson emission rates per regime \\
         $\gamma$ & Regime suppression sensitivity ($= 5$) \\
         $\tau$ & Deferral threshold \\
         $s(x)$ & Combined deferral score \\
