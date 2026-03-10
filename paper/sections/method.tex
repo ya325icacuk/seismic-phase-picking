@@ -141,7 +141,7 @@ The transition matrix encodes seismological domain knowledge:
 \end{equation}
 where $\epsilon \approx 0$ (Active is entered only via forced injection), $a_D = 0.35$ is the Active-to-Decaying transition rate, $d_Q = 0.18$ is the Decaying-to-Quiet recovery rate parameterised from Omori's law, and $d_A = 0.07$ is the Decaying-to-Active reactivation probability, allowing the model to represent renewed aftershock activity during the decay phase. Regime entry is handled by \emph{hard Active injection}: when a M4.5+ catalog event occurs within 200\,km of a station, $\pi_t(A)$ is set to $1.0$, overriding the forward recursion. This design choice guarantees zero missed activations at the cost of requiring a functioning earthquake catalog.
 
-The forward algorithm \citep{rabiner1989hmm} computes regime posteriors $\pi_t(r) = P(\text{regime} = r \mid \text{observations up to week } t)$ for each station independently at weekly resolution over the 2020--2023 study period.
+All stations are initialised in the Quiet state ($\pi_0 = [1, 0, 0]$), since the study period does not begin during an active aftershock sequence. The forward algorithm \citep{rabiner1989hmm} then computes regime posteriors $\pi_t(r) = P(\text{regime} = r \mid \text{observations up to week } t)$ for each station independently at weekly resolution over the 2020--2023 study period.
 
 \subsection{Beta-Bernoulli Reliability Tracking}
 \label{sec:beta_bernoulli}
@@ -184,7 +184,7 @@ The regime-level uncertainty $\sigma_r$ distinguishes between regimes but not be
     s(x) = c \cdot \max\!\big(0,\; 1 - \gamma \cdot \sigma_t\big)
     \label{eq:deferral_score}
 \end{equation}
-where $\sigma_t = \sum_r \pi_t(r) \cdot \sigma_r$ is the regime-weighted posterior uncertainty at week $t$, and $\gamma = 5$ is the regime suppression sensitivity. At this value, a regime with $\sigma_r \approx 0.10$ (the Active and Decaying range, corresponding to roughly 10 effective observations) receives a 50\% confidence suppression, while the Quiet regime ($\sigma_r \approx 0.04$) retains approximately 80\% of its confidence signal. The pick is deferred if $s(x) < \tau$, where $\tau$ is set to achieve a target deferral rate.
+where $\sigma_t = \sum_r \pi_t(r) \cdot \sigma_r$ is the regime-weighted posterior uncertainty at week $t$, and $\gamma = 5$ is the regime suppression sensitivity. At this value, a regime with $\sigma_r \approx 0.10$ (the Active and Decaying range, corresponding to roughly 10 effective observations) receives a 50\% confidence suppression, while the Quiet regime ($\sigma_r \approx 0.04$) retains approximately 80\% of its confidence signal. When $\gamma \cdot \sigma_t \geq 1$, the regime penalty clamps to zero and the combined score is exactly zero regardless of PhaseNet's confidence, guaranteeing deferral for all picks made during highly uncertain regimes. The pick is deferred if $s(x) < \tau$, where $\tau$ is set to achieve a target deferral rate.
 
 A pick can score low for two reasons: PhaseNet itself is uncertain about the arrival, or the pick was made during a regime where we have too few observations to trust the reliability estimate. In either case, the pick is routed to a human analyst. The regime signal overrides confidence precisely when confidence is least trustworthy.
 
