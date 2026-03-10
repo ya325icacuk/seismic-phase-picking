@@ -153,7 +153,7 @@ With the regime posteriors from Section~3.2 in hand, we now estimate PhaseNet's 
 \end{equation}
 This is conjugate Bayesian updating. All three regimes are initialised with $\text{Beta}(2, 2)$ priors, a weak prior centered at 0.5 with an effective sample size of 4, so that even sparse regimes can shift the estimate.
 
-Each pick's outcome is distributed across all three regimes proportionally to $\pi_t(r)$. Picks are processed in chronological order. Each pick is scored using the current Beta parameters before the update from that pick's outcome is applied. For a correct pick:
+Each pick's outcome updates all three regimes' Beta parameters, weighted by $\pi_t(r)$. Picks are processed in chronological order. Each pick receives its deferral score (Section 3.5) from the current Beta parameters, and the Beta parameters are updated only afterwards. For a correct pick:
 \begin{equation}
     \alpha_r \leftarrow \alpha_r + \pi_t(r), \qquad \beta_r \leftarrow \beta_r \quad \forall\, r \in \{Q, A, D\}
 \end{equation}
@@ -162,7 +162,7 @@ and for an incorrect pick:
     \alpha_r \leftarrow \alpha_r, \qquad \beta_r \leftarrow \beta_r + \pi_t(r) \quad \forall\, r \in \{Q, A, D\}.
 \end{equation}
 
-The posterior standard deviation $\sigma_r = \text{std}(\text{Beta}(\alpha_r, \beta_r))$ captures how much evidence we have about reliability in each regime: high $\sigma_r$ means few observations (uncertain), low $\sigma_r$ means we have enough data to trust the estimate. The regime-weighted uncertainty at week $t$ is:
+As the Beta parameters accumulate observations, we need a measure of how much we can trust each regime's reliability estimate. The posterior standard deviation $\sigma_r = \text{std}(\text{Beta}(\alpha_r, \beta_r))$ captures how much evidence we have about our estimate of PhaseNet's reliability in each regime: high $\sigma_r$ indicates fewer observations, low $\sigma_r$ indicates more. The regime-weighted uncertainty at week $t$ is:
 \begin{equation}
     \sigma_t = \sum_{r} \pi_t(r) \cdot \sigma_r.
     \label{eq:sigma_t}
