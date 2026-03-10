@@ -37,7 +37,7 @@
 \subsection{Do the Experiments Support the Claims?}
 \label{sec:self_eval}
 
-We cannot claim the regime signal \emph{causes} better deferral---the comparison is observational, not ablated in a controlled experiment. What we show is that the two methods defer systematically different picks, and that the combined score's pattern aligns with operationally relevant regime structure.
+We cannot claim the regime signal \emph{causes} better deferral. The comparison is observational, not ablated in a controlled experiment. What we show is that the two methods defer systematically different picks, and that the combined score's pattern aligns with operationally relevant regime structure.
 
 The baselines are appropriate: confidence-only deferral is the standard approach a practitioner would use, and it is a strong baseline that wins on raw accuracy. We do not compare against more sophisticated methods (e.g., learned rejectors, ensemble disagreement) because these require either labelled deployment data or architectural modifications to PhaseNet, neither of which is available in our setting.
 
@@ -46,4 +46,4 @@ System accuracy captures overall correctness; regime-stratified deferral rates c
 \subsection{Broader Implications for Safety-Critical ML}
 \label{sec:implications}
 
-This work illustrates a general principle: when a model cannot self-diagnose failure under distribution shift, \emph{external context about the deployment environment} can provide the reliability signal that internal uncertainty cannot. The specific context here is seismic regime, but the architecture applies wherever deployment conditions are structured and observable, these conditions affect model reliability systematically, and the model's own uncertainty fails to reflect this---for example, medical imaging across hospitals with different equipment profiles, autonomous vehicles across geographies with different road conditions, or environmental monitoring systems deployed across ecosystems.
+This work illustrates a general principle: when a model cannot self-diagnose failure under distribution shift, \emph{external context about the deployment environment} can provide the reliability signal that internal uncertainty cannot. The specific context here is seismic regime, but the architecture applies wherever deployment conditions are structured and observable, these conditions affect model reliability systematically, and the model's own uncertainty fails to reflect this. Examples include medical imaging across hospitals with different equipment profiles, autonomous vehicles across geographies with different road conditions, or environmental monitoring systems deployed across ecosystems.

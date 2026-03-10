@@ -45,7 +45,7 @@ A PhaseNet pick is considered correct if it falls within 0.5\,s of a catalog arr
 We compare three approaches at matched deferral rates:
 \begin{itemize}
     \item \textbf{No deferral:} accept all PhaseNet picks, establishing the lower bound (0.432 system accuracy in Kazakhstan).
-    \item \textbf{Confidence-only deferral:} defer picks with the lowest PhaseNet confidence scores---the standard approach using model self-assessment.
+    \item \textbf{Confidence-only deferral:} defer picks with the lowest PhaseNet confidence scores, the standard approach using model self-assessment.
     \item \textbf{Combined score (proposed):} defer picks with the lowest regime-aware deferral scores (\cref{eq:deferral_score}), incorporating environmental context.
 \end{itemize}
 All three are compared at a fixed 25\% deferral rate (48 of 190 picks) to isolate the effect of the regime signal.

@@ -122,12 +122,12 @@ We now present the regime-aware deferral framework. \Cref{fig:pipeline} shows th
 \subsection{Problem Formulation}
 \label{sec:problem}
 
-PhaseNet produces a pick $p$ with confidence $c \in [0, 1]$ at station $s$ during week $t$. A deferral function $d(p) \in \{\text{accept}, \text{defer}\}$ must decide whether to trust the automated pick or send it for human review. The challenge is that $c$ is uninformative under distribution shift (demonstrated empirically in \cref{sec:confidence}), so $d$ cannot depend on $c$ alone. We require an additional signal from outside the model.
+PhaseNet produces a pick $p$ with confidence $c \in [0, 1]$ at a station during week $t$. A deferral function $d(p) \in \{\text{accept}, \text{defer}\}$ must decide whether to trust the automated pick or route it for analyst review. The challenge is that $c$ is uninformative under distribution shift (demonstrated empirically in \cref{sec:confidence}). We require an additional signal from outside the model, and a way to combine it with $c$ so that the deferral decision reflects both pick-level confidence and environmental context.
 
 \subsection{Seismic Regime Model}
 \label{sec:regime_model}
 
-The HMM estimates where in the seismic cycle (Section~2.3) each station currently sits, not detecting earthquakes, but tracking the aftermath of large events.
+The HMM classifies each station's current seismic environment into one of three regimes, based on the seismic cycle described in Section~2.3. It does not detect earthquakes directly, but tracks the aftermath of large events.
 
 We define three hidden states: Quiet ($Q$), Active ($A$), and Decaying ($D$). At each week $t$, the HMM observes the count of M3+ earthquakes within 200\,km of a given station. These counts are modelled as Poisson-distributed with station-specific emission rates: $\lambda_Q$ for the Quiet regime (estimated from weeks without nearby large earthquakes), $\lambda_A = k_A \cdot \lambda_Q$ for the Active regime ($k_A = 8$, within the established 5--10$\times$ aftershock rate range; \citealt{reasenberg1989earthquake}), and $\lambda_D = k_D \cdot \lambda_Q$ for the Decaying regime ($k_D = 1.5$, set to produce recovery times of 4--8 weeks consistent with Omori's law for M4.5--5.0 events). Station-specific $\lambda_Q$ values are estimated from non-aftershock weeks, with implementation details (aftershock exclusion windows and a floor value for low-seismicity stations) provided in Appendix~B.
 
@@ -147,7 +147,7 @@ All stations are initialised in the Quiet state ($\pi_0 = [1, 0, 0]$), since the
 \subsection{Beta-Bernoulli Reliability Tracking}
 \label{sec:beta_bernoulli}
 
-For each regime $r \in \{Q, A, D\}$, we maintain a Beta-distributed estimate of PhaseNet's reliability---the probability that a pick made during regime $r$ is correct:
+For each regime $r \in \{Q, A, D\}$, we maintain a Beta-distributed estimate of PhaseNet's reliability, the probability that a pick made during regime $r$ is correct:
 \begin{equation}
     \theta_r \sim \text{Beta}(\alpha_r, \beta_r).
 \end{equation}
@@ -199,7 +199,7 @@ where $\sigma_t = \sum_r \pi_t(r) \cdot \sigma_r$ is the regime-weighted posteri
         \REQUIRE Waveform $w$, HMM posteriors $\{\boldsymbol{\pi}_t\}$, Beta parameters $\{(\alpha_r, \beta_r)\}$, sensitivity $\gamma$, threshold $\tau$
         \ENSURE Decision $d \in \{\text{accept}, \text{defer}\}$
         \STATE Run PhaseNet on $w$ $\to$ pick $p$ with confidence $c$
-        \STATE Map pick to week $t$ at station $s$
+        \STATE Map pick to station and week $t$
         \STATE Look up regime posterior $\boldsymbol{\pi}_t = [\pi_t(Q), \pi_t(A), \pi_t(D)]$
         \STATE Compute $\sigma_r = \text{std}(\text{Beta}(\alpha_r, \beta_r))$ for each regime $r$
         \STATE Compute $\sigma_t = \sum_r \pi_t(r) \cdot \sigma_r$
