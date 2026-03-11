@@ -32,22 +32,18 @@ Critically, the P-wave false pick rate is comparable between regions (31.4\% vs.
 \subsection{Confidence Scores Do Not Detect Distribution Shift}
 \label{sec:confidence}
 
-% TODO: Figure 3 — Confidence distribution overlap
-% Overlaid histograms of California and Kazakhstan P-wave confidence
 \begin{figure}[t]
     \centering
-    % \includegraphics[width=\columnwidth]{figures/fig3_confidence.pdf}
-    \fbox{\parbox{0.9\columnwidth}{\centering\vspace{1.5cm}\textbf{Figure 3: TODO}\\[0.3em]
-    Confidence histograms overlay\vspace{1.5cm}}}
+    \includegraphics[width=\columnwidth]{figures/fig3_confidence}
     \caption{Confidence distributions for matched picks in California (blue) and Kazakhstan (red). Despite the detection rate collapse, the distributions are nearly indistinguishable.}
-    \label{fig:confidence_overlap}
+    \label{fig:confidence}
 \end{figure}
 
 \Cref{sec:shift} showed that PhaseNet's performance degrades sharply under distribution shift. We now ask whether its confidence scores provide any warning of this degradation.
 
 P-wave ECE increases from 0.088 in California to 0.150 in Kazakhstan (\cref{tab:shift}). At the 0.7 confidence level, California picks are correct approximately 70\% of the time, but Kazakhstan picks only approximately 50\%. PhaseNet appears overconfident under distribution shift. To assess whether the issue goes beyond calibration, we turn to discrimination analysis.
 
-P-wave AUROC is 0.699 in California versus 0.701 in Kazakhstan, virtually identical. The model distinguishes correct from incorrect picks with similar confidence in both regions, despite the performance drop documented in \cref{sec:shift}. Unlike calibration, which could in principle be corrected by post-hoc rescaling, discrimination cannot be improved without changing the model's internal representations. A confidence-based deferral system operating in Kazakhstan would have no signal that anything had changed (\cref{fig:confidence_overlap}).
+P-wave AUROC is 0.699 in California versus 0.701 in Kazakhstan, virtually identical. The model distinguishes correct from incorrect picks with similar confidence in both regions, despite the performance drop documented in \cref{sec:shift}. Unlike calibration, which could in principle be corrected by post-hoc rescaling, discrimination cannot be improved without changing the model's internal representations. A confidence-based deferral system operating in Kazakhstan would have no signal that anything had changed (\cref{fig:confidence}).
 
 \subsection{Seismic Regime Assignment}
 \label{sec:regime_behaviour}
