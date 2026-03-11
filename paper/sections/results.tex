@@ -34,7 +34,7 @@ Critically, the P-wave false pick rate is comparable between regions (31.4\% vs.
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\columnwidth]{figures/fig3_confidence}
+    \includegraphics[width=\columnwidth]{figures/fig2_confidence}
     \caption{Confidence distributions for matched picks in California (blue) and Kazakhstan (red). Despite the detection rate collapse, the distributions are nearly indistinguishable.}
     \label{fig:confidence}
 \end{figure}
@@ -48,19 +48,16 @@ P-wave AUROC is 0.699 in California versus 0.701 in Kazakhstan, virtually identi
 \subsection{Seismic Regime Assignment}
 \label{sec:regime_behaviour}
 
-% TODO: Figure 4 — Regime posteriors for PDGK + one untriggered station
 \begin{figure}[t]
     \centering
-    % \includegraphics[width=\columnwidth]{figures/fig4_regime_posteriors.pdf}
-    \fbox{\parbox{0.9\columnwidth}{\centering\vspace{1.5cm}\textbf{Figure 4: TODO}\\[0.3em]
-    Stacked area: PDGK (triggered) + untriggered station\vspace{1.5cm}}}
-    \caption{Regime posteriors over 2020--2023 for PDGK (top, triggered by M5.1 and M5.0 events) and an untriggered station (bottom). PDGK shows clear Active $\to$ Decaying $\to$ Quiet transitions, while the untriggered station maintains $\pi_t(Q) \approx 1.0$ throughout. Full set of all 11 stations in \cref{app:posteriors}.}
-    \label{fig:regime_posteriors}
+    \includegraphics[width=\textwidth]{figures/fig3_regimes}
+    \caption{Regime posteriors over 2020--2023 for PDGK (top, triggered by M5.1 and M5.0 events) and an untriggered station (bottom). PDGK shows clear Active $\to$ Decaying $\to$ Quiet transitions, while the untriggered station maintains $\pi_t(Q) \approx 1.0$ throughout. Full set of all 11 stations in Section~C.}
+    \label{fig:regimes}
 \end{figure}
 
 \Cref{sec:confidence} established that PhaseNet's confidence scores cannot detect distribution shift. The deferral framework therefore requires an external signal, and the HMM regime model (\cref{sec:regime_model}) provides this. We now assess whether it reliably identifies regime transitions in the Kazakhstan deployment.
 
-All M$\geq$4.5 triggers are injected directly into the HMM as Active states (\cref{sec:regime_model}). In our deployment data, recovery to background levels takes between 3 and 12 weeks across the four triggered stations, with one exception: KKAR is triggered near the end of the study period and recovery is not observed. Stations without nearby large events are never flagged, maintaining $\pi_t(Q) = 1.0$ throughout (\cref{fig:regime_posteriors}).
+All M$\geq$4.5 triggers are injected directly into the HMM as Active states (\cref{sec:regime_model}). In our deployment data, recovery to background levels takes between 3 and 12 weeks across the four triggered stations, with one exception: KKAR is triggered near the end of the study period and recovery is not observed. Stations without nearby large events are never flagged, maintaining $\pi_t(Q) = 1.0$ throughout (\cref{fig:regimes}).
 
 Since the HMM parameters are set from domain knowledge rather than learned from data (\cref{sec:regime_model}), we test sensitivity to these choices. Across all configurations, the regime sequence following a large event is the same: Active, then Decaying, then Quiet. Only the duration of the Decaying phase changes, meaning the framework can be tuned to defer more or fewer picks after a large event. Full details are in \cref{app:hmm}.
 
