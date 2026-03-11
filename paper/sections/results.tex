@@ -45,7 +45,7 @@ Critically, the P-wave false pick rate is comparable between regions (31.4\% vs.
 
 \Cref{sec:shift} showed that PhaseNet's performance degrades sharply under distribution shift. We now ask whether its confidence scores provide any warning of this degradation.
 
-P-wave ECE increases from 0.088 in California to 0.150 in Kazakhstan (\cref{tab:shift}). At the 0.7 confidence level, California picks are correct approximately 70\% of the time; Kazakhstan picks only approximately 50\%. PhaseNet appears overconfident under distribution shift. To assess whether the issue goes beyond calibration, we turn to discrimination analysis.
+P-wave ECE increases from 0.088 in California to 0.150 in Kazakhstan (\cref{tab:shift}). At the 0.7 confidence level, California picks are correct approximately 70\% of the time, but Kazakhstan picks only approximately 50\%. PhaseNet appears overconfident under distribution shift. To assess whether the issue goes beyond calibration, we turn to discrimination analysis.
 
 P-wave AUROC is 0.699 in California versus 0.701 in Kazakhstan, virtually identical. The model distinguishes correct from incorrect picks with similar confidence in both regions, despite the performance drop documented in \cref{sec:shift}. Unlike calibration, which could in principle be corrected by post-hoc rescaling, discrimination cannot be improved without changing the model's internal representations. A confidence-based deferral system operating in Kazakhstan would have no signal that anything had changed (\cref{fig:confidence_overlap}).
 
@@ -58,7 +58,7 @@ P-wave AUROC is 0.699 in California versus 0.701 in Kazakhstan, virtually identi
     % \includegraphics[width=\columnwidth]{figures/fig4_regime_posteriors.pdf}
     \fbox{\parbox{0.9\columnwidth}{\centering\vspace{1.5cm}\textbf{Figure 4: TODO}\\[0.3em]
     Stacked area: PDGK (triggered) + untriggered station\vspace{1.5cm}}}
-    \caption{Regime posteriors over 2020--2023 for PDGK (top, triggered by M5.1 and M5.0 events) and an untriggered station (bottom). PDGK shows clear Active $\to$ Decaying $\to$ Quiet transitions; the untriggered station maintains $\pi_t(Q) \approx 1.0$ throughout. Full set of all 11 stations in \cref{app:posteriors}.}
+    \caption{Regime posteriors over 2020--2023 for PDGK (top, triggered by M5.1 and M5.0 events) and an untriggered station (bottom). PDGK shows clear Active $\to$ Decaying $\to$ Quiet transitions, while the untriggered station maintains $\pi_t(Q) \approx 1.0$ throughout. Full set of all 11 stations in \cref{app:posteriors}.}
     \label{fig:regime_posteriors}
 \end{figure}
 
@@ -68,7 +68,7 @@ The 7 untriggered stations maintain $\pi_t(Q) = 1.0$ throughout, with zero false
 
 Active detection and untriggered stability are guaranteed by design (hard injection with $\epsilon \approx 0$), not learned from data. The HMM's genuine contribution is estimating the \emph{decay timeline}, how many weeks of heightened oversight each station needs after a large event. This is the component tested by the sensitivity analysis.
 
-\paragraph{Regime-stratified performance.} Time-aligning the 190 Kazakhstan picks to regime posteriors shows 81.6\% fall in predominantly Quiet weeks, 5.8\% in Active, 7.9\% in Decaying, and 4.7\% in mixed-regime transitions. Only PDGK has ground-truth arrivals during Active (13 arrivals) and Decaying (11 arrivals) periods. At this station, precision varies across regimes (Active: 64\%, Quiet: 42\%, Decaying: 33\%), suggesting performance depends on environmental state. However, these sample sizes are small and the pattern should be interpreted as suggestive rather than statistically conclusive. The primary value of the regime model is not in predicting per-regime performance, but in providing the uncertainty signal ($\sigma_r$) that drives deferral; regimes with few observations have high $\sigma_r$ by construction.
+\paragraph{Regime-stratified performance.} Time-aligning the 190 Kazakhstan picks to regime posteriors shows 81.6\% fall in predominantly Quiet weeks, 5.8\% in Active, 7.9\% in Decaying, and 4.7\% in mixed-regime transitions. Only PDGK has ground-truth arrivals during Active (13 arrivals) and Decaying (11 arrivals) periods. At this station, precision varies across regimes (Active: 64\%, Quiet: 42\%, Decaying: 33\%), suggesting performance depends on environmental state. However, these sample sizes are small and the pattern should be interpreted as suggestive rather than statistically conclusive. The primary value of the regime model is not in predicting per-regime performance, but in providing the uncertainty signal ($\sigma_r$) that drives deferral. Regimes with few observations have high $\sigma_r$ by construction.
 
 \subsection{Deferral Comparison}
 \label{sec:deferral_comparison}
@@ -113,7 +113,7 @@ At a fixed 25\% deferral rate (48 of 190 picks deferred):
 
 The combined score's advantage lies in \emph{regime targeting} (\cref{tab:targeting}). It concentrates 90.9\% of deferrals during Active periods versus 36.4\% for confidence-only. This difference arises because PhaseNet's confidence carries almost no regime signal (mean confidence ranges only from 0.616 to 0.637 across all three regimes), so confidence-only deferral spreads deferrals near-uniformly across time.
 
-The two methods answer different questions. Confidence-only asks: \emph{which picks are most likely wrong?} This is better for maximising accuracy at a fixed deferral budget. The combined score asks: \emph{when is the model operating in an environment where we have insufficient evidence about its reliability?} This is better for directing human attention to periods of greatest environmental uncertainty. For safety-critical deployment, we argue the second question is more operationally relevant: a monitoring agency needs to know \emph{when} the system requires oversight, not just which individual picks to double-check. We do not claim the combined score is universally better; the choice depends on operational priorities.
+The two methods answer different questions. Confidence-only asks: \emph{which picks are most likely wrong?} This is better for maximising accuracy at a fixed deferral budget. The combined score asks: \emph{when is the model operating in an environment where we have insufficient evidence about its reliability?} This is better for directing human attention to periods of greatest environmental uncertainty. For safety-critical deployment, we argue the second question is more operationally relevant: a monitoring agency needs to know \emph{when} the system requires oversight, not just which individual picks to double-check. We do not claim the combined score is universally better. The choice depends on operational priorities.
 
 % TODO: Figure 5 — Threshold sensitivity curves
 % System accuracy vs deferral rate for both methods, 20-30% band shaded
