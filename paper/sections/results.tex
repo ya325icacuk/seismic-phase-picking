@@ -9,20 +9,20 @@
     \centering
     \caption{PhaseNet performance under distribution shift. All calibration and discrimination metrics are P-wave only.}
     \label{tab:shift}
-    \resizebox{\columnwidth}{!}{%
-    \begin{tabular}{@{}lccc@{}}
+    \small
+    \begin{tabular}{@{}lcc@{}}
         \toprule
-        Metric & California & Kazakhstan & Change \\
+        Metric & California & Kazakhstan \\
         \midrule
-        P recall & 83.9\% (229/273) & 35.1\% (71/202) & $-$48.8\,pp \\
-        P false pick rate & 31.4\% (105/334) & 34.9\% (38/109) & +3.5\,pp \\
-        P residual mean & +0.041\,s & +0.180\,s & +0.139\,s \\
-        P residual std & 0.123\,s & 0.170\,s & +0.047\,s \\
-        Mean conf.\ (matched) & 0.749 & 0.747 & $-$0.002 \\
-        P AUROC & 0.699 & 0.701 & +0.002 \\
-        P ECE & 0.088 & 0.150 & +0.062 \\
+        P recall & 83.9\% (229/273) & 35.1\% (71/202) \\
+        P false pick rate & 31.4\% (105/334) & 34.9\% (38/109) \\
+        P residual mean & +0.041\,s & +0.180\,s \\
+        P residual std & 0.123\,s & 0.170\,s \\
+        Mean conf.\ (matched) & 0.749 & 0.747 \\
+        P AUROC & 0.699 & 0.701 \\
+        P ECE & 0.088 & 0.150 \\
         \bottomrule
-    \end{tabular}}
+    \end{tabular}
 \end{table}
 
 \Cref{tab:shift} summarises PhaseNet's performance across both regions. The California results confirm that PhaseNet performs as published: 83.9\% P-wave detection with a residual standard deviation of 0.123\,s, approaching the 0.1\,s benchmark from \citet{zhu2019phasenet}. The Kazakhstan results reveal a 48.8-percentage-point collapse in P-wave detection rate. PhaseNet misses nearly two-thirds of arrivals that human analysts identified.
