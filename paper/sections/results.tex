@@ -9,19 +9,19 @@
     \centering
     \caption{PhaseNet performance under distribution shift. All calibration and discrimination metrics are P-wave only.}
     \label{tab:shift}
-    \small
+    \footnotesize
     \begin{tabular}{@{}lccc@{}}
         \toprule
         Metric & California & Kazakhstan & Change \\
         \midrule
-        P-wave recall & 83.9\% (229/273) & 35.1\% (71/202) & $-$48.8\,pp \\
-        S-wave recall & 100.0\% (12/12) & 14.9\% (11/74) & --- \\
+        P recall & 83.9\% (229/273) & 35.1\% (71/202) & $-$48.8\,pp \\
+        S recall & 100.0\% (12/12) & 14.9\% (11/74) & --- \\
         P false pick rate & 31.4\% (105/334) & 34.9\% (38/109) & +3.5\,pp \\
         P residual mean & +0.041\,s & +0.180\,s & +0.139\,s \\
         P residual std & 0.123\,s & 0.170\,s & +0.047\,s \\
         Mean conf.\ (matched) & 0.749 & 0.747 & $-$0.002 \\
-        P-wave ECE & 0.088 & 0.150 & +0.062 \\
-        P-wave AUROC & 0.699 & 0.701 & +0.002 \\
+        P AUROC & 0.699 & 0.701 & +0.002 \\
+        P ECE & 0.088 & 0.150 & +0.062 \\
         \bottomrule
     \end{tabular}
 \end{table}
