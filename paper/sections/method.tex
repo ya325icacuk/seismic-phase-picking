@@ -185,29 +185,3 @@ Having established $\sigma_r$ as the regime-level deferral signal, we now combin
     \label{eq:deferral_score}
 \end{equation}
 The sensitivity parameter $\gamma$ controls how aggressively regime uncertainty suppresses PhaseNet's confidence. When $\sigma_t$ is small (data-rich regimes with narrow posteriors), the score preserves most of the confidence signal. When $\sigma_t$ is large (data-sparse regimes), the score is suppressed toward zero. When $\gamma \cdot \sigma_t \geq 1$, the score is exactly zero regardless of PhaseNet's confidence, guaranteeing deferral for all picks in highly uncertain regimes. Given the score, the pick is deferred if $s(p) < \tau$, where $\tau$ is set to achieve a target deferral rate. We use $\gamma = 5$ throughout. The choice of $\gamma$ and $\tau$ is discussed in Section~4.
-
-
-% TODO: Algorithm 1 — Regime-Aware Bayesian Deferral pseudocode
-% Inputs: waveform, catalog data, HMM parameters, Beta priors, γ, τ
-% Steps: (1) run PhaseNet → pick + confidence, (2) look up regime posterior π_t,
-%        (3) compute σ_t from Beta posteriors, (4) compute score s(p), (5) defer if s(p) < τ
-\begin{algorithm}[t]
-    \caption{Regime-Aware Bayesian Deferral}
-    \label{alg:deferral}
-    \begin{algorithmic}[1]
-        \REQUIRE Waveform $w$, HMM posteriors $\{\boldsymbol{\pi}_t\}$, Beta parameters $\{(\alpha_r, \beta_r)\}$, sensitivity $\gamma$, threshold $\tau$
-        \ENSURE Decision $d \in \{\text{accept}, \text{defer}\}$
-        \STATE Run PhaseNet on $w$ $\to$ pick $p$ with confidence $c$
-        \STATE Map pick to station and week $t$
-        \STATE Look up regime posterior $\boldsymbol{\pi}_t = [\pi_t(Q), \pi_t(A), \pi_t(D)]$
-        \STATE Compute $\sigma_r = \text{std}(\text{Beta}(\alpha_r, \beta_r))$ for each regime $r$
-        \STATE Compute $\sigma_t = \sum_r \pi_t(r) \cdot \sigma_r$
-        \STATE Compute deferral score: $s(p) = c \cdot \max(0, 1 - \gamma \cdot \sigma_t)$
-        \IF{$s(p) < \tau$}
-            \STATE $d \leftarrow \text{defer}$
-        \ELSE
-            \STATE $d \leftarrow \text{accept}$
-        \ENDIF
-        \STATE Update Beta parameters using soft assignment (correct/incorrect)
-    \end{algorithmic}
-\end{algorithm}
