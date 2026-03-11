@@ -30,7 +30,7 @@
 
 Critically, the P-wave false pick rate is comparable between regions (31.4\% vs.\ 34.9\%), indicating that PhaseNet's dominant failure mode under distribution shift is \emph{missed detections} rather than incorrect picks. Timing accuracy also degrades: the mean P-wave residual shifts from +0.041\,s to +0.180\,s, and the standard deviation increases from 0.123\,s to 0.170\,s. Despite this performance collapse, mean confidence for matched picks is nearly unchanged (0.749 vs.\ 0.747).
 
-\subsection{Confidence Scores Are Uninformative Under Shift}
+\subsection{Confidence Scores Do Not Detect Distribution Shift}
 \label{sec:confidence}
 
 % TODO: Figure 3 — Confidence distribution overlap
@@ -61,7 +61,9 @@ P-wave AUROC tells a more damaging story: 0.699 in California versus 0.701 in Ka
     \label{fig:regime_posteriors}
 \end{figure}
 
-The HMM correctly detects all five M$\geq$4.5 triggers with $\pi_t(A) = 1.0$. Recovery to $\pi_t(Q) > 0.9$ takes 7 weeks at KNDC and PDGK following the M5.1 event, 3 weeks at PDGK for the M5.0, and 12 weeks at OTUK. KKAR, triggered by the M4.8 event in the final weeks of the study period, does not recover before the study window ends. The 7 untriggered stations maintain $\pi_t(Q) = 1.0$ throughout, with zero false activations (\cref{fig:regime_posteriors}). A sensitivity analysis across 7 parameter configurations shows recovery times varying between 3 and 19 weeks (\cref{app:hmm}).
+The HMM correctly detects all five M$\geq$4.5 triggers with $\pi_t(A) = 1.0$. Recovery to $\pi_t(Q) > 0.9$ takes 7 weeks at KNDC and PDGK following the M5.1 event, 3 weeks at PDGK for the M5.0, and 12 weeks at OTUK. KKAR, triggered by the M4.8 event in the final weeks of the study period, does not recover before the study window ends.
+
+The 7 untriggered stations maintain $\pi_t(Q) = 1.0$ throughout, with zero false activations (\cref{fig:regime_posteriors}). A sensitivity analysis across 7 parameter configurations shows recovery times varying between 3 and 19 weeks (\cref{app:hmm}).
 
 Active detection and untriggered stability are guaranteed by design (hard injection with $\epsilon \approx 0$), not learned from data. The HMM's genuine contribution is estimating the \emph{decay timeline}, how many weeks of heightened oversight each station needs after a large event. This is the component tested by the sensitivity analysis.
 
