@@ -9,7 +9,7 @@
     \centering
     \caption{PhaseNet performance under distribution shift. All calibration and discrimination metrics are P-wave only.}
     \label{tab:shift}
-    \footnotesize
+    \resizebox{\columnwidth}{!}{%
     \begin{tabular}{@{}lccc@{}}
         \toprule
         Metric & California & Kazakhstan & Change \\
@@ -23,7 +23,7 @@
         P AUROC & 0.699 & 0.701 & +0.002 \\
         P ECE & 0.088 & 0.150 & +0.062 \\
         \bottomrule
-    \end{tabular}
+    \end{tabular}}
 \end{table}
 
 \Cref{tab:shift} summarises PhaseNet's performance across both regions. The California results confirm that PhaseNet performs as published: 83.9\% P-wave detection with a residual standard deviation of 0.123\,s, approaching the 0.1\,s benchmark from \citet{zhu2019phasenet}. The Kazakhstan results reveal a 48.8-percentage-point collapse in P-wave detection rate. PhaseNet misses nearly two-thirds of arrivals that human analysts identified.
