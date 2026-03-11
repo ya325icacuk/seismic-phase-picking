@@ -21,15 +21,5 @@ Our contributions are:
 % TODO: Figure 1 — The confidence paradox (three panels)
 % Generate from notebook Steps 3 + 4:
 % (a) Bar chart: P-wave detection rate California (85.5%) vs Kazakhstan (35.1%)
-% (b) Overlaid confidence histograms: California and Kazakhstan P-wave confidence, showing near-identical distributions
-% (c) Overlaid ROC curves: California AUROC 0.619 vs Kazakhstan 0.616, showing virtually identical discrimination
-\begin{figure*}[t]
-    \centering
-    % \includegraphics[width=\textwidth]{figures/fig1_confidence_paradox.pdf}
-    \fbox{\parbox{0.95\textwidth}{\centering\vspace{2cm}\textbf{Figure 1: TODO --- Generate from notebook}\\[0.5em]
-    Three panels: (a) detection rate bar chart, (b) confidence histograms, (c) ROC curves\vspace{2cm}}}
-    \caption{The confidence paradox. (a)~PhaseNet's P-wave detection rate collapses from 85.5\% to 35.1\% under distribution shift from California to Kazakhstan. (b)~Despite this performance collapse, confidence distributions remain nearly identical between regions. (c)~AUROC for discriminating correct from incorrect picks is virtually unchanged (0.619 vs.\ 0.616). The model is failing, and its confidence scores provide no warning.}
-    \label{fig:confidence_paradox}
-\end{figure*}
 
 The remainder of this paper is organised as follows. \Cref{sec:background} reviews the relevant background on deep learning for seismology, calibration under distribution shift, and selective prediction. \Cref{sec:method} presents the regime-aware deferral framework, including the HMM regime model, Beta-Bernoulli reliability tracking, and the combined deferral score. \Cref{sec:setup} describes the experimental setup, covering both the California baseline and Kazakhstan deployment data. \Cref{sec:results} presents results in two parts: the replication and empirical characterisation of the distribution shift (\cref{sec:shift,sec:confidence}), followed by evaluation of the proposed framework (\cref{sec:regime_behaviour,sec:deferral_comparison}). \Cref{sec:discussion} discusses limitations and broader implications for safety-critical ML.
