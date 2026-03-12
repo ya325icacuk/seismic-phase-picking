@@ -8,7 +8,7 @@
 
 \paragraph{Kazakhstan (out-of-distribution).} We deploy PhaseNet to the Kazakhstan network via the IRIS FDSN web service (Incorporated Research Institutions for Seismology, Federation of Digital Seismograph Networks) as our out-of-distribution test case, since Kazakhstan is seismically active but lies entirely outside PhaseNet's training distribution. Starting from 29 three-component broadband stations, we apply a filtering pipeline that removes experimental and temporary deployments, confirms waveform availability and instrument stability, and requires ISC (International Seismological Centre) pick coverage, yielding 11 stations (full details in \cref{app:data}). The study window is 2020--2023, matching the ISC Reviewed Bulletin's coverage. Ground truth is taken from the ISC Reviewed Bulletin \citep{isc2023}, which provides human-analyst-verified picks integrating data from regional agencies. This yields 4{,}674 verified picks across the 11 stations. PhaseNet produces 190 picks evaluated against 202 P-wave and 74 S-wave ISC arrivals.
 
-\paragraph{Regime data.} We query the ISC earthquake catalog for Central Asia (41--55$^\circ$N, 55--85$^\circ$E), obtaining 6{,}763 M$\geq$3.0 events for weekly count observations and 12 M$\geq$4.5 events as potential regime triggers. Only 4 of these fall within 200\,km of any station, meaning 7 of 11 stations experience no regime transitions during the study period. Full data pipeline details are provided in \cref{app:data}. \Cref{tab:data} summarises both datasets.
+\paragraph{Regime data.} The HMM regime model (\cref{sec:regime_model}) requires weekly earthquake counts and catalog triggers for each station. We query the ISC earthquake catalog for Central Asia (41--55$^\circ$N, 55--85$^\circ$E), obtaining 6{,}763 M$\geq$3.0 events for weekly count observations and 12 M$\geq$4.5 events as potential regime triggers. Only 4 of these fall within 200\,km of any station, meaning 7 of 11 stations experience no regime transitions during the study period. Full data pipeline details are provided in \cref{app:data}. \Cref{tab:data} summarises both datasets.
 
 \begin{table}[t]
     \centering
@@ -20,13 +20,13 @@
         & California & Kazakhstan \\
         \midrule
         Network & BK (NCSN) & KZ (FDSN) \\
-        Stations & 8 per event & 11 \\
+        Stations & up to 8 per event & 11 \\
         Waveforms analysed & 325 & 202 \\
         PhaseNet picks & 563 & 190 \\
-        P-wave GT picks & 273 & 202 \\
-        S-wave GT picks & 12 & 74 \\
+        P-wave ground truth picks & 273 & 202 \\
+        S-wave ground truth picks & 12 & 74 \\
         Period & 2020--2023 & 2020--2023 \\
-        GT source & NCEDC & ISC Reviewed \\
+        Ground truth source & NCEDC & ISC Reviewed \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -41,10 +41,10 @@ A PhaseNet pick is considered correct if it falls within 0.5\,s of a catalog arr
 \subsection{Baselines and Comparisons}
 \label{sec:baselines}
 
-We compare three approaches at matched deferral rates:
+We compare three deferral strategies to evaluate whether the regime signal improves pick selection for human review:
 \begin{itemize}
-    \item \textbf{No deferral:} accept all PhaseNet picks, establishing the lower bound (0.432 system accuracy in Kazakhstan).
+    \item \textbf{No deferral:} accept all PhaseNet picks without human review.
     \item \textbf{Confidence-only deferral:} defer picks with the lowest PhaseNet confidence scores, the standard approach using model self-assessment.
     \item \textbf{Combined score (proposed):} defer picks with the lowest regime-aware deferral scores (\cref{eq:deferral_score}), incorporating environmental context.
 \end{itemize}
-All three are compared at a fixed 25\% deferral rate (48 of 190 picks) to isolate the effect of the regime signal.
+All three are compared at a fixed 25\% deferral rate (48 of 190 picks deferred), so that any difference in system accuracy or regime targeting is attributable to which picks each method selects, not how many it defers.
