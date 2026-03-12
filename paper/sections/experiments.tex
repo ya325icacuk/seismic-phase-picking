@@ -26,7 +26,7 @@
         Waveforms analysed & 72 & 4{,}674 \\
         PhaseNet picks & 64 & 190 \\
         P-wave GT picks & 62 & 202 \\
-        S-wave GT picks & 2 & 74 \\
+        S-wave GT picks & 12 & 74 \\
         Period & 2020--2023 & 2020--2023 \\
         GT source & NCEDC & ISC Reviewed \\
         \bottomrule
@@ -38,10 +38,7 @@
 
 PhaseNet is run with original weights (trained on Northern California) using SeisBench \citep{woollam2022seisbench}. Waveforms are 120\,s windows starting 10\,s before the event origin time, preprocessed with detrending, tapering, bandpass filtering (1--45\,Hz), and normalisation. Picks are extracted with detection thresholds of 0.3 for both P and S phases.
 
-A PhaseNet pick is considered correct if it falls within 0.5\,s of a catalog arrival of the same phase type. This tolerance is consistent with the original PhaseNet evaluation \citep{zhu2019phasenet}. We report detection rate (recall), precision, pick residuals (mean and standard deviation), Expected Calibration Error (ECE), and AUROC for correct/incorrect discrimination. Both calibration and discrimination metrics are computed for P-wave picks separately to avoid confounding by S-wave ground truth differences between regions (California has only 2 S-wave ground truth picks).
-% TODO: Update this — California now has 12 S-wave ground truth picks (Table 3 shows 12/12). This entire paragraph needs reconciling with the updated California dataset.
-
-%TODO: Add we are only evaluating P-waves because of limited S-wave data
+A PhaseNet pick is considered correct if it falls within 0.5\,s of a catalog arrival of the same phase type. This tolerance is consistent with the original PhaseNet evaluation \citep{zhu2019phasenet}. We report detection rate (recall), precision, pick residuals (mean and standard deviation), Expected Calibration Error (ECE), and AUROC for correct/incorrect discrimination. Both calibration and discrimination metrics are computed for P-wave picks separately because S-wave ground truth is limited (12 picks in California vs.\ 74 in Kazakhstan), making cross-region S-wave comparison unreliable.
 
 \subsection{Baselines and Comparisons}
 \label{sec:baselines}
