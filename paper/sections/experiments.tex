@@ -8,7 +8,7 @@
 
 \paragraph{Kazakhstan (out-of-distribution).} We deploy PhaseNet to the KZ network via IRIS FDSN as our out-of-distribution test case, since Kazakhstan is seismically active but lies entirely outside PhaseNet's training distribution. Starting from 29 three-component broadband (BH*) stations, we apply a filtering pipeline: remove experimental and temporary deployments (which lack the long-term stability needed for a four-year study), verify waveform availability at four test times (to confirm data is actually retrievable before committing to a station), confirm instrument stability with no mid-study sensor changes (so any performance shifts can be attributed to seismic regime rather than hardware), and require ISC pick coverage (stations without ground truth picks cannot contribute to evaluation). This yields 11 stations spanning six broadband sensor types (STS-6, STS-2, CMG-3TB, KS-54000, CMG-3ESP, Trillium 120), all sampling at 40\,Hz. The study window is 2020--2023, chosen to match the upper limit of the ISC Reviewed Bulletin's coverage and to ensure all retained stations are on stable hardware throughout. Ground truth is taken from the ISC Reviewed Bulletin \citep{isc2023}, which provides human-analyst-verified picks integrating data from regional agencies, giving more accurate hypocentral solutions for Central Asian events than global catalogs alone. This yields 4{,}674 verified picks across the 11 stations. PhaseNet produces 190 picks evaluated against 202 P-wave and 74 S-wave ISC arrivals.
 
-\paragraph{Regime data.} We query the ISC earthquake catalog for Central Asia (41--55$^\circ$N, 55--85$^\circ$E), obtaining 6{,}763 M$\geq$3.0 events for weekly count observations and 12 M$\geq$4.5 events as potential regime triggers. Only 4 of these fall within 200\,km of any station, meaning 7 of 11 stations experience no regime transitions during the study period. Full data pipeline details are provided in \cref{app:data}.
+\paragraph{Regime data.} We query the ISC earthquake catalog for Central Asia (41--55$^\circ$N, 55--85$^\circ$E), obtaining 6{,}763 M$\geq$3.0 events for weekly count observations and 12 M$\geq$4.5 events as potential regime triggers. Only 4 of these fall within 200\,km of any station, meaning 7 of 11 stations experience no regime transitions during the study period. Full data pipeline details are provided in \cref{app:data}. \Cref{tab:data} summarises both datasets.
 
 % TODO: Table 1 — Dataset summary
 % Columns: Region, Network, Stations, Waveforms, Ground truth picks (P/S), Period, GT source
@@ -23,7 +23,8 @@
         \midrule
         Network & BK (NCSN) & KZ (FDSN) \\
         Stations & 8 per event & 11 \\
-        Waveforms & 72 & $\sim$190 \\
+        Waveforms analysed & 72 & 4{,}674 \\
+        PhaseNet picks & 64 & 190 \\
         P-wave GT picks & 62 & 202 \\
         S-wave GT picks & 2 & 74 \\
         Period & 2020--2023 & 2020--2023 \\
