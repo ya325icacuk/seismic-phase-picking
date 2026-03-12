@@ -13,7 +13,7 @@ Our \emph{innovation} is a regime-aware Bayesian deferral framework that replace
 
 Our contributions are:
 \begin{enumerate}
-    \item An empirical demonstration that PhaseNet's confidence scores are uninformative under distribution shift: P-wave AUROC for correct/incorrect discrimination is virtually identical between California and Kazakhstan (0.699 vs.\ 0.701) despite a 49-percentage-point drop in detection rate, confirming that standard UQ tools fail to detect this degradation (\cref{sec:shift,sec:confidence}).
+    \item An empirical demonstration that PhaseNet's confidence scores are uninformative under distribution shift: P-wave AUROC for correct/incorrect discrimination is virtually identical between California and Kazakhstan (0.699 vs.\ 0.701) despite a 48.8-percentage-point drop in detection rate, confirming that standard UQ tools fail to detect this degradation (\cref{sec:shift,sec:confidence}).
     \item A regime-aware monitoring framework using an HMM to externally track the seismic environment, providing a structured reliability signal that model confidence cannot (\cref{sec:regime_model}).
     \item A Bayesian deferral mechanism that combines regime uncertainty with pick-level confidence, achieving targeted deferral during environmentally uncertain periods, concentrating 90.9\% of deferrals during seismically active periods versus 36.4\% for confidence-only, with honest evaluation showing that confidence-only deferral achieves higher raw system accuracy at matched deferral rates (\cref{sec:deferral_comparison}).
 \end{enumerate}
