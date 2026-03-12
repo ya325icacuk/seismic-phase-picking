@@ -34,7 +34,7 @@
 \subsection{Evaluation Protocol}
 \label{sec:eval_protocol}
 
-PhaseNet is run with original weights (trained on Northern California) using SeisBench \citep{woollam2022seisbench}. Waveforms are 120\,s windows starting 10\,s before the event origin time, preprocessed with detrending, tapering, bandpass filtering (1--45\,Hz), and normalisation. Picks are extracted with detection thresholds of 0.3 for both P and S phases.
+PhaseNet is run with original weights (trained on Northern California) using SeisBench \citep{woollam2022seisbench}. Waveforms are 120\,s windows starting 10\,s before the event origin time, preprocessed with detrending, tapering, bandpass filtering (1-45\,Hz), and normalisation. Picks are extracted with detection thresholds of 0.3 for both P and S phases.
 
 A PhaseNet pick is considered correct if it falls within 0.5\,s of a catalog arrival of the same phase type. We use a wider tolerance than the 0.1s criterion in the original PhaseNet evaluation \citep{zhu2019phasenet} because we compare against independently processed catalog arrival times, which may carry small systematic timing offsets relative to PhaseNet's output. We report detection rate (recall), precision, pick residuals (mean and standard deviation), Expected Calibration Error (ECE), and AUROC for correct/incorrect discrimination. Both calibration and discrimination metrics are computed for P-wave picks separately because S-wave ground truth is limited (12 picks in California vs.\ 74 in Kazakhstan), making cross-region S-wave comparison unreliable.
 
