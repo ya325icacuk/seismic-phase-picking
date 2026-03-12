@@ -153,7 +153,7 @@ With the regime posteriors from Section~3.2 in hand, we now estimate PhaseNet's 
 \end{equation}
 This is conjugate Bayesian updating. All three regimes are initialised with $\text{Beta}(2, 2)$ priors, a weak prior centered at 0.5 with an effective sample size of 4, so that even sparse regimes can shift the estimate.
 
-Each pick's outcome updates all three regimes' Beta parameters, weighted by $\pi_t(r)$. Picks are processed in chronological order. Each pick receives its deferral score (Section 3.5) from the current Beta parameters, and the Beta parameters are updated only afterwards. For a correct pick:
+Each pick's outcome updates all three regimes' Beta parameters, weighted by $\pi_t(r)$. Picks are processed in chronological order. Each pick receives its deferral score (\cref{sec:combined_score}) from the current Beta parameters, and the Beta parameters are updated only afterwards. For a correct pick:
 \begin{equation}
     \alpha_r \leftarrow \alpha_r + \pi_t(r), \qquad \beta_r \leftarrow \beta_r \quad \forall\, r \in \{Q, A, D\}
 \end{equation}
