@@ -8,7 +8,7 @@
 % Note the trend: models trained on well-instrumented networks deployed globally → distribution shift.
 % Use Sera's description of the architecture but keep it concise.
 
-PhaseNet \citep{zhu2019phasenet} is a U-Net convolutional neural network that takes three-component seismic waveforms as input and outputs continuous probability traces for P-wave, S-wave, and noise classes. Picks are extracted via peak detection with configurable confidence thresholds. The model was trained on approximately 780{,}000 waveforms from the Northern California Seismic Network and has become one of the most widely-used tools for automated phase picking, accessible through the standardised SeisBench interface \citep{woollam2022seisbench}. It is increasingly deployed to data-sparse regions globally, the distribution shift scenario we study here.
+PhaseNet \citep{zhu2019phasenet} is a U-Net convolutional neural network that takes three-component seismic waveforms (recordings of ground motion in the vertical, north-south, and east-west directions) as input and outputs a probability at each timestep for P-wave, S-wave, and noise classes. Picks are extracted by identifying peaks in the per-timestep probabilities and retaining those that exceed a configurable confidence threshold. PhaseNet was trained on approximately 780{,}000 waveforms from the Northern California Seismic Network and has become one of the most widely-used tools for automated phase picking, accessible through the standardised SeisBench interface \citep{woollam2022seisbench}. It is increasingly deployed to data-sparse regions globally, the distribution shift scenario we study here.
 
 \subsection{Distribution Shift and the Limits of Model Self-Assessment}
 \label{sec:bg_shift}
