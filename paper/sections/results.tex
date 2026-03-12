@@ -66,9 +66,7 @@ Since the HMM parameters are set from domain knowledge rather than learned from 
 \subsection{Deferral Comparison}
 \label{sec:deferral_comparison}
 
-The primary value of the regime model is not in predicting per-regime performance, but in providing the uncertainty signal ($\sigma_r$) that drives deferral. Regimes with few observations have high $\sigma_r$ by construction.
-
-At a fixed 25\% deferral rate (48 of 190 picks deferred):
+With the regime model and reliability estimates in place, we now evaluate the full deferral framework by comparing it against confidence-only deferral. The primary value of the regime model is not in predicting per-regime performance, but in providing the uncertainty signal ($\sigma_r$) that drives deferral.
 
 % YASMIN: Updated system accuracy from Notebook - 3 March (was 0.686/0.639, now 0.651/0.619)
 \begin{table}[t]
@@ -103,12 +101,9 @@ At a fixed 25\% deferral rate (48 of 190 picks deferred):
     \end{tabular}
 \end{table}
 
-% YASMIN: Updated inline numbers to match notebook
-\Cref{tab:deferral} shows that confidence-only deferral achieves higher system accuracy (0.651 vs.\ 0.619) at matched deferral rates. This is expected: confidence-only directly optimises ``which individual picks are most likely wrong?'' and selects the lowest-confidence picks for human review.
+At a fixed 25\% deferral rate (48 of 190 picks deferred), confidence-only deferral achieves higher system accuracy (0.651 vs.\ 0.619, \cref{tab:deferral}), which is expected since it directly targets the picks most likely to be incorrect. The combined score's advantage lies in regime targeting (\cref{tab:targeting}): it concentrates 90.9\% of deferrals during Active periods versus 36.4\% for confidence-only. This difference arises because PhaseNet's confidence carries almost no regime signal (mean confidence ranges only from 0.616 to 0.637 across regimes), so confidence-only deferral spreads deferrals near-uniformly across time.
 
-The combined score's advantage lies in \emph{regime targeting} (\cref{tab:targeting}). It concentrates 90.9\% of deferrals during Active periods versus 36.4\% for confidence-only. This difference arises because PhaseNet's confidence carries almost no regime signal (mean confidence ranges only from 0.616 to 0.637 across all three regimes), so confidence-only deferral spreads deferrals near-uniformly across time.
-
-The two methods answer different questions. Confidence-only asks: \emph{which picks are most likely wrong?} This is better for maximising accuracy at a fixed deferral budget. The combined score asks: \emph{when is the model operating in an environment where we have insufficient evidence about its reliability?} This is better for directing human attention to periods of greatest environmental uncertainty. For safety-critical deployment, we argue the second question is more operationally relevant: a monitoring agency needs to know \emph{when} the system requires oversight, not just which individual picks to double-check. We do not claim the combined score is universally better. The choice depends on operational priorities.
+The combined score's value is in directing human attention to periods of greatest environmental uncertainty, rather than to individual low-confidence picks. For safety-critical deployment, a monitoring agency needs to know \emph{when} the system requires oversight.
 
 % TODO: Figure 5 — Threshold sensitivity curves
 % System accuracy vs deferral rate for both methods, 20-30% band shaded
