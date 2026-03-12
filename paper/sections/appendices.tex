@@ -92,33 +92,34 @@ A PhaseNet pick is matched to the nearest catalog arrival of the same phase type
 \section{HMM Specification and Sensitivity Analysis}
 \label{app:hmm}
 
-% TODO: Populate from notebook Step 5
-% B.1 Parameter derivation: transition matrix, station-specific Poisson rates, emission verification
-% B.2 Forward algorithm: full specification, hard injection handling
-% B.3 Sensitivity analysis: recovery times under 6 perturbations × 4 station-event pairs
-
-The full HMM parameter specification, forward algorithm details, and sensitivity analysis results will be provided here.
 
 \paragraph{Emission parameter estimation.} Each station's quiet-period emission rate $\lambda_Q$ is estimated as the mean weekly M3+ count, excluding the 4 weeks following each M4.5+ trigger event to avoid contamination by aftershock activity. For stations where the resulting mean is near zero, a floor of $\lambda_Q = 0.05$ is applied. This is necessary because a Poisson distribution with rate exactly zero assigns zero probability to any nonzero count, which would cause the forward algorithm to assign zero likelihood to weeks with observed events and break posterior inference.
 
 \section{Regime Posterior Visualisations}
 \label{app:posteriors}
 
-% TODO: Generate from notebook Step 5c
-% Stacked area charts for all 11 stations, grouped by triggered vs untriggered
+\Cref{fig:regimes_all} shows the full set of regime posteriors for all 11 stations, grouped by triggered (top) and untriggered (bottom). Triggered stations exhibit clear transitions from Quiet to Active following nearby M$\geq$4.5 events, with gradual decay back toward the Quiet regime over subsequent weeks. Untriggered stations remain in the Quiet regime throughout the study period.
 
-The complete set of regime posterior plots for all 11 stations will be provided here.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/appendix_regimes_all}
+    \caption{Regime posteriors $\pi_t(r)$ for all 11 KZ-network stations (2020--2023). Triggered stations (top) show clear Active$\to$Decaying$\to$Quiet transitions following nearby M$\geq$4.5 events. Untriggered stations (bottom) remain in the Quiet regime throughout.}
+    \label{fig:regimes_all}
+\end{figure}
 
-% YASMIN: Populated from Notebook - 3 March, Steps 6-7
 \section{Deferral Framework Details}
 \label{app:deferral}
 
 \subsection{Beta-Bernoulli Convergence}
 
-% TODO: Figure — Beta-Bernoulli posterior evolution plots from Step 6b
-% Show alpha, beta, theta, sigma evolution over 190 picks for each regime
+\Cref{fig:beta_convergence} shows the evolution of the reliability estimate $E[\theta_r]$ and posterior uncertainty $\sigma_r$ for each regime over the 190 Kazakhstan picks. The Beta-Bernoulli model is initialised with $\text{Beta}(2, 2)$ priors for all three regimes and updated sequentially using soft regime assignment. \Cref{tab:beta_final} reports the final posterior parameters.
 
-The Beta-Bernoulli model is initialised with $\text{Beta}(2, 2)$ priors for all three regimes and updated sequentially over the 190 Kazakhstan picks using soft regime assignment. \Cref{tab:beta_final} reports the final posterior parameters.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/appendix_beta_convergence}
+    \caption{Beta-Bernoulli posterior evolution over 190 Kazakhstan picks. Top: reliability estimate $E[\theta_r] = \alpha_r / (\alpha_r + \beta_r)$. Bottom: posterior uncertainty $\sigma_r$. The Quiet regime converges quickly due to high observation weight; Active and Decaying regimes remain uncertain due to sparse data.}
+    \label{fig:beta_convergence}
+\end{figure}
 
 \begin{table}[h]
     \centering
@@ -140,10 +141,14 @@ The Quiet regime accumulates the vast majority of observations (164.6 effective 
 
 \subsection{Threshold Sensitivity}
 
-% TODO: Figure — Full threshold sweep from Step 6c
-% System accuracy vs deferral rate (0-50\%) for both methods
+\Cref{fig:threshold_sweep} shows system accuracy as a function of deferral rate for both methods. At the 25\% operating point, confidence-only defers the 48 picks with lowest PhaseNet confidence, achieving 0.651 system accuracy. The combined score defers the 48 picks with the lowest regime-aware scores, achieving 0.619. Confidence-only maintains a slight accuracy advantage across most deferral rates because it directly targets the picks most likely to be incorrect, whereas the combined score prioritises regime-uncertain picks regardless of individual confidence.
 
-At the 25\% operating point, confidence-only defers the 48 picks with lowest PhaseNet confidence, achieving 0.651 system accuracy. The combined score defers the 48 picks with the lowest regime-aware scores, achieving 0.619. Confidence-only maintains a slight accuracy advantage across most deferral rates because it directly targets the picks most likely to be incorrect, whereas the combined score prioritises regime-uncertain picks regardless of individual confidence.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/appendix_threshold_sweep}
+    \caption{System accuracy vs.\ deferral rate (0--50\%) for confidence-only and combined-score methods, assuming 95\% analyst accuracy on deferred picks. The grey band marks the 20--30\% operating range. Confidence-only maintains a slight advantage across most deferral rates.}
+    \label{fig:threshold_sweep}
+\end{figure}
 
 \subsection{Regime-Stratified Deferral Rates}
 
@@ -166,8 +171,14 @@ At the 25\% operating point, confidence-only defers the 48 picks with lowest Pha
 
 \subsection{Human-in-the-Loop Capacity Curves}
 
-% TODO: Figure — Capacity curves from Step 7a
-% System accuracy vs analyst capacity (0-50\%) for both methods
+\Cref{fig:capacity_curves} shows system accuracy as a function of analyst capacity for both methods at 48 deferred picks.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/appendix_capacity_curves}
+    \caption{System accuracy vs.\ analyst capacity (0--50\% of picks) for confidence-only and combined-score methods, with 48 picks deferred and 95\% analyst accuracy. Both methods saturate at 25\% capacity when all deferred picks have been reviewed.}
+    \label{fig:capacity_curves}
+\end{figure}
 
 \begin{table}[h]
     \centering
@@ -191,7 +202,11 @@ Both methods saturate at 25\% analyst capacity, at which point all 48 deferred p
 
 \subsection{Analyst Accuracy Sensitivity}
 
-% TODO: Figure — Analyst sensitivity sweep from Step 7c
-% System accuracy vs analyst accuracy (70-99\%) for both methods + baseline
+\Cref{fig:analyst_sensitivity} shows system accuracy as a function of analyst accuracy for both methods. Confidence-only deferral exceeds the no-deferral baseline when analyst accuracy exceeds 8.3\%. The combined score requires analyst accuracy above 20.8\%. The higher breakeven for the combined score reflects the fact that it defers some high-confidence picks during uncertain regimes, picks that may already be correct, meaning the analyst must be reasonably accurate to improve on the automated decision.
 
-Confidence-only deferral exceeds the no-deferral baseline when analyst accuracy exceeds 8.3\%. The combined score requires analyst accuracy above 20.8\%. The higher breakeven for the combined score reflects the fact that it defers some high-confidence picks during uncertain regimes, picks that may already be correct, meaning the analyst must be reasonably accurate to improve on the automated decision.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/appendix_analyst_sensitivity}
+    \caption{System accuracy vs.\ analyst accuracy (0--100\%) for confidence-only and combined-score methods at 25\% deferral rate (48 picks). The grey band marks the 70--99\% plausible analyst accuracy range. Confidence-only breaks even at 8.3\% analyst accuracy; the combined score requires 20.8\%.}
+    \label{fig:analyst_sensitivity}
+\end{figure}
