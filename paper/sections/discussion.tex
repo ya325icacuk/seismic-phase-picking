@@ -1,8 +1,5 @@
-\section{Discussion and Limitations}
+\section{Limitations}
 \label{sec:discussion}
-
-\subsection{Limitations}
-\label{sec:limitations}
 
 We organise limitations into three categories: constraints on the evidence base, assumptions that would matter in operational deployment, and inherent boundaries of the framework's scope.
 
@@ -12,12 +9,4 @@ We organise limitations into three categories: constraints on the evidence base,
 
 \textbf{Inherent trade-offs.} The combined score achieves lower raw system accuracy than confidence-only at matched deferral rates. Practitioners who prioritise accuracy over temporal targeting may prefer confidence-only deferral. PhaseNet's dominant failure mode under distribution shift is missed detections, but the Beta-Bernoulli model tracks only precision because the framework processes only PhaseNet's output and has no mechanism to detect arrivals PhaseNet missed. The deferral threshold targets a deferral rate, not an error rate or safety level. Integrating methods such as conformal prediction to provide finite-sample coverage guarantees is a direction for future work.
 
-\subsection{Do the Experiments Support the Claims?}
-\label{sec:self_eval}
-
 We cannot claim the regime signal \emph{causes} better deferral. The comparison is observational, not ablated in a controlled experiment. What we show is that the two methods defer systematically different picks, and that the combined score's pattern aligns with operationally relevant regime structure. We report both system accuracy and regime-stratified deferral rates rather than selecting the metric that favours our method.
-
-\subsection{Broader Implications for Safety-Critical ML}
-\label{sec:implications}
-
-This work illustrates a general principle: when a model cannot self-diagnose failure under distribution shift, \emph{external context about the deployment environment} can provide the reliability signal that internal uncertainty cannot. The specific context here is seismic regime, but the architecture applies wherever deployment conditions are structured and observable, these conditions affect model reliability systematically, and the model's own uncertainty fails to reflect this. Examples include medical imaging across hospitals with different equipment profiles, autonomous vehicles across geographies with different road conditions, or environmental monitoring systems deployed across ecosystems.
