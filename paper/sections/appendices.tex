@@ -74,8 +74,11 @@ We queried NCEDC for M3.5--5.0 events from the Northern California Seismic Netwo
 \label{app:preprocessing}
 
 All waveforms (California and Kazakhstan) were preprocessed identically before inference:
-%
+\setlength{\itemsep}{0pt}
+\setlength{\parskip}{0pt}
 \begin{enumerate}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
     \item Linear detrending
     \item 5\% cosine tapering at both ends
     \item Bandpass filtering, 1--45\,Hz (Butterworth)
@@ -93,7 +96,28 @@ A PhaseNet pick is matched to the nearest catalog arrival of the same phase type
 \label{app:hmm}
 
 
-\paragraph{Emission parameter estimation.} Each station's quiet-period emission rate $\lambda_Q$ is estimated as the mean weekly M3+ count, excluding the 4 weeks following each M4.5+ trigger event to avoid contamination by aftershock activity. For stations where the resulting mean is near zero, a floor of $\lambda_Q = 0.05$ is applied. This is necessary because a Poisson distribution with rate exactly zero assigns zero probability to any nonzero count, which would cause the forward algorithm to assign zero likelihood to weeks with observed events and break posterior inference.
+% \paragraph{Emission parameter estimation.} Each station's quiet-period emission rate $\lambda_Q$ is estimated as the mean weekly M3+ count, excluding the 4 weeks following each M4.5+ trigger event to avoid contamination by aftershock activity. For stations where the resulting mean is near zero, a floor of $\lambda_Q = 0.05$ is applied. This is necessary because a Poisson distribution with rate exactly zero assigns zero probability to any nonzero count, which would cause the forward algorithm to assign zero likelihood to weeks with observed events and break posterior inference.
+
+\subsection{Emission Parameter Estimation}
+\label{app:emission}
+
+Each station's quiet-period emission rate $\lambda_Q$ is estimated as the mean weekly M$\geq$3.0 count, excluding the 4 weeks following each M$\geq$4.5 trigger event to avoid contamination by aftershock activity. For stations where the resulting mean is near zero, a floor of $\lambda_Q = 0.05$ is applied. This is necessary because a Poisson distribution with rate exactly zero assigns zero probability to any nonzero count, which would cause the forward algorithm to assign zero likelihood to weeks with observed events and break posterior inference.
+
+\subsection{Transition Parameter Sensitivity}
+\label{app:hmm_sensitivity}
+
+The transition matrix parameters ($a_D = 0.35$, $d_Q = 0.18$, $d_A = 0.07$) are set from domain knowledge rather than estimated from data. To assess robustness to these choices, we re-run the forward algorithm under four perturbations: $a_D$ doubled (0.70) and halved (0.175), and $d_Q$ doubled (0.36) and halved (0.09).
+
+Across all configurations, the qualitative regime sequence following a large event is unchanged: Active, then Decaying, then Quiet. Only the duration of the Decaying phase varies. Doubling $a_D$ shortens the Active phase (faster transition to Decaying); halving $d_Q$ extends the Decaying phase (slower recovery to Quiet). The untriggered stations maintain $\pi_t(\text{Quiet}) = 1.0$ throughout under all perturbations, since Active is entered only via forced catalog injection. The framework can therefore be tuned to defer more or fewer picks in the weeks following a large event by adjusting $d_Q$, without affecting the qualitative targeting behaviour.
+
+\subsection{\texorpdfstring{$\gamma$}{Gamma} Sensitivity}
+\label{app:sensitivity}
+
+The sensitivity parameter $\gamma = 5$ is not uniquely determined by the model. To assess robustness, we evaluate regime-stratified deferral rates and system accuracy at $\gamma \in \{2, 3, 5, 7, 10\}$, fixing the deferral rate at 25\% throughout.
+
+At $\gamma = 5$, Active and Decaying regimes have posterior standard deviations of $\sigma_A \approx 0.123$ and $\sigma_D \approx 0.111$ respectively (Table~\ref{tab:beta_final}), giving regime penalties of approximately $1 - 5 \times 0.12 = 0.40$. The Quiet regime, with $\sigma_Q \approx 0.038$, retains a penalty of approximately $1 - 5 \times 0.04 = 0.81$. Smaller values of $\gamma$ reduce the separation between regimes; larger values risk suppressing Active and Decaying scores to exactly zero, eliminating the confidence gradient within those regimes.
+
+The key finding is that the combined score concentrates deferrals in Active and Decaying periods relative to confidence-only holds across the full range tested. The proportion of Active picks deferred remains above 70\% for $\gamma \geq 3$, and system accuracy varies by less than 0.02 across all configurations.
 
 \section{Regime Posterior Visualisations}
 \label{app:posteriors}

@@ -4,11 +4,11 @@
 \subsection{Data}
 \label{sec:data}
 
-\paragraph{California (in-distribution).} We use the Northern California Seismic Network (NCSN) via the Northern California Earthquake Data Center (NCEDC) as an in-distribution baseline, as PhaseNet was trained on NCSN data. We select M3.5--5.0 events for 2020--2023, matching the magnitude range and time window used for Kazakhstan. Three-component broadband waveforms are downloaded from up to 8 nearby stations within approximately 200\,km of each event. Ground truth picks are taken from the NCEDC catalog (273 P-wave and 12 S-wave arrivals across 325 waveforms). Full selection criteria are provided in \cref{app:data}.
+\paragraph{California (in-distribution).} We use the Northern California Seismic Network (NCSN) via the Northern California Earthquake Data Center (NCEDC) as an in-distribution baseline, as PhaseNet was trained on NCSN data. We select M3.5--5.0 events for 2020--2023, matching the magnitude range and time window used for Kazakhstan. Three-component broadband waveforms are downloaded from up to 8 nearby stations within $2^\circ$ (approximately 200\,km) of each event. Ground truth picks are taken from the NCEDC catalog (273 P-wave and 12 S-wave arrivals across 325 waveforms). Full selection criteria are provided in \cref{app:data}.
 
 \paragraph{Kazakhstan (out-of-distribution).} We deploy PhaseNet to the Kazakhstan network via the IRIS FDSN web service (Incorporated Research Institutions for Seismology, Federation of Digital Seismograph Networks) as our out-of-distribution test case, since Kazakhstan is seismically active but lies entirely outside PhaseNet's training distribution. Starting from 29 three-component broadband stations, we apply a filtering pipeline that removes experimental and temporary deployments, confirms waveform availability and instrument stability, and requires ISC (International Seismological Centre) pick coverage, yielding 11 stations (full details in \cref{app:data}). The study window is 2020--2023, matching the ISC Reviewed Bulletin's coverage. Ground truth is taken from the ISC Reviewed Bulletin \citep{isc2023}, which provides human-analyst-verified picks integrating data from regional agencies. This yields 4{,}674 verified picks across the 11 stations. PhaseNet produces 190 picks evaluated against 202 P-wave and 74 S-wave ISC arrivals.
 
-\paragraph{Regime data.} The HMM regime model (\cref{sec:regime_model}) requires weekly earthquake counts and catalog triggers for each station. We query the ISC earthquake catalog for Central Asia (41--55$^\circ$N, 55--85$^\circ$E), obtaining 6{,}763 M$\geq$3.0 events for weekly count observations and 12 M$\geq$4.5 events as potential regime triggers. Only 4 of these fall within 200\,km of any station, meaning 7 of 11 stations experience no regime transitions during the study period. Full data pipeline details are provided in \cref{app:data}. \Cref{tab:data} summarises both datasets.
+\paragraph{Regime data.} The HMM regime model (\cref{sec:regime_model}) requires weekly earthquake counts and catalog triggers for each station. We query the ISC earthquake catalog for Central Asia (41--55$^\circ$N, 55--85$^\circ$E), obtaining 6{,}763 M$\geq$3.0 events for weekly count observations and 12 M$\geq$4.5 events as potential regime triggers. Only 4 of these fall within 200km of any station, meaning 7 of 11 stations experience no regime transitions during the study period. Full data pipeline details are provided in \cref{app:data}. \Cref{tab:data} summarises both datasets.
 
 \begin{table}[t]
     \centering
@@ -34,17 +34,41 @@
 \subsection{Evaluation Protocol}
 \label{sec:eval_protocol}
 
-PhaseNet is run with original weights (trained on Northern California) using SeisBench \citep{woollam2022seisbench}. Waveforms are 120\,s windows starting 10\,s before the event origin time, preprocessed with detrending, tapering, bandpass filtering (1-45\,Hz), and normalisation. Picks are extracted with detection thresholds of 0.3 for both P and S phases.
+PhaseNet is run with original weights (trained on Northern California) using SeisBench \citep{woollam2022seisbench}. Waveforms are 120\,s windows starting 10\,s before the event origin time, preprocessed identically for both regions (see \cref{app:preprocessing}). Picks are extracted with detection thresholds of 0.3 for both P and S phases. 
 
 A PhaseNet pick is considered correct if it falls within 0.5\,s of a catalog arrival of the same phase type. We use a wider tolerance than the 0.1s criterion in the original PhaseNet evaluation \citep{zhu2019phasenet} because we compare against independently processed catalog arrival times, which may carry small systematic timing offsets relative to PhaseNet's output. We report detection rate (recall), precision, pick residuals (mean and standard deviation), Expected Calibration Error (ECE), and AUROC for correct/incorrect discrimination. Both calibration and discrimination metrics are computed for P-wave picks separately because S-wave ground truth is limited (12 picks in California vs.\ 74 in Kazakhstan), making cross-region S-wave comparison unreliable.
+
+% \subsection{Baselines and Comparisons}
+% \label{sec:baselines}
+
+% We compare three deferral strategies to evaluate whether the regime signal improves pick selection for human review:
+% \begin{itemize}
+%     \item \textbf{No deferral:} accept all PhaseNet picks without human review.
+%     \item \textbf{Confidence-only deferral:} defer picks with the lowest PhaseNet confidence scores, the standard approach using model self-assessment.
+%     \item \textbf{Combined score (proposed):} defer picks with the lowest regime-aware deferral scores (\cref{eq:deferral_score}), incorporating environmental context.
+% \end{itemize}
+% All three are compared at a fixed 25\% deferral rate (48 of 190 picks deferred), so that any difference in system accuracy or regime targeting is attributable to which picks each method selects, not how many it defers.
+
+% The sensitivity parameter $\gamma = 5$ controls how aggressively regime uncertainty suppresses PhaseNet's confidence: picks from data-sparse regimes (Active, Decaying) are penalised more heavily than picks from the well-observed Quiet regime. The deferral threshold $\tau$ is set by ranking all picks by their combined score and taking the cutoff that achieves exactly 25\% deferral.
+
+% The choice of γ is not uniquely determined; robustness is assessed in \cref{app:sensitivity}.
 
 \subsection{Baselines and Comparisons}
 \label{sec:baselines}
 
 We compare three deferral strategies to evaluate whether the regime signal improves pick selection for human review:
+\setlength{\itemsep}{0pt}
+\setlength{\parskip}{0pt}
 \begin{itemize}
-    \item \textbf{No deferral:} accept all PhaseNet picks without human review.
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \item \textbf{No deferral:} accept all PhaseNet picks without human review, establishing the lower bound on system accuracy.
     \item \textbf{Confidence-only deferral:} defer picks with the lowest PhaseNet confidence scores, the standard approach using model self-assessment.
     \item \textbf{Combined score (proposed):} defer picks with the lowest regime-aware deferral scores (\cref{eq:deferral_score}), incorporating environmental context.
 \end{itemize}
-We set $\gamma = 5$, which halves the deferral score when $\sigma_t \approx 0.10$ (the posterior uncertainty observed for Active and Decaying regimes) while preserving most of the confidence signal for Quiet ($\sigma_t \approx 0.04$). All three are compared at a fixed 25\% deferral rate (48 of 190 picks deferred), so that any difference in system accuracy or regime targeting is attributable to which picks each method selects, not how many it defers.
+
+All three are compared at a fixed 25\% deferral rate (48 of 190 picks deferred), reflecting the fraction of picks a monitoring agency with limited analyst capacity could realistically review manually. Fixing the rate ensures any difference in system accuracy or regime targeting is attributable to \emph{which} picks each method selects, not how many it defers. Results across the full 20--30\% operational range are reported in \cref{app:deferral}.
+
+The sensitivity parameter $\gamma = 5$ determines the degree to which regime uncertainty suppresses PhaseNet's confidence: picks from data-sparse regimes (Active, Decaying) incur a larger penalty than picks from the well-observed Quiet regime. The value $\gamma = 5$ is not uniquely determined by the model specification; a sensitivity analysis over plausible alternatives is provided in \cref{app:sensitivity}.
+
+The deferral threshold $\tau$ is not fixed in advance. It is set by ranking all picks by their combined score and taking the cutoff that achieves exactly 25\% deferral, making it straightforward to retarget for a different operational deferral budget without refitting the model.
