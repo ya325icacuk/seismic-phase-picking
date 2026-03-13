@@ -19,7 +19,7 @@ We propose a regime-aware deferral framework that replaces model self-assessment
 \subsection{Deep Learning Phase Picking and Distribution Shift}
 \label{sec:bg_picking}
 
-PhaseNet \citep{zhu2019phasenet} is a U-Net convolutional neural network trained on approximately 780{,}000 waveforms from the Northern California Seismic Network, producing continuous P-wave, S-wave, and noise probability traces. It is widely deployed through the standardised SeisBench interface \citep{woollam2022seisbench}. Models trained on well-instrumented networks are known to degrade when deployed to seismically distinct regions \citep{mousavi2020earthquake}, and neural network confidence scores are poorly calibrated under distribution shift \citep{ovadia2019uncertainty}, meaning the model does not signal when it is failing. We confirm both findings for PhaseNet in Kazakhstan (Section~\ref{sec:results}).
+PhaseNet \citep{zhu2019phasenet} is a U-Net convolutional neural network trained on approximately 780{,}000 waveforms from the Northern California Seismic Network, producing continuous P-wave, S-wave, and noise probability traces. It is widely deployed through the standardised SeisBench interface \citep{woollam2022seisbench}. Models trained on well-instrumented networks are known to degrade when deployed to seismically distinct regions \citep{Munchmeyer2022}, and neural network confidence scores are poorly calibrated under distribution shift \citep{ovadia2019uncertainty}, meaning the model does not signal when it is failing. We confirm both findings for PhaseNet in Kazakhstan (Section~\ref{sec:results}).
 
 \subsection{Selective Prediction and Learning to Defer}
 \label{sec:bg_defer}

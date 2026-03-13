@@ -123,7 +123,7 @@ The qualitative finding that the combined score concentrates deferrals in Active
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{figures/appendix_regimes_all}
-    \caption{Regime posteriors $\pi_t(r)$ for the four triggered Kazakhstan-network stations and one representative untriggered station (ABKAR), 2022--2023. All stations were in the Quiet regime during 2020--2021 (not shown). Triggered stations show clear Active$\to$Decaying$\to$Quiet transitions following nearby M$\geq$4.5 events. The remaining six untriggered stations (AKTO, BORK, BVAR, KURK, MAKZ, MKAR) maintain $\pi_t(\text{Quiet}) = 1.0$ throughout and are omitted.}
+    \caption{Regime posteriors $\pi_t(r)$ for four triggered and one untriggered Kazakhstan-network station, 2022--2023. Triggered stations show clear Active$\to$Decaying$\to$Quiet transitions following nearby M$\geq$4.5 events. ABKAR remains in the Quiet regime throughout.}
     \label{fig:regimes_all}
 \end{figure}
 
@@ -160,44 +160,47 @@ The Quiet regime accumulates the vast majority of observations (164.6 effective 
 
 \Cref{tab:regime_deferral_detail} breaks down deferral rates by regime for both methods at 25\% overall deferral.
 
-\begin{table}[h]
-    \centering
-    \caption{Regime-stratified deferral rates at 25\% overall deferral.}
-    \label{tab:regime_deferral_detail}
-    \small
-    \begin{tabular}{@{}lccc@{}}
-        \toprule
-        Regime & Picks & Conf-only deferred & Combined deferred \\
-        \midrule
-        Quiet ($\pi_Q > 0.9$) & 155 & 36 (23.2\%) & 27 (17.4\%) \\
-        Active ($\pi_A > 0.5$) & 11 & 4 (36.4\%) & 10 (90.9\%) \\
-        Decaying ($\pi_D > 0.5$) & 15 & 5 (33.3\%) & 9 (60.0\%) \\
-        Mixed & 9 & 3 (33.3\%) & 2 (22.2\%) \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
 \subsection{Human-in-the-Loop Capacity Curves}
 
 \Cref{fig:capacity_curves} shows system accuracy as a function of analyst capacity for both methods at 48 deferred picks. \Cref{tab:capacity} reports system accuracy at specific capacity levels.
 
-\begin{table}[h]
+\begin{table*}[t]
     \centering
-    \caption{System accuracy at different analyst capacity levels (48 picks deferred).}
-    \label{tab:capacity}
-    \small
-    \begin{tabular}{@{}lccc@{}}
-        \toprule
-        Capacity & Conf-only & Combined & Utilisation \\
-        \midrule
-        10\% & 0.527 & 0.485 & 100\% \\
-        15\% & 0.572 & 0.519 & 100\% \\
-        20\% & 0.606 & 0.569 & 100\% \\
-        25\% & 0.651 & 0.619 & 100\% \\
-        30\% & 0.651 & 0.619 & 84.2\% \\
-        \bottomrule
-    \end{tabular}
-\end{table}
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \caption{Regime-stratified deferral rates at 25\% overall deferral.}
+        \label{tab:regime_deferral_detail}
+        \small
+        \begin{tabular}{@{}lccc@{}}
+            \toprule
+            Regime & Picks & Conf-only & Combined \\
+            \midrule
+            Quiet ($\pi_Q > 0.9$) & 155 & 36 (23.2\%) & 27 (17.4\%) \\
+            Active ($\pi_A > 0.5$) & 11 & 4 (36.4\%) & 10 (90.9\%) \\
+            Decaying ($\pi_D > 0.5$) & 15 & 5 (33.3\%) & 9 (60.0\%) \\
+            Mixed & 9 & 3 (33.3\%) & 2 (22.2\%) \\
+            \bottomrule
+        \end{tabular}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \caption{System accuracy at different analyst capacity levels (48 picks deferred).}
+        \label{tab:capacity}
+        \small
+        \begin{tabular}{@{}lccc@{}}
+            \toprule
+            Capacity & Conf-only & Combined & Utilisation \\
+            \midrule
+            10\% & 0.527 & 0.485 & 100\% \\
+            15\% & 0.572 & 0.519 & 100\% \\
+            20\% & 0.606 & 0.569 & 100\% \\
+            25\% & 0.651 & 0.619 & 100\% \\
+            30\% & 0.651 & 0.619 & 84.2\% \\
+            \bottomrule
+        \end{tabular}
+    \end{minipage}
+\end{table*}
 
 Both methods saturate at 25\% analyst capacity, at which point all 48 deferred picks have been reviewed. Below saturation, the two methods allocate analyst time differently: the combined score sends 39.6\% of reviewed picks to Active or Decaying periods (10 Active + 9 Decaying out of 48), while confidence-only sends only 18.8\% (4 Active + 5 Decaying out of 48). The remaining capacity is consumed by Quiet-period picks in both cases.
 
