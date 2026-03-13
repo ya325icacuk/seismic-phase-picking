@@ -124,7 +124,7 @@ The key finding is that the combined score concentrates deferrals in Active and 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{figures/appendix_regimes_all}
+    \includegraphics[width=0.7\textwidth]{figures/appendix_regimes_all}
     \caption{Regime posteriors $\pi_t(r)$ for the four triggered Kazakhstan-network stations and one representative untriggered station (ABKAR), 2022--2023. All stations were in the Quiet regime during 2020--2021 (not shown). Triggered stations show clear Active$\to$Decaying$\to$Quiet transitions following nearby M$\geq$4.5 events. The remaining six untriggered stations (AKTO, BORK, BVAR, KURK, MAKZ, MKAR) maintain $\pi_t(\text{Quiet}) = 1.0$ throughout and are omitted.}
     \label{fig:regimes_all}
 \end{figure}
@@ -135,13 +135,6 @@ The key finding is that the combined score concentrates deferrals in Active and 
 \subsection{Beta-Bernoulli Convergence}
 
 \Cref{fig:beta_convergence} shows the evolution of the reliability estimate $E[\theta_r]$ and posterior uncertainty $\sigma_r$ for each regime over the 190 Kazakhstan picks. The Beta-Bernoulli model is initialised with $\text{Beta}(2, 2)$ priors for all three regimes and updated sequentially using soft regime assignment. \Cref{tab:beta_final} reports the final posterior parameters.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\columnwidth]{figures/appendix_beta_convergence}
-    \caption{Beta-Bernoulli posterior evolution over 190 Kazakhstan picks. Top: reliability estimate $E[\theta_r]$. Bottom: posterior uncertainty $\sigma_r$.}
-    \label{fig:beta_convergence}
-\end{figure}
 
 \begin{table}[h]
     \centering
@@ -164,13 +157,6 @@ The Quiet regime accumulates the vast majority of observations (164.6 effective 
 \subsection{Threshold Sensitivity}
 
 \Cref{fig:threshold_sweep} shows system accuracy as a function of deferral rate for both methods. At the 25\% operating point, confidence-only defers the 48 picks with lowest PhaseNet confidence, achieving 0.651 system accuracy. The combined score defers the 48 picks with the lowest regime-aware scores, achieving 0.619. Confidence-only maintains a slight accuracy advantage across most deferral rates because it directly targets the picks most likely to be incorrect, whereas the combined score prioritises regime-uncertain picks regardless of individual confidence.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\columnwidth]{figures/appendix_threshold_sweep}
-    \caption{System accuracy vs.\ deferral rate (0--50\%). The grey band marks the 20--30\% operating range.}
-    \label{fig:threshold_sweep}
-\end{figure}
 
 \subsection{Regime-Stratified Deferral Rates}
 
@@ -197,13 +183,6 @@ The Quiet regime accumulates the vast majority of observations (164.6 effective 
 
 \Cref{fig:capacity_curves} shows system accuracy as a function of analyst capacity for both methods at 48 deferred picks. \Cref{tab:capacity} reports system accuracy at specific capacity levels.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\columnwidth]{figures/appendix_capacity_curves}
-    \caption{System accuracy vs.\ analyst capacity (0--50\% of picks), with 48 picks deferred and 95\% analyst accuracy.}
-    \label{fig:capacity_curves}
-\end{figure}
-
 \begin{table}[h]
     \centering
     \caption{System accuracy at different analyst capacity levels (48 picks deferred).}
@@ -228,9 +207,37 @@ Both methods saturate at 25\% analyst capacity, at which point all 48 deferred p
 
 \Cref{fig:analyst_sensitivity} shows system accuracy as a function of analyst accuracy for both methods. Confidence-only deferral exceeds the no-deferral baseline when analyst accuracy exceeds 8.3\%. The combined score requires analyst accuracy above 20.8\%. The higher breakeven for the combined score reflects the fact that it defers some high-confidence picks during uncertain regimes, picks that may already be correct, meaning the analyst must be reasonably accurate to improve on the automated decision.
 
-\begin{figure}[h]
+\begin{figure*}[t]
     \centering
-    \includegraphics[width=\columnwidth]{figures/appendix_analyst_sensitivity}
-    \caption{System accuracy vs.\ analyst accuracy (0--100\%) at 25\% deferral rate. The grey band marks the 70--99\% plausible range.}
-    \label{fig:analyst_sensitivity}
-\end{figure}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/appendix_beta_convergence}
+        \caption{Beta-Bernoulli posterior evolution over 190 Kazakhstan picks. Top: reliability estimate $E[\theta_r]$. Bottom: posterior uncertainty $\sigma_r$.}
+        \label{fig:beta_convergence}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/appendix_threshold_sweep}
+        \caption{System accuracy vs.\ deferral rate (0--50\%). The grey band marks the 20--30\% operating range.}
+        \label{fig:threshold_sweep}
+    \end{subfigure}
+
+    \vspace{1em}
+
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/appendix_capacity_curves}
+        \caption{System accuracy vs.\ analyst capacity (0--50\% of picks), with 48 picks deferred and 95\% analyst accuracy.}
+        \label{fig:capacity_curves}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/appendix_analyst_sensitivity}
+        \caption{System accuracy vs.\ analyst accuracy (0--100\%) at 25\% deferral rate. The grey band marks the 70--99\% plausible range.}
+        \label{fig:analyst_sensitivity}
+    \end{subfigure}
+    \caption{Deferral framework analysis. (a) Beta-Bernoulli convergence. (b) Threshold sensitivity. (c) Analyst capacity curves. (d) Analyst accuracy sensitivity.}
+    \label{fig:deferral_analysis}
+\end{figure*}
