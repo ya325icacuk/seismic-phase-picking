@@ -47,4 +47,4 @@ We compare three deferral strategies to evaluate whether the regime signal impro
     \item \textbf{Confidence-only deferral:} defer picks with the lowest PhaseNet confidence scores, the standard approach using model self-assessment.
     \item \textbf{Combined score (proposed):} defer picks with the lowest regime-aware deferral scores (\cref{eq:deferral_score}), incorporating environmental context.
 \end{itemize}
-All three are compared at a fixed 25\% deferral rate (48 of 190 picks deferred), so that any difference in system accuracy or regime targeting is attributable to which picks each method selects, not how many it defers.
+We set $\gamma = 5$, which halves the deferral score when $\sigma_t \approx 0.10$ (the posterior uncertainty observed for Active and Decaying regimes) while preserving most of the confidence signal for Quiet ($\sigma_t \approx 0.04$). All three are compared at a fixed 25\% deferral rate (48 of 190 picks deferred), so that any difference in system accuracy or regime targeting is attributable to which picks each method selects, not how many it defers.
