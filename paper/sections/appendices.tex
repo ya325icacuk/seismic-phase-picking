@@ -4,7 +4,7 @@
 % A.1 Kazakhstan station selection: metadata table, filtering pipeline, station map
 % A.2 Event catalog: ISC query parameters, magnitude distribution, M4.5+ proximity
 % A.3 California baseline: NCEDC query, event selection, per-event waveform counts
-% A.4 Per-station breakdowns: detection rate, precision, confidence per station
+% A.4 Per-station breakdowns: detection rate, precision, confidence per station (couldn't find this)
 \label{app:data}
 
 \subsection{Kazakhstan Station Selection}
@@ -68,22 +68,11 @@ Regime transitions were triggered by M$\geq$4.5 events within 200\,km of a stati
 \subsection{California Baseline}
 \label{app:california}
 
-We queried NCEDC for M3.5--5.0 events from the NCSN for 2020--2023, selecting the top 50 by magnitude to maximise signal quality. The M3.5--5.0 window mirrors the Kazakhstan catalog, ensuring any performance gap is attributable to geographic transfer rather than differences in earthquake size. The lower magnitude bound ensures clear arrivals above noise, while the upper bound avoids instrument saturation. Three-component stations are required because PhaseNet uses all three channels to discriminate P- and S-wave arrivals. For each event, 120\,s three-component broadband waveforms were downloaded from up to 8 BK-network stations within 2$^\circ$ of the epicentre via NCEDC. Ground truth picks were taken from the NCEDC catalog, the same source as the waveforms, ensuring picks and recordings refer to the same events. Phase variants (Pg, Pn, Sg, Sn) were mapped to P or S respectively, and only picks for station--event pairs with successful waveform downloads were retained, yielding 273 P-wave and 12 S-wave ground truth picks across 325 waveforms. PhaseNet's \texttt{original} pre-trained weights were used rather than the \texttt{stead} weights, since the NCSN training data originates from a single tectonic environment, making the transfer to Kazakhstan interpretable as a clean geographic shift.
+We queried NCEDC for M3.5--5.0 events from the NCSN for 2020--2023, selecting the top 50 by magnitude to maximise signal quality. The M3.5--5.0 window mirrors the Kazakhstan catalog, ensuring any performance gap is attributable to geographic transfer rather than differences in earthquake size. The lower magnitude bound ensures clear arrivals above noise, while the upper bound avoids instrument saturation. Three-component stations are required because PhaseNet takes three channels as input. For each event, 120\,s three-component broadband waveforms were downloaded from up to 8 BK-network stations within 2$^\circ$ of the epicentre via NCEDC. Ground truth picks were taken from the NCEDC catalog, the same source as the waveforms, ensuring picks and recordings refer to the same events. Phase variants (Pg, Pn, Sg, Sn) were mapped to P or S respectively, and only picks for station--event pairs with successful waveform downloads were retained, yielding 273 P-wave and 12 S-wave ground truth picks across 325 waveforms. PhaseNet's \texttt{original} pre-trained weights were used rather than the \texttt{stead} weights, since the NCSN training data originates from a single tectonic environment, making the transfer to Kazakhstan interpretable as a clean geographic shift.
 
 \subsection{Waveform Preprocessing}
 \label{app:preprocessing}
-
-All waveforms (California and Kazakhstan) were preprocessed identically before inference:
-\begin{enumerate}
-    \setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
-    \item Linear detrending
-    \item 5\% cosine tapering at both ends
-    \item Bandpass filtering, 1--45\,Hz (Butterworth)
-    \item Per-channel amplitude normalisation (handled internally by SeisBench)
-\end{enumerate}
-%
-The 120\,s window starts 10\,s before the event origin time, capturing pre-event noise alongside both P and S arrivals. Steps 1--3 were applied using ObsPy prior to passing waveforms to PhaseNet.
+All waveforms (California and Kazakhstan) were preprocessed identically before inference: linear detrending, 5\% cosine tapering at both ends, bandpass filtering at 1--45\,Hz (Butterworth), and per-channel amplitude normalisation (handled internally by SeisBench). The 120\,s window starts 10\,s before the event origin time, capturing pre-event noise alongside both P and S arrivals. The first three steps were applied using ObsPy prior to passing waveforms to PhaseNet.
 
 \subsection{Pick Matching and Metrics}
 \label{app:matching}
