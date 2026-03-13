@@ -1,5 +1,9 @@
 obspy
 numpy
+pandas
+scipy
 matplotlib
+cartopy
 torch
 scikit-learn
+seisbench
