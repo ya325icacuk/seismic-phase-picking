@@ -21,11 +21,11 @@ The framework is evaluated on the Kazakhstan seismic network (out-of-distributio
 │   ├── m45_trigger_df.csv          #   M≥4.5 regime trigger events
 │   ├── deferral_data.pkl           #   Deferral scores and pick metadata
 │   └── regime_posteriors.pkl       #   HMM regime posterior probabilities
-├── figures/                        # Generated figures (from paper_figures.ipynb)
 ├── paper/                          # LaTeX source (ICML 2026 format)
 │   ├── main.tex
 │   ├── paper.bib
-│   └── sections/                   # Modular paper sections
+│   ├── sections/                   # Modular paper sections
+│   └── figures/                    # Generated figures (from paper_figures.ipynb)
 └── README.md
 ```
 
