@@ -1,8 +1,0 @@
-tree 7d1c00a1c03dde78bd30e065ee156e733cbefeaa
-parent 85764d408a4b3ddfcb043c8dc259745ed6c0d7eb
-author Yasmin Akhmedova <ya325@ic.ac.uk> 1773151762 +0000
-committer Yasmin Akhmedova <ya325@ic.ac.uk> 1773151762 +0000
-
-Tighten Section 3.3: shorten conjugate explanation, simplify soft assignment, fix converged wording, add forward pointer
-
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
