@@ -12,17 +12,21 @@ The framework is evaluated on the Kazakhstan seismic network (out-of-distributio
 
 ```
 .
-├── Notebook - 3 March.ipynb        # Main analysis notebook (data, models, evaluation)
+├── main_analysis.ipynb             # Main analysis notebook (data, models, evaluation)
 ├── paper_figures.ipynb             # Publication-quality figure generation
-├── Sandbox.ipynb                   # Exploratory analysis
 ├── requirements.txt                # Python dependencies
-├── kz_results_df.csv               # Kazakhstan evaluation results
-├── results_df.csv                  # California evaluation results
+├── results/                        # Generated data and model outputs
+│   ├── results_df.csv              #   California evaluation results
+│   ├── kz_results_df.csv           #   Kazakhstan evaluation results
+│   ├── m45_trigger_df.csv          #   M≥4.5 regime trigger events
+│   ├── deferral_data.pkl           #   Deferral scores and pick metadata
+│   └── regime_posteriors.pkl       #   HMM regime posterior probabilities
+├── figures/                        # Generated figures (from paper_figures.ipynb)
 ├── paper/                          # LaTeX source (ICML 2026 format)
 │   ├── main.tex
 │   ├── paper.bib
 │   └── sections/                   # Modular paper sections
-└── figures/                        # Generated figures (from paper_figures.ipynb)
+└── README.md
 ```
 
 ## Setup
@@ -35,7 +39,7 @@ Key dependencies: ObsPy, SeisBench, PyTorch, NumPy, Pandas, SciPy, Matplotlib, C
 
 ## Reproducing Results
 
-1. Run `Notebook - 3 March.ipynb` end-to-end to download waveforms, run PhaseNet, fit the HMM, and evaluate deferral strategies.
-2. Run `paper_figures.ipynb` to generate publication figures from the saved result DataFrames.
+1. Run `main_analysis.ipynb` end-to-end to download waveforms, run PhaseNet, fit the HMM, and evaluate deferral strategies.
+2. Run `paper_figures.ipynb` to generate publication figures from the saved result DataFrames in `results/`.
 
 Note: waveform downloads require internet access and may take time depending on FDSN server availability.
