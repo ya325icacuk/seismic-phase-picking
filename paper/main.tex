@@ -15,7 +15,10 @@
 
 % Use [accepted] to show author names; remove for blind review submission
 \usepackage[accepted]{icml2026}
-\renewcommand{\ICML@appearing}{}  % suppress proceedings boilerplate
+\makeatletter
+\renewcommand{\ICML@appearing}{}              % suppress proceedings boilerplate
+\gdef\icmlcorrespondingauthor@text{\relax}    % suppress "Correspondence to:" line
+\makeatother
 
 % Math packages
 \usepackage{amsmath}
