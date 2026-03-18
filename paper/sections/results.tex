@@ -26,7 +26,7 @@
 
 \textbf{PhaseNet's P-wave detection rate collapses from 83.9\% to 35.1\% under distribution shift, while confidence remains nearly unchanged.} \Cref{tab:shift} summarises PhaseNet's performance across both regions. The California results confirm that PhaseNet performs as published: 83.9\% P-wave detection with residuals approaching the 0.1\,s benchmark from \citet{zhu2019phasenet}. In Kazakhstan, P-wave detection falls to 35.1\%, a 48.8-percentage-point drop, with PhaseNet missing nearly two-thirds of arrivals that human analysts identified.
 
-Critically, the P-wave false pick rate is comparable between regions (31.4\% vs.\ 34.9\%), indicating that PhaseNet's dominant failure mode under distribution shift is \emph{missed detections} rather than incorrect picks. Despite this performance collapse, mean confidence for matched picks is nearly unchanged (0.749 vs.\ 0.747).
+Critically, the P-wave false pick rate is comparable between regions (31.4\% vs.\ 34.9\%): PhaseNet makes fewer picks in Kazakhstan, but those it does make are no more likely to be incorrect. Despite this performance collapse, mean confidence for matched picks is nearly unchanged (0.749 vs.\ 0.747).
 
 \subsection{Confidence Scores Do Not Detect Distribution Shift}
 \label{sec:confidence}
