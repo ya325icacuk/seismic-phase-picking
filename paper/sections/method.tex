@@ -94,7 +94,7 @@
 \label{fig:pipeline}
 \end{figure*}
 
-We now present the regime-aware deferral framework. \Cref{fig:pipeline} shows the full deferral architecture. \Cref{tab:notation} summarises the notation used throughout. The framework has three components: an HMM that classifies the seismic environment into regimes (Section~3.2), a Beta-Bernoulli model that estimates PhaseNet's reliability in each regime (Section~3.3), and a combined score that merges both signals with PhaseNet's confidence for deferral decisions (Section~3.5).
+We now present the regime-aware deferral framework. \Cref{fig:pipeline} shows the full deferral architecture. \Cref{tab:notation} summarises the notation used throughout. The framework has three components: an HMM that classifies the seismic environment into regimes (\cref{sec:regime_model}), a Beta-Bernoulli model that estimates PhaseNet's reliability in each regime (\cref{sec:beta_bernoulli}), and a combined score that merges both signals with PhaseNet's confidence for deferral decisions (\cref{sec:combined_score}).
 
 \begin{table}[t]
     \centering
