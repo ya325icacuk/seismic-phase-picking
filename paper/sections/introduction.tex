@@ -24,7 +24,8 @@ PhaseNet \citep{zhu2019phasenet} is a U-Net convolutional neural network trained
 \subsection{Selective Prediction and Learning to Defer}
 \label{sec:bg_defer}
 
-Selective prediction \citep{chow1970optimum, geifman2017selective} assumes model confidence is informative enough to identify and defer unreliable predictions. The learning-to-defer framework \citep{madras2018predict, mozannar2020consistent} relaxes this by training a learned rejector, but requires labelled deployment-domain data to do so. Neither approach is viable in our setting: PhaseNet's confidence is uninformative under shift, and labelled Kazakhstan data is scarce. Our framework addresses this gap by using external environmental context as the deferral signal.
+Selective prediction \citep{chow1970optimum, geifman2017selective} assumes model confidence is informative enough to identify and defer unreliable predictions. The learning-to-defer framework \citep{madras2018predict, mozannar2020consistent} relaxes this by training a learned rejector, but requires labelled local data to do so. Neither approach is viable in our setting: PhaseNet's confidence is uninformative under shift, and labelled Kazakhstan data is scarce.  The deferral signal must therefore come from outside the model, from observable structure in the deployment environment that is independent of model self-assessment. Our framework provides this by using the seismic 
+environment as an external reliability signal.
 
 \subsection{Seismic Regime Modelling}
 \label{sec:bg_regime}
