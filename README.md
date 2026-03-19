@@ -1,6 +1,7 @@
 # Regime-Aware Bayesian Deferral for Seismic Phase Picking Under Distribution Shift
 
-ICML 2026 submission by Yasmin Akhmedova and Seraphina Korompis (Imperial College London).
+Final report for ELEC70122: Machine Learning for Safety Critical Decision-Making, Imperial College London.
+By Yasmin Akhmedova and Seraphina Korompis. Paper formatted in ICML 2026 style.
 
 ## Overview
 
@@ -15,7 +16,7 @@ The framework is evaluated on the Kazakhstan seismic network (out-of-distributio
 ├── main_analysis.ipynb             # Main analysis notebook (data, models, evaluation)
 ├── paper_figures.ipynb             # Publication-quality figure generation
 ├── requirements.txt                # Python dependencies
-├── results/                        # Generated data and model outputs
+├── paper_figure_data/              # Saved DataFrames and model outputs for paper figures
 │   ├── results_df.csv              #   California evaluation results
 │   ├── kz_results_df.csv           #   Kazakhstan evaluation results
 │   ├── m45_trigger_df.csv          #   M≥4.5 regime trigger events
@@ -40,6 +41,6 @@ Key dependencies: ObsPy, SeisBench, PyTorch, NumPy, Pandas, SciPy, Matplotlib, C
 ## Reproducing Results
 
 1. Run `main_analysis.ipynb` end-to-end to download waveforms, run PhaseNet, fit the HMM, and evaluate deferral strategies.
-2. Run `paper_figures.ipynb` to generate publication figures from the saved result DataFrames in `results/`.
+2. Run `paper_figures.ipynb` to generate publication figures from the saved DataFrames in `paper_figure_data/`.
 
 **Note on data downloads:** Waveform downloads require internet access and may take time depending on FDSN server availability. If a download cell times out or throws a connection error, re-run that cell manually — this usually resolves the issue. Once the download completes, continue running the remaining cells as normal.
