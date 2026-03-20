@@ -66,7 +66,7 @@ producing 5 station--trigger pairs (\cref{tab:triggers}).
 
 We queried NCEDC for M3.5--5.0 events from the NCSN for 2020--2023, selecting the 
 top 50 by magnitude to maximise signal quality. The lower magnitude bound ensures 
-clear arrivals above noise; the upper bound avoids instrument saturation and complex 
+clear arrivals above noise, while the upper bound avoids instrument saturation and complex 
 waveforms from very large events. Three-component stations are required because 
 PhaseNet takes three channels as input. For each event, 120\,s three-component 
 broadband waveforms were downloaded from up to 8 BK-network stations within 
@@ -94,7 +94,7 @@ A PhaseNet pick is matched to the nearest catalog arrival of the same phase type
 computed over 10 confidence bins spanning the 0.3--1.0 detection threshold range 
 (bin width 0.07). AUROC summarises the binary task of distinguishing correct picks 
 from false positives using confidence score as the discriminating variable. Both 
-metrics are computed for P-wave picks only; the S-wave asymmetry between regions 
+metrics are computed for P-wave picks only, as the S-wave asymmetry between regions 
 (12 picks in California versus 74 in Kazakhstan) makes cross-region S-wave comparison 
 unreliable.
 
@@ -149,7 +149,7 @@ underestimate it at active ones, degrading the HMM's ability to detect anomalous
 \subsection{Active Onset Detection Check}
 \label{app:multiplier_check}
 
-To verify that catalog injection is necessary, we compare the Poisson likelihood of the observed M$\geq$3.0 count at each trigger week under the Quiet and Active emission rates. If $P(n_t \mid \lambda_A) > P(n_t \mid\lambda_Q)$, the emission model alone would correctly favour Active; otherwise, injection is required.
+To verify that catalog injection is necessary, we compare the Poisson likelihood of the observed M$\geq$3.0 count at each trigger week under the Quiet and Active emission rates. If $P(n_t \mid \lambda_A) > P(n_t \mid\lambda_Q)$, the emission model alone would correctly favour Active. Otherwise, injection is required.
 
 At 4 of 5 trigger weeks, the observed count favours Quiet over Active. The exception is OTUK, where the background rate is so low ($\lambda_Q = 0.14$) that even a count of 1 slightly favours Active. The most striking case is KNDC: the M5.1 event at week 125 produced an observed count of 3, against $\lambda_Q = 2.81$ and $\lambda_A = 22.47$. The likelihood $P(3 \mid \lambda_Q) = 0.223$ far exceeds $P(3 \mid \lambda_A) \approx 0$, meaning the emission model would classify that week as Quiet, missing the M5.1 event entirely. This confirms that Active onset 
 cannot be reliably inferred from M$\geq$3.0 counts alone, justifying the hard injection approach described in \cref{sec:regime_model}.

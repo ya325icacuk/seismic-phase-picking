@@ -13,7 +13,7 @@ The HMM regime model (\cref{sec:regime_model}) requires
 weekly earthquake counts and catalog triggers for each station. We query the ISC earthquake catalog for Central Asia (41--55$^\circ$N, 55--85$^\circ$E), obtaining 
 6{,}763 M$\geq$3.0 events for weekly count observations and 12 M$\geq$4.5 events as potential regime triggers. The M$\geq$4.5 threshold is chosen because earthquakes at 
 this magnitude reliably produce sustained aftershock sequences lasting weeks, while smaller events may trigger isolated aftershocks but not the week-scale elevated 
-seismicity needed to drive HMM regime transitions. Only 4 of these fall within 200\,km of any station, producing 5 station--trigger pairs; the remaining 7 stations 
+seismicity needed to drive HMM regime transitions. Only 4 of these fall within 200\,km of any station, producing 5 station--trigger pairs. The remaining 7 stations 
 experience no regime transitions during the study period and serve as a natural untriggered control group against which false positive regime detections can be 
 assessed. Prior to fitting the HMM, the weekly M$\geq$3.0 count sequences were inspected to confirm that count spikes are visible around known M$\geq$4.5 events at 
 all four triggered stations, a necessary condition for the emission model to distinguish Active weeks from background seismicity. The regime labels are derived 
@@ -75,9 +75,9 @@ All three are compared at a fixed 25\% deferral rate (48 of 190 picks deferred),
 could realistically review manually. All three methods defer the same number of picks, so any difference in system accuracy or regime targeting reflects the quality of each method's selection, that is, which picks it chose to defer, rather than how many it deferred. System accuracy is defined as the precision among accepted picks, assuming all deferred picks are correctly resolved by the analyst. Results across the full 20--30\% operational range are reported in \cref{app:deferral}.
 
 The sensitivity parameter $\gamma = 5$ controls the degree to which regime uncertainty 
-suppresses PhaseNet's confidence; the rationale for this value and its effect on 
+suppresses PhaseNet's confidence. The rationale for this value and its effect on 
 regime separation are discussed in \cref{app:sensitivity}. The deferral threshold 
-$\tau$ is not fixed in advance; it is set by ranking all picks by their combined 
+$\tau$ is not fixed in advance. It is set by ranking all picks by their combined 
 score and taking the cutoff that achieves exactly 25\% deferral, making it 
 straightforward to retarget for a different operational budget without refitting 
 the model.
