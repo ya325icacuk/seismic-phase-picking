@@ -26,6 +26,7 @@
 
 \textbf{PhaseNet's P-wave detection rate collapses from 83.9\% to 35.1\% under distribution shift, while confidence remains nearly unchanged.} \Cref{tab:shift} summarises PhaseNet's performance across both regions. The California results confirm that PhaseNet performs as published: 83.9\% P-wave detection with residuals approaching the 0.1\,s benchmark from \citet{zhu2019phasenet}. In Kazakhstan, P-wave detection falls to 35.1\%.
 
+\medskip
 Critically, the P-wave false pick rate is comparable between regions (31.4\% vs.\ 34.9\%): PhaseNet makes fewer picks in Kazakhstan, but those it does make are similarly likely to be incorrect. Despite this performance collapse, mean confidence for matched picks is nearly unchanged (0.749 vs.\ 0.747).
 
 \subsection{Confidence Scores Do Not Detect Distribution Shift}
@@ -40,8 +41,10 @@ Critically, the P-wave false pick rate is comparable between regions (31.4\% vs.
 
 \textbf{PhaseNet's confidence scores provide no usable warning of the performance collapse.} \Cref{sec:shift} showed that PhaseNet's performance degrades sharply under distribution shift. We now ask whether its confidence scores provide any warning of this degradation.
 
+\medskip
 P-wave ECE increases from 0.088 in California to 0.150 in Kazakhstan (\cref{tab:shift}). At the 0.7 confidence level, California picks are correct approximately 70\% of the time, but Kazakhstan picks only approximately 50\%. PhaseNet appears overconfident under distribution shift. To assess whether the issue goes beyond calibration, we turn to discrimination analysis.
 
+\medskip
 P-wave AUROC is 0.699 in California versus 0.701 in Kazakhstan, virtually identical. The model distinguishes correct from incorrect picks with similar confidence in both regions, despite the performance drop documented in \cref{sec:shift}. Unlike calibration, which could in principle be corrected by post-hoc rescaling, discrimination cannot be improved without changing the model's internal representations. A confidence-based deferral system operating in Kazakhstan would have no signal that anything had changed (\cref{fig:confidence}).
 
 \subsection{Seismic Regime Assignment}
@@ -56,9 +59,11 @@ P-wave AUROC is 0.699 in California versus 0.701 in Kazakhstan, virtually identi
 
 \textbf{The HMM reliably identifies regime transitions across all triggered stations.} \Cref{sec:confidence} established that PhaseNet's confidence scores cannot detect distribution shift. The deferral framework therefore requires an external signal, and the HMM regime model (\cref{sec:regime_model}) provides this. We now assess whether it reliably identifies regime transitions in the Kazakhstan deployment.
 
+\medskip
 All M$\geq$4.5 triggers are injected directly into the HMM as Active states (\cref{sec:regime_model}). In our deployment data, recovery to background levels takes between 3 and 12 weeks across the four triggered stations, with one exception: KKAR is triggered near the end of the study period and recovery is not observed, reflecting data truncation rather than a model failure. These recovery times fall within or close to the 4--8 week range predicted by Omori's law for M4.5--5.0 events \citep{utsu1995centenary}, confirming that the domain-knowledge transition parameters and the observed data are mutually consistent. Stations without nearby large events are never flagged, maintaining $\pi_t(Q) = 1.0$ 
 throughout (\cref{fig:regimes}).
 
+\medskip
 Since the HMM parameters are set from domain knowledge rather than learned from data (\cref{sec:regime_model}), we test sensitivity to these choices. Across all configurations, the regime sequence following a large event is the same: Active, then Decaying, then Quiet. Only the duration of the Decaying phase changes, meaning the framework can be tuned to defer more or fewer picks after a large event. Full details are in \cref{app:hmm_sensitivity}.
 
 \paragraph{Regime-stratified performance.} With the regime model validated, we examine whether PhaseNet's performance varies across regimes. Of the 190 Kazakhstan picks, 81.6\% fall in predominantly Quiet weeks, 5.8\% in Active, 7.9\% in Decaying, and 4.7\% in mixed-regime transitions. Only one station has ground-truth arrivals during Active (13 arrivals) and Decaying (11 arrivals) periods. At this station, precision varies across regimes (Active: 64\%, Quiet: 42\%, Decaying: 33\%), suggesting performance depends on environmental state. However, these sample sizes are small and the pattern should be interpreted as suggestive rather than statistically conclusive. The deferral framework defers based on how few observations underlie each regime's reliability estimate, not on the estimate itself, so the Active regime's apparently higher precision does not prevent deferral (\cref{sec:deferral_comparison}).
@@ -101,6 +106,7 @@ Since the HMM parameters are set from domain knowledge rather than learned from 
 
 At a fixed 25\% deferral rate (48 of 190 picks deferred), confidence-only deferral achieves higher system accuracy (0.651 vs.\ 0.619, \cref{tab:deferral}), which is expected since it directly targets the picks most likely to be incorrect. The combined score's advantage lies in regime targeting (\cref{tab:targeting}): it defers 90.9\% of picks made during Active periods versus 36.4\% for confidence-only. This difference arises because PhaseNet's confidence carries almost no regime signal (mean confidence ranges only from 0.616 to 0.637 across regimes), so confidence-only deferral spreads deferrals near-uniformly across time.
 
+\medskip
 The combined score's value is in directing human attention to periods of greatest environmental uncertainty, rather than to individual low-confidence picks. For safety-critical deployment, a monitoring agency needs to know \emph{when} the system requires oversight.
 
 \subsection{Human-in-the-Loop Evaluation}
@@ -108,6 +114,7 @@ The combined score's value is in directing human attention to periods of greates
 
 \textbf{Under analyst capacity constraints, the combined score directs human attention toward Active and Decaying periods first.} \Cref{sec:deferral_comparison} assumed that all deferred picks are reviewed. In practice, analysts have limited capacity. We now ask how the two methods perform when the analyst can only review a fraction of deferred picks.
 
+\medskip
 Under capacity constraints, the combined score's regime targeting means the analyst reviews Active and Decaying picks first, the periods of greatest environmental disturbance. Below 25\% capacity, the analyst cannot review all 48 deferred picks, and this prioritisation determines which picks are seen. The combined score directs 20.8\% of analyst capacity to Active picks and 18.8\% to Decaying, compared with 8.3\% and 10.4\% for confidence-only, at the cost of a marginal reduction in system accuracy (\cref{sec:deferral_comparison}).
 
 \paragraph{Sensitivity to analyst accuracy.} The results in \cref{sec:deferral_comparison} assume 95\% analyst accuracy on deferred picks. To test how sensitive the results are to this choice, we sweep analyst accuracy from 70\% to 99\%. Both confidence-only and combined score deferral exceed the baseline of accepting all PhaseNet picks without review (0.432) across the full sweep, confirming that the advantage of deferral holds regardless of analyst quality. Full details are provided in \cref{app:deferral}.
