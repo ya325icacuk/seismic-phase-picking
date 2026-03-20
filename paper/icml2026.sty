@@ -527,7 +527,9 @@ the offending package(s), or layout-changing commands and try again.
         \fi
       }.%
       \ifdefined\icmlcorrespondingauthor@text
-         { }Correspondence to: \icmlcorrespondingauthor@text.
+         \ifx\icmlcorrespondingauthor@text\empty\else
+           { }Correspondence to: \icmlcorrespondingauthor@text.
+         \fi
       \else
         {\bf AUTHORERR: Missing \textbackslash{}icmlcorrespondingauthor.}
       \fi
