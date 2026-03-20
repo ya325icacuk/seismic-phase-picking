@@ -4,11 +4,21 @@
 \subsection{Data}
 \label{sec:data}
 
-\paragraph{California (in-distribution).} We use the Northern California Seismic Network (NCSN) via the Northern California Earthquake Data Center (NCEDC) as an in-distribution baseline, as PhaseNet was trained on NCSN data. We select M3.5--5.0 events for 2020--2023, matching the magnitude range and time window used for Kazakhstan. Three-component broadband waveforms are downloaded from up to 8 nearby stations within $2^\circ$ (approximately 200\,km) of each event. Ground truth picks are taken from the NCEDC catalog (273 P-wave and 12 S-wave arrivals across 325 waveforms). Full selection criteria are provided in \cref{app:data}.
+\paragraph{California (in-distribution).} We use the Northern California Seismic Network (NCSN) via the Northern California Earthquake Data Center (NCEDC) as an in-distribution baseline, as PhaseNet was trained on NCSN data. We select top 50 M3.5--5.0 events by magnitude for 2020--2023, matching the magnitude range and time window used for Kazakhstan. Three-component broadband waveforms are downloaded from up to 8 nearby stations within $2^\circ$ (approximately 200\,km) of each event. PhaseNet's \texttt{original} pre-trained weights are used in preference to \texttt{stead} because the NCSN training data originates from a single, well-characterised tectonic environment, making the distribution shift to Kazakhstan interpretable as a clean geographic transfer. Ground truth picks are taken from the NCEDC catalog (273 P-wave and 12 S-wave arrivals across 325 waveforms). Full selection criteria are provided in \cref{app:data}.
 
-\paragraph{Kazakhstan (out-of-distribution).} We deploy PhaseNet to the Kazakhstan network via the IRIS FDSN web service (Incorporated Research Institutions for Seismology, Federation of Digital Seismograph Networks) as our out-of-distribution test case, since Kazakhstan is seismically active but lies entirely outside PhaseNet's training distribution. Starting from 29 three-component broadband stations, we apply a filtering pipeline that removes experimental and temporary deployments, confirms waveform availability and instrument stability, and requires ISC pick coverage, yielding 11 stations (full details in \cref{app:data}). The study window is 2020--2023, matching the ISC Reviewed Bulletin's coverage. Ground truth is taken from the ISC Reviewed Bulletin \citep{isc2023}, which provides human-analyst-verified picks integrating data from regional agencies. This yields 4{,}674 verified picks across the 11 stations. PhaseNet produces 190 picks evaluated against 202 P-wave and 74 S-wave ISC arrivals.
+\paragraph{Kazakhstan (out-of-distribution).} We deploy PhaseNet to the Kazakhstan network via the IRIS FDSN web service as our out-of-distribution test case, since Kazakhstan is seismically active but lies entirely outside PhaseNet's training distribution. Starting from 29 three-component broadband stations, we apply a filtering pipeline that removes experimental and temporary deployments, confirms waveform availability and instrument stability, and requires ISC pick coverage, yielding 11 stations (full details in \cref{app:data}). The study window is 2020--2023, matching the ISC Reviewed Bulletin's coverage. Ground truth is taken from the ISC Reviewed Bulletin \citep{isc2023}, which provides human-analyst-verified picks integrating data from regional agencies. This yields 4{,}674 verified picks across the 11 stations. PhaseNet produces 190 picks evaluated against 202 P-wave and 74 S-wave ISC arrivals.
 
-\paragraph{Regime data.} The HMM regime model (\cref{sec:regime_model}) requires weekly earthquake counts and catalog triggers for each station. We query the ISC earthquake catalog for Central Asia (41--55$^\circ$N, 55--85$^\circ$E), obtaining 6{,}763 M$\geq$3.0 events for weekly count observations and 12 M$\geq$4.5 events as potential regime triggers. Only 4 of these fall within 200\,km of any station, meaning 7 of 11 stations experience no regime transitions during the study period. Full data pipeline details are provided in \cref{app:data}. \Cref{tab:data} summarises both datasets.
+\paragraph{Regime data.} 
+% The HMM regime model (\cref{sec:regime_model}) requires weekly earthquake counts and catalog triggers for each station. We query the ISC earthquake catalog for Central Asia (41--55$^\circ$N, 55--85$^\circ$E), obtaining 6{,}763 M$\geq$3.0 events for weekly count observations and 12 M$\geq$4.5 events as potential regime triggers. Only 4 of these fall within 200\,km of any station, meaning 7 of 11 stations experience no regime transitions during the study period. Full data pipeline details are provided in \cref{app:data}. \Cref{tab:data} summarises both datasets.
+The HMM regime model (\cref{sec:regime_model}) requires 
+weekly earthquake counts and catalog triggers for each station. We query the ISC earthquake catalog for Central Asia (41--55$^\circ$N, 55--85$^\circ$E), obtaining 
+6{,}763 M$\geq$3.0 events for weekly count observations and 12 M$\geq$4.5 events as potential regime triggers. The M$\geq$4.5 threshold is chosen because earthquakes at 
+this magnitude reliably produce sustained aftershock sequences lasting weeks, while smaller events may trigger isolated aftershocks but not the week-scale elevated 
+seismicity needed to drive HMM regime transitions. Only 4 of these fall within 200\,km of any station, producing 5 station--trigger pairs; the remaining 7 stations 
+experience no regime transitions during the study period and serve as a natural untriggered control group against which false positive regime detections can be 
+assessed. Prior to fitting the HMM, the weekly M$\geq$3.0 count sequences were inspected to confirm that count spikes are visible around known M$\geq$4.5 events at 
+all four triggered stations, a necessary condition for the emission model to distinguish Active weeks from background seismicity. The regime labels are derived 
+exclusively from earthquake catalog counts and are independent of PhaseNet's picks and the ISC analyst arrivals used to evaluate them. Full data pipeline details are provided in \cref{app:data}. \Cref{tab:data} summarises both datasets.
 
 \begin{table}[t]
     \centering
@@ -34,24 +44,39 @@
 \subsection{Evaluation Protocol}
 \label{sec:eval_protocol}
 
-PhaseNet is run with original weights (trained on Northern California) using SeisBench \citep{woollam2022seisbench}. Waveforms are 120\,s windows starting 10\,s before the event origin time, preprocessed identically for both regions (see \cref{app:preprocessing}). Picks are extracted with detection thresholds of 0.3 for both P and S phases. 
+PhaseNet is run with original weights (trained on Northern California) using SeisBench 
+\citep{woollam2022seisbench}. Waveforms are 120\,s windows starting 10\,s before the event origin time, capturing pre-event noise alongside both P and S arrivals. Waveforms are preprocessed identically for both regions (see \cref{app:preprocessing}). 
+Picks are extracted with detection thresholds of 0.3 for both P and S phases.
 
-A PhaseNet pick is considered correct if it falls within 0.5\,s of a catalog arrival of the same phase type. We use a wider tolerance than the 0.1s criterion in the original PhaseNet evaluation \citep{zhu2019phasenet} because we compare against independently processed catalog arrival times, which may carry small systematic timing offsets relative to PhaseNet's output. We report detection rate (recall), precision, pick residuals (mean and standard deviation), Expected Calibration Error (ECE), and AUROC for correct/incorrect discrimination. Both calibration and discrimination metrics are computed for P-wave picks separately because S-wave ground truth is limited (12 picks in California vs.\ 74 in Kazakhstan), making cross-region S-wave comparison unreliable.
+A PhaseNet pick is considered correct if it falls within 0.5\,s of a catalog arrival 
+of the same phase type. We use a wider tolerance than the 0.1\,s criterion in the original PhaseNet evaluation \citep{zhu2019phasenet} because ISC arrival times are independently processed and may carry small systematic timing offsets relative to PhaseNet's output. We report detection rate (recall), precision, and pick residuals (mean and standard deviation) for both P and S phases. Expected Calibration Error (ECE) and AUROC for 
+correct/incorrect discrimination are computed for P-wave picks only: Kazakhstan has 74 S-wave ground truth picks versus 12 in California, an asymmetry too large for a 
+meaningful cross-region S-wave comparison. Cross-region performance comparisons therefore focus on P-wave metrics throughout. Full metric computation details are provided in \cref{app:matching}.
 
 \subsection{Baselines and Comparisons}
 \label{sec:baselines}
 
 We compare three deferral strategies to evaluate whether the regime signal improves pick selection for human review:
+\setlength{\itemsep}{0pt}
+\setlength{\parskip}{0pt}
 \begin{itemize}
     \setlength{\itemsep}{0pt}
     \setlength{\parskip}{0pt}
-    \item \textbf{No deferral:} accept all PhaseNet picks without human review, establishing the lower bound on system accuracy.
-    \item \textbf{Confidence-only deferral:} defer picks with the lowest PhaseNet confidence scores, the standard approach using model self-assessment.
-    \item \textbf{Combined score (proposed):} defer picks with the lowest regime-aware deferral scores (\cref{eq:deferral_score}), incorporating environmental context.
+    \item \textbf{No deferral:} accept all PhaseNet picks without human review, 
+    establishing the lower bound on system accuracy.
+    \item \textbf{Confidence-only deferral:} defer picks with the lowest PhaseNet 
+    confidence scores, the standard approach using model self-assessment.
+    \item \textbf{Combined score (proposed):} defer picks with the lowest regime-aware 
+    deferral scores (\cref{eq:deferral_score}), incorporating environmental context.
 \end{itemize}
 
-All three are compared at a fixed 25\% deferral rate (48 of 190 picks deferred), reflecting the fraction of picks a monitoring agency with limited analyst capacity could realistically review manually. Fixing the rate ensures any difference in system accuracy or regime targeting is attributable to \emph{which} picks each method selects, not how many it defers. Results across the full 20--30\% operational range are reported in \cref{app:deferral}.
+All three are compared at a fixed 25\% deferral rate (48 of 190 picks deferred), reflecting the fraction of picks a monitoring agency with limited analyst capacity 
+could realistically review manually. All three methods defer the same number of picks, so any difference in system accuracy or regime targeting reflects the quality of each method's selection, that is, which picks it chose to defer, rather than how many it deferred. System accuracy is defined as the precision among accepted picks, assuming all deferred picks are correctly resolved by the analyst. Results across the full 20--30\% operational range are reported in \cref{app:deferral}.
 
-The sensitivity parameter $\gamma = 5$ determines the degree to which regime uncertainty suppresses PhaseNet's confidence: picks from data-sparse regimes (Active, Decaying) incur a larger penalty than picks from the well-observed Quiet regime. The value $\gamma = 5$ is not uniquely determined by the model specification, and the rationale for this choice and the effect of alternative values on regime separation are discussed in \cref{app:sensitivity}.
-
-The deferral threshold $\tau$ is not fixed in advance. It is set by ranking all picks by their combined score and taking the cutoff that achieves exactly 25\% deferral, making it straightforward to retarget for a different operational deferral budget without refitting the model.
+The sensitivity parameter $\gamma = 5$ controls the degree to which regime uncertainty 
+suppresses PhaseNet's confidence; the rationale for this value and its effect on 
+regime separation are discussed in \cref{app:sensitivity}. The deferral threshold 
+$\tau$ is not fixed in advance — it is set by ranking all picks by their combined 
+score and taking the cutoff that achieves exactly 25\% deferral, making it 
+straightforward to retarget for a different operational budget without refitting 
+the model.
