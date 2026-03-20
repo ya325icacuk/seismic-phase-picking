@@ -61,20 +61,6 @@ producing 5 station--trigger pairs (\cref{tab:triggers}).
     \end{tabular}
 \end{table}
 
-% \subsection{California Baseline}
-% \label{app:california}
-
-% We queried NCEDC for M3.5--5.0 events from the NCSN for 2020--2023, selecting the top 50 by magnitude to maximise signal quality. The M3.5--5.0 window mirrors the Kazakhstan catalog, ensuring any performance gap is attributable to geographic transfer rather than differences in earthquake size. The lower magnitude bound ensures clear arrivals above noise, while the upper bound avoids instrument saturation. Three-component stations are required because PhaseNet takes three channels as input. For each event, 120\,s three-component broadband waveforms were downloaded from up to 8 BK-network stations within 2$^\circ$ of the epicentre via NCEDC. Ground truth picks were taken from the NCEDC catalog, the same source as the waveforms, ensuring picks and recordings refer to the same events. Phase variants (Pg, Pn, Sg, Sn) were mapped to P or S respectively, and only picks for station--event pairs with successful waveform downloads were retained, yielding 273 P-wave and 12 S-wave ground truth picks across 325 waveforms. PhaseNet's \texttt{original} pre-trained weights were used rather than the \texttt{stead} weights, since the NCSN training data originates from a single tectonic environment, making the transfer to Kazakhstan interpretable as a clean geographic shift.
-
-% \subsection{Waveform Preprocessing}
-% \label{app:preprocessing}
-% All waveforms (California and Kazakhstan) were preprocessed identically before inference: linear detrending, 5\% cosine tapering at both ends, bandpass filtering at 1--45\,Hz (Butterworth), and per-channel amplitude normalisation (handled internally by SeisBench). The 120\,s window starts 10\,s before the event origin time, capturing pre-event noise alongside both P and S arrivals. The first three steps were applied using ObsPy prior to passing waveforms to PhaseNet.
-
-% \subsection{Pick Matching and Metrics}
-% \label{app:matching}
-
-% A PhaseNet pick is matched to the nearest catalog arrival of the same phase type (P or S) within 0.5\,s. Unmatched picks are classified as false positives. The 0.5\,s window is wider than the 0.1\,s criterion in the original PhaseNet evaluation~\citep{zhu2019phasenet} because ISC arrival times are independently processed and may carry small systematic timing offsets relative to PhaseNet's output. All evaluation metrics are reported for P-wave picks only: Kazakhstan has 74 S-wave ground truth picks versus 12 in California, an asymmetry too large for a meaningful cross-region S-wave comparison. ECE is computed over 10 confidence bins spanning the 0.3--1.0 detection threshold range (bin width 0.07). AUROC summarises the binary task of distinguishing correct picks from false positives using confidence score as the discriminating variable.
-
 \subsection{California Baseline}
 \label{app:california}
 
@@ -116,8 +102,6 @@ unreliable.
 \section{HMM Specification and Sensitivity Analysis}
 \label{app:hmm}
 
-
-% \paragraph{Emission parameter estimation.} Each station's quiet-period emission rate $\lambda_Q$ is estimated as the mean weekly M3+ count, excluding the 4 weeks following each M4.5+ trigger event to avoid contamination by aftershock activity. For stations where the resulting mean is near zero, a floor of $\lambda_Q = 0.05$ is applied. This is necessary because a Poisson distribution with rate exactly zero assigns zero probability to any nonzero count, which would cause the forward algorithm to assign zero likelihood to weeks with observed events and break posterior inference.
 
 \subsection{Emission Parameter Estimation}
 \label{app:emission}
@@ -172,10 +156,6 @@ cannot be reliably inferred from M$\geq$3.0 counts alone, justifying the hard in
 
 \subsection{Transition Parameter Sensitivity}
 \label{app:hmm_sensitivity}
-
-% The transition matrix parameters ($a_D = 0.35$, $d_Q = 0.18$, $d_A = 0.07$) are set from domain knowledge rather than estimated from data. To assess robustness to these choices, we re-run the forward algorithm under four perturbations: $a_D$ doubled (0.70) and halved (0.175), and $d_Q$ doubled (0.36) and halved (0.09).
-
-% Across all configurations, the qualitative regime sequence following a large event is unchanged: Active, then Decaying, then Quiet. Only the duration of the Decaying phase varies. Doubling $a_D$ shortens the Active phase (faster transition to Decaying), while halving $d_Q$ extends the Decaying phase (slower recovery to Quiet). The untriggered stations maintain $\pi_t(\text{Quiet}) = 1.0$ throughout under all perturbations, since Active is entered only via forced catalog injection. The framework can therefore be tuned to defer more or fewer picks in the weeks following a large event by adjusting $d_Q$, without affecting the qualitative targeting behaviour.
 
 The transition matrix parameters ($a_D = 0.35$, $d_Q = 0.18$, $d_A = 0.07$) are set 
 from domain knowledge rather than estimated from data. To assess robustness to these 
