@@ -104,6 +104,7 @@ Since the HMM parameters are set from domain knowledge rather than learned from 
     \end{tabular}
 \end{table}
 
+\medskip
 At a fixed 25\% deferral rate (48 of 190 picks deferred), confidence-only deferral achieves higher system accuracy (0.651 vs.\ 0.619, \cref{tab:deferral}), which is expected since it directly targets the picks most likely to be incorrect. The combined score's advantage lies in regime targeting (\cref{tab:targeting}): it defers 90.9\% of picks made during Active periods versus 36.4\% for confidence-only. This difference arises because PhaseNet's confidence carries almost no regime signal (mean confidence ranges only from 0.616 to 0.637 across regimes), so confidence-only deferral spreads deferrals near-uniformly across time.
 
 \medskip
