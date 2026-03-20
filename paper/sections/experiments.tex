@@ -47,11 +47,13 @@ PhaseNet is run with original weights (trained on Northern California) using Sei
 \citep{woollam2022seisbench}. Waveforms are 120\,s windows starting 10\,s before the event origin time, capturing pre-event noise alongside both P and S arrivals. Waveforms are preprocessed identically for both regions (see \cref{app:preprocessing}). 
 Picks are extracted with detection thresholds of 0.3 for both P and S phases.
 
+\medskip
 A PhaseNet pick is considered correct if it falls within 0.5\,s of a catalog arrival 
 of the same phase type. We use a wider tolerance than the 0.1\,s criterion in the original PhaseNet evaluation \citep{zhu2019phasenet} because ISC arrival times are independently processed and may carry small systematic timing offsets relative to PhaseNet's output. We report detection rate (recall), precision, and pick residuals (mean and standard deviation) for both P and S phases. Expected Calibration Error (ECE) and AUROC for 
 correct/incorrect discrimination are computed for P-wave picks only: Kazakhstan has 74 S-wave ground truth picks versus 12 in California, an asymmetry too large for a 
 meaningful cross-region S-wave comparison. Cross-region performance comparisons therefore focus on P-wave metrics throughout. Full metric computation details are provided in \cref{app:matching}.
 
+\medskip
 PhaseNet inference uses SeisBench v0.11.0 on CPU. The HMM forward algorithm and Beta-Bernoulli updates are deterministic given the data. A fixed random seed is used only for tie-breaking during deferral selection.
 
 \subsection{Baselines and Comparisons}
@@ -74,6 +76,7 @@ We compare three deferral strategies to evaluate whether the regime signal impro
 All three are compared at a fixed 25\% deferral rate (48 of 190 picks deferred), reflecting the fraction of picks a monitoring agency with limited analyst capacity 
 could realistically review manually. All three methods defer the same number of picks, so any difference in system accuracy or regime targeting reflects the quality of each method's selection, that is, which picks it chose to defer, rather than how many it deferred. System accuracy is defined as the precision among accepted picks, assuming all deferred picks are correctly resolved by the analyst. Results across the full 20--30\% operational range are reported in \cref{app:deferral}.
 
+\medskip
 The sensitivity parameter $\gamma = 5$ controls the degree to which regime uncertainty 
 suppresses PhaseNet's confidence. The rationale for this value and its effect on 
 regime separation are discussed in \cref{app:sensitivity}. The deferral threshold 

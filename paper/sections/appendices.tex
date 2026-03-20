@@ -40,6 +40,7 @@ Although the 11 stations span six sensor types, hardware heterogeneity is accept
 
 The ISC catalog was queried for M$\geq$3.0 events in Central Asia (41--55$^\circ$N, 55--85$^\circ$E) for 2020--2023, yielding 6{,}763 events. The ISC is preferred over the USGS NEIC because it integrates phase data from regional agencies including KNDC, giving more accurate hypocentral solutions for Central Asian events. The M$\geq$3.0 threshold sits slightly below the network's estimated completeness magnitude of M3.5, preserving the background seismicity rate information the HMM needs to distinguish Quiet, Active, and Decaying regimes. The magnitude distribution is heavily right-skewed: 6{,}763 events with M$\geq$3.0, 98 with M$\geq$4.0, 12 with M$\geq$4.5, and 3 with M$\geq$5.0. 
 
+\medskip
 Regime transitions were triggered by M$\geq$4.5 events within 200\,km of a station.  Of the 12 qualifying catalog events, only 4 fell within range of any station, 
 producing 5 station--trigger pairs (\cref{tab:triggers}).
 
@@ -109,6 +110,7 @@ unreliable.
 Each station's quiet-period emission rate $\lambda_Q$ is estimated as the mean weekly M$\geq$3.0 count, excluding the 4 weeks following each M$\geq$4.5 trigger event to 
 avoid contamination by aftershock activity. For stations where the resulting mean is near zero, a floor of $\lambda_Q = 0.05$ is applied. This is necessary because a Poisson distribution with rate exactly zero assigns zero probability to any nonzero count, which would cause the forward algorithm to assign zero likelihood to weeks with observed events and break posterior inference.
 
+\medskip
 \Cref{tab:emission_params} reports the estimated $\lambda_Q$ values for all 11 
 stations. The stations divide into three groups: northern stations (ABKAR, AKTO, BORK, 
 BVAR) with near-zero background rates, a middle group (KURK, MAKZ, MKAR, OTUK) with 
@@ -151,6 +153,7 @@ underestimate it at active ones, degrading the HMM's ability to detect anomalous
 
 To verify that catalog injection is necessary, we compare the Poisson likelihood of the observed M$\geq$3.0 count at each trigger week under the Quiet and Active emission rates. If $P(n_t \mid \lambda_A) > P(n_t \mid\lambda_Q)$, the emission model alone would correctly favour Active. Otherwise, injection is required.
 
+\medskip
 At 4 of 5 trigger weeks, the observed count favours Quiet over Active. The exception is OTUK, where the background rate is so low ($\lambda_Q = 0.14$) that even a count of 1 slightly favours Active. The most striking case is KNDC: the M5.1 event at week 125 produced an observed count of 3, against $\lambda_Q = 2.81$ and $\lambda_A = 22.47$. The likelihood $P(3 \mid \lambda_Q) = 0.223$ far exceeds $P(3 \mid \lambda_A) \approx 0$, meaning the emission model would classify that week as Quiet, missing the M5.1 event entirely. This confirms that Active onset 
 cannot be reliably inferred from M$\geq$3.0 counts alone, justifying the hard injection approach described in \cref{sec:regime_model}.
 
@@ -173,6 +176,7 @@ distinguish, requiring many weeks of near-zero counts before $\pi_t(Q)$ exceeds 
 KKAR does not recover before the study period ends because its trigger occurs at week 
 200 of 209, reflecting data truncation rather than a model failure.
 
+\medskip
 Across all perturbations, the qualitative regime sequence following a large event is 
 unchanged: Active, then Decaying, then Quiet. Recovery times shift predictably with 
 the transition parameters but remain within a physically plausible range (3--19 weeks). 

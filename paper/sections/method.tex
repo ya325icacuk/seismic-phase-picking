@@ -129,8 +129,10 @@ PhaseNet produces a pick $p$ with confidence $c \in [0, 1]$ at a station during 
 
 To provide this external signal, the HMM classifies each station's current seismic environment into one of three regimes, based on the seismic cycle described in \cref{sec:bg_regime}. The seismic environment is a natural candidate for this signal as its structure is governed by established seismological laws and it is observable from existing earthquake catalogs. The HMM does not detect earthquakes directly. Instead, it estimates whether each station is still experiencing elevated seismicity following a large event, or has returned to background levels.
 
+\medskip
 We define three hidden states: Quiet ($Q$), Active ($A$), and Decaying ($D$). At each week $t = 1, \ldots, T$, the HMM observes the count of M3+ earthquakes within 200\,km of a given station. This is the radius within which a M4.5+ mainshock produces waveform complexity sufficient to affect PhaseNet's output, and consistent with the spatial footprint of aftershock sequences for M4.5--5.0 events in the region \citep{reasenberg1989earthquake}. Weekly resolution is chosen because aftershock sequences for M4.5--5.0 events play out over weeks to months: monthly windows are too coarse to resolve the Active~$\to$~Decaying~$\to$~Quiet transition structure, while daily counts are too sparse to produce stable Poisson likelihood estimates at low-seismicity stations.
 
+\medskip
 These weekly counts are modelled as Poisson-distributed with station-specific emission rates. The Quiet rate $\lambda_Q$ is estimated from weeks without nearby M4.5+ events. The Active rate is a multiple of the Quiet rate: $\lambda_A = k_A \cdot \lambda_Q$, with $k_A = 8$, within the established 5--10$\times$ aftershock rate range \citep{reasenberg1989earthquake}. The Decaying rate $\lambda_D = k_D \cdot \lambda_Q$ uses $k_D = 1.5$, producing recovery times of 4--8 weeks for M4.5--5.0 aftershock sequences, consistent with Omori's law \citep{utsu1995centenary}. Station-specific estimation details (aftershock exclusion windows and a floor value for low-seismicity stations) are provided in \cref{app:hmm}.
 
 The transition matrix encodes seismological domain knowledge:
@@ -144,6 +146,7 @@ The transition matrix encodes seismological domain knowledge:
 \end{equation}
 where $\epsilon \approx 0$. The Active state is not inferred from observations but assigned directly from the earthquake catalogue when an M4.5+ event occurs within 200\,km of a station. The necessity of this approach is verified empirically in \cref{app:multiplier_check}. The transition probabilities (\cref{eq:transition}) encode established aftershock statistics: $a_D = 0.35$ gives an expected Active duration of $1/a_D \approx 2.9$ weeks, consistent with the 2--3 week intense aftershock phase for M4.5--5.0 events. $d_Q = 0.18$ and $d_A = 0.07$ give an expected Decaying duration of $1/(d_Q + d_A) = 4$ weeks, consistent with Omori's law decay timescales for this magnitude range \citep{utsu1995centenary}. Robustness to these choices is assessed in \cref{app:hmm_sensitivity}.
 
+\medskip
 All stations begin with a Quiet prior ($\pi_0 = [1, 0, 0]$). The forward algorithm \citep{rabiner1989hmm} updates this into regime posteriors $\pi_t(r) = P(\text{regime} = r \mid \text{observations up to week } t)$ for each station independently at weekly resolution.
 
 \subsection{Beta-Bernoulli Reliability Tracking}
@@ -155,6 +158,7 @@ With the regime posteriors from \cref{sec:regime_model} in hand, we now estimate
 \end{equation}
 This is conjugate Bayesian updating. All three regimes are initialised with $\text{Beta}(2, 2)$ priors, a weak prior centered at 0.5 with an effective sample size of 4, so that even sparse regimes can shift the estimate.
 
+\medskip
 Each pick's outcome updates all three regimes' Beta parameters, weighted by $\pi_t(r)$. Picks are processed in chronological order. Each pick receives its deferral score (\cref{sec:combined_score}) from the current Beta parameters, and the Beta parameters are updated only afterwards. For a correct pick:
 \begin{equation}
     \alpha_r \leftarrow \alpha_r + \pi_t(r), \qquad \beta_r \leftarrow \beta_r \quad \forall\, r \in \{Q, A, D\}
@@ -176,6 +180,7 @@ This quantity drives the deferral score defined in \cref{sec:combined_score}.
 
 The deferral framework combines three signals, each contributing information the others lack. PhaseNet's confidence answers ``which picks within the same regime are most likely correct?'' The HMM (\cref{sec:regime_model}) answers ``what is happening in the seismic environment right now?'' but knows nothing about PhaseNet. The Beta-Bernoulli model (\cref{sec:beta_bernoulli}) answers ``how reliable is PhaseNet in that environment?''
 
+\medskip
 The Beta-Bernoulli model produces two quantities per regime: a reliability estimate $E[\theta_r]$ and its posterior standard deviation $\sigma_r$. We defer based on $\sigma_r$, which shrinks as the effective sample size $(\alpha_r + \beta_r)$ grows. $\sigma_r$ distinguishes regimes with similar reliability estimates but different amounts of data: it is high when data is sparse and low when data is abundant. This is why we use $\sigma_r$ rather than $E[\theta_r]$: the mean reflects measured performance, but $\sigma_r$ reflects how much we should trust that measurement. Picks are therefore deferred from regimes where the reliability estimate rests on few observations: absence of evidence about PhaseNet's reliability is treated as grounds for human review.
 
 \subsection{Combined Deferral Score}
