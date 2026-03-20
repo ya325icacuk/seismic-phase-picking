@@ -54,7 +54,7 @@ correct/incorrect discrimination are computed for P-wave picks only: Kazakhstan 
 meaningful cross-region S-wave comparison. Cross-region performance comparisons therefore focus on P-wave metrics throughout. Full metric computation details are provided in \cref{app:matching}.
 
 \medskip
-PhaseNet inference uses SeisBench v0.11.0 on CPU. The HMM forward algorithm and Beta-Bernoulli updates are deterministic given the data, so no restarts or multiple runs are required. The sensitivity parameter $\gamma = 5$ was selected by verifying that it produces meaningful separation between regime penalties using the posterior standard deviations produced by the Beta-Bernoulli model; the effect of alternative 
+\textbf{Computational Details.} PhaseNet inference uses SeisBench v0.11.0 on CPU. The HMM forward algorithm and Beta-Bernoulli updates are deterministic given the data, so no restarts or multiple runs are required. The sensitivity parameter $\gamma = 5$ was selected by verifying that it produces meaningful separation between regime penalties using the posterior standard deviations produced by the Beta-Bernoulli model; the effect of alternative 
 values is reported in \cref{app:sensitivity}. A fixed random seed is used only for tie-breaking during deferral selection.
 
 \subsection{Baselines and Comparisons}
