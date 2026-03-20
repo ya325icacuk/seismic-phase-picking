@@ -43,4 +43,4 @@ Key dependencies: ObsPy, SeisBench, PyTorch, NumPy, Pandas, SciPy, Matplotlib, C
 1. Run `main_analysis.ipynb` end-to-end to download waveforms, run PhaseNet, fit the HMM, and evaluate deferral strategies.
 2. Run `paper_figures.ipynb` to generate publication figures from the saved DataFrames in `paper_figure_data/`.
 
-**Note on data downloads:** Waveform downloads require internet access and may take time depending on FDSN server availability. If a download cell times out or throws a connection error, re-run that cell manually — this usually resolves the issue. Once the download completes, continue running the remaining cells as normal.
+**Note on data downloads:** Waveform downloads require internet access and may take time depending on FDSN server availability. If a download cell times out or throws a connection error, re-run that cell manually; this usually resolves the issue. Once the download completes, continue running the remaining cells as normal.
