@@ -52,6 +52,8 @@ of the same phase type. We use a wider tolerance than the 0.1\,s criterion in th
 correct/incorrect discrimination are computed for P-wave picks only: Kazakhstan has 74 S-wave ground truth picks versus 12 in California, an asymmetry too large for a 
 meaningful cross-region S-wave comparison. Cross-region performance comparisons therefore focus on P-wave metrics throughout. Full metric computation details are provided in \cref{app:matching}.
 
+PhaseNet inference uses SeisBench v0.11.0 on CPU. The HMM forward algorithm and Beta-Bernoulli updates are deterministic given the data. A fixed random seed is used only for tie-breaking during deferral selection.
+
 \subsection{Baselines and Comparisons}
 \label{sec:baselines}
 
