@@ -54,7 +54,7 @@ correct/incorrect discrimination are computed for P-wave picks only: Kazakhstan 
 meaningful cross-region S-wave comparison. Cross-region performance comparisons therefore focus on P-wave metrics throughout. Full metric computation details are provided in \cref{app:matching}.
 
 \medskip
-\textbf{Computational Details.} PhaseNet inference uses SeisBench v0.11.0 on CPU. The HMM forward algorithm and Beta-Bernoulli updates are deterministic given the data, so no restarts or multiple runs are required. The sensitivity parameter $\gamma = 5$ was selected by verifying that it produces meaningful separation between regime penalties using the posterior standard deviations produced by the Beta-Bernoulli model; the effect of alternative 
+\textbf{Computational Details.} PhaseNet inference uses SeisBench v0.11.0 on CPU. The HMM forward algorithm and Beta-Bernoulli updates are deterministic given the data, so no restarts or multiple runs are required. The sensitivity parameter $\gamma = 5$ was selected by verifying that it produces meaningful separation between regime penalties using the posterior standard deviations produced by the Beta-Bernoulli model. The effect of alternative 
 values is reported in \cref{app:sensitivity}. A fixed random seed is used only for tie-breaking during deferral selection.
 
 \subsection{Baselines and Comparisons}
@@ -78,5 +78,5 @@ All three are compared at a fixed 25\% deferral rate (48 of 190 picks deferred),
 could realistically review manually. All three methods defer the same number of picks, so any difference in system accuracy or regime targeting reflects the quality of each method's selection, that is, which picks it chose to defer, rather than how many it deferred. System accuracy is defined as the precision among accepted picks, assuming all deferred picks are correctly resolved by the analyst. Results across the full 20--30\% operational range are reported in \cref{app:deferral}.
 
 \medskip
-The sensitivity parameter $\gamma = 5$ controls the degree to which regime uncertainty suppresses PhaseNet's confidence; see \cref{app:sensitivity} for details. The deferral threshold $\tau$ is not fixed in advance. It is set by ranking all picks by their combined score and taking the cutoff that achieves exactly 25\% deferral, making it straightforward to re-target for a different operational budget without refitting 
+The sensitivity parameter $\gamma = 5$ controls the degree to which regime uncertainty suppresses PhaseNet's confidence (see \cref{app:sensitivity} for details). The deferral threshold $\tau$ is not fixed in advance. It is set by ranking all picks by their combined score and taking the cutoff that achieves exactly 25\% deferral, making it straightforward to re-target for a different operational budget without refitting 
 the model.
