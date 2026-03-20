@@ -10,7 +10,7 @@ We propose a regime-aware deferral framework that extends model self-assessment 
 \begin{enumerate}
     \item An empirical demonstration that PhaseNet's confidence scores are uninformative under distribution shift: the model fails silently, with no internal signal to trigger human review. This establishes that standard uncertainty quantification tools are insufficient for deferral in this setting and motivates the need for an external reliability signal.
     \item A regime-aware monitoring framework using an HMM to track the seismic environment, providing a structured external signal that model confidence cannot. This enables deferral decisions that reflect when the deployment environment is most uncertain, rather than when individual picks are most uncertain.
-    \item A Bayesian deferral mechanism combining regime uncertainty with pick-level confidence, which concentrates deferrals during seismically active periods rather than spreading them uniformly across time. This directs scarce analyst time toward the periods of greatest environmental disturbance, with honest evaluation showing that confidence-only deferral achieves higher raw system accuracy at matched deferral rates.
+    \item A Bayesian deferral mechanism combining regime uncertainty with pick-level confidence, which concentrates deferrals during seismically active periods rather than spreading them uniformly across time. This directs scarce analyst time toward the periods of greatest environmental disturbance, at a marginal cost in system accuracy relative to confidence-only deferral.
 \end{enumerate}
 
 \section{Related Work}
